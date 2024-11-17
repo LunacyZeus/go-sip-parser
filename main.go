@@ -45,11 +45,16 @@ func main() {
 	}
 
 	// Parse the the SIP data
-	fp, err := sip.ParseSIPTrace(trace)
-	if err != nil {
-		errorOut(err.Error())
-	}
+	sip.ParseSIPTrace(trace)
+
+	/*
+		fp, err := sip.ParseSIPTrace(trace)
+		if err != nil {
+			errorOut(err.Error())
+		}
+
+	*/
 
 	// Search the SIP packets for the filters
-	sip.HandleSipPackets1(fp)
+	//sip.HandleSipPackets1(fp)
 }
