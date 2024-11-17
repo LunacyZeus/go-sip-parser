@@ -51,5 +51,5 @@ func main() {
 	}
 
 	// Search the SIP packets for the filters
-	sip.HandleSipPackets(fp)
+	sip.HandleSipPackets1(fp)
 }

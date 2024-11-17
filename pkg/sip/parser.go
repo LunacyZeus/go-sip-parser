@@ -100,3 +100,20 @@ func HandleSipPackets(sipPackets []SipMessage) {
 
 	return
 }
+
+func HandleSipPackets1(sipPackets []SipMessage) {
+	for _, sipp := range sipPackets {
+		//fmt.Println(sipp.timestamp.Microseconds(), sipp.pct)
+		//fmt.Println(sipp.Timestamp.Microseconds(), string(sipp.pct.CallId.Src), string(sipp.pct.Cseq.Src), string(sipp.pct.From.Src), string(sipp.pct.To.Src))
+		//siprocket.PrintSipStruct(&sipp.pct)
+
+		callID := string(sipp.pct.CallId.Value)
+
+		// 如果 Call-ID 存在，则处理该会话
+		if callID != "" {
+			fmt.Println(callID)
+		}
+	}
+
+	return
+}
