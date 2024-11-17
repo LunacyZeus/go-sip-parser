@@ -75,12 +75,11 @@ func HandleSipPackets(sipPackets []SipMessage) {
 			}
 
 			// 添加消息到会话
-			session.AddMessage(sipp)
-
+			session.AddMessage(&sipp)
 		}
 	}
 
-	callId := "b4cc32e0-a5e5-45cc-9d94-77fc26d38b83"
+	callId := ""
 	if callId != "" {
 		session, exists := manager.GetSession(callId)
 		if !exists {

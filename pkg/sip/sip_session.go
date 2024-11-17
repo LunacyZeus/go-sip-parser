@@ -58,15 +58,15 @@ func (s SipSessionStatus) String() string {
 
 // SipSession 表示一个完整的 SIP 会话
 type SipSession struct {
-	CallID        string    // 唯一标识会话的 Call-ID
-	Messages      []Message // 该会话中所有的请求/响应消息
-	CreatedAt     int64     // 会话的创建时间（通常是第一个消息的时间）
-	EndedAt       int64     // 会话结束时间（通常是最后一个消息的时间）
-	InviteTime    int64     //发起通话时间 Microseconds
-	RingTime      int64     //响铃时间 Microseconds
-	AnswerTime    int64     //应答时间 Microseconds
-	HangUpTime    int64     //挂起时间 Microseconds
-	Duration      int64     // 会话持续时长 Microseconds
+	CallID        string     // 唯一标识会话的 Call-ID
+	Messages      []*Message // 该会话中所有的请求/响应消息
+	CreatedAt     int64      // 会话的创建时间（通常是第一个消息的时间）
+	EndedAt       int64      // 会话结束时间（通常是最后一个消息的时间）
+	InviteTime    int64      //发起通话时间 Microseconds
+	RingTime      int64      //响铃时间 Microseconds
+	AnswerTime    int64      //应答时间 Microseconds
+	HangUpTime    int64      //挂起时间 Microseconds
+	Duration      int64      // 会话持续时长 Microseconds
 	IsFirstInvite bool
 	IsFirst200    bool
 
@@ -79,10 +79,10 @@ func (s SipSession) String() string {
 }
 
 // 基于传入的消息计算当前会话的状态
-func (s *SipSession) CalcStatus(simMsg SipMessage) (Message, error) {
+func (s *SipSession) CalcStatus(simMsg *SipMessage) (*Message, error) {
 	method, startLine := utils.GetRequestLine(string(simMsg.pct.Req.Src))
 	if startLine == "" {
-		return Message{}, fmt.Errorf("invalid request line")
+		return &Message{}, fmt.Errorf("invalid request line")
 	}
 
 	callId := string(simMsg.pct.CallId.Value)
@@ -91,7 +91,7 @@ func (s *SipSession) CalcStatus(simMsg SipMessage) (Message, error) {
 	fromAddr := string(simMsg.pct.From.Src)
 
 	// 创建一个 SIPInfo 实例
-	msg := Message{
+	msg := &Message{
 		Timestamp: simMsg.Timestamp,
 		Method:    method,
 		CallID:    callId,
@@ -168,7 +168,7 @@ func (s *SipSession) CalcStatus(simMsg SipMessage) (Message, error) {
 }
 
 // AddMessage 添加一条消息到会话中
-func (s *SipSession) AddMessage(simMsg SipMessage) {
+func (s *SipSession) AddMessage(simMsg *SipMessage) {
 	msg, err := s.CalcStatus(simMsg)
 	if err != nil {
 		return
