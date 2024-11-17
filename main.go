@@ -3,6 +3,9 @@ package main
 import (
 	"flag"
 	"fmt"
+	"log"
+	"net/http"
+	_ "net/http/pprof"
 	"os"
 	"sip-parser/pkg/sip"
 	"strings"
@@ -17,6 +20,10 @@ var (
 )
 
 func main() {
+	go func() {
+		log.Println(http.ListenAndServe("localhost:8081", nil))
+	}()
+
 	flag.Usage = func() {
 		fmt.Printf("Usage: %s \n", os.Args[0])
 		fmt.Println("If no `--to` and `--from` are specified then the program will output `To:` and `From:` from all SIP dialogs.")
@@ -45,16 +52,15 @@ func main() {
 	}
 
 	// Parse the the SIP data
-	sip.ParseSIPTrace(trace)
+	//sip.ParseSIPTrace(trace)
 
-	/*
-		fp, err := sip.ParseSIPTrace(trace)
-		if err != nil {
-			errorOut(err.Error())
-		}
-
-	*/
+	fp, err := sip.ParseSIPTrace(trace)
+	if err != nil {
+		errorOut(err.Error())
+	}
 
 	// Search the SIP packets for the filters
-	//sip.HandleSipPackets1(fp)
+	sip.HandleSipPackets1(fp)
+
+	select {}
 }
