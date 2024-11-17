@@ -8,6 +8,7 @@ import (
 	_ "net/http/pprof"
 	"os"
 	"sip-parser/pkg/sip"
+	"sip-parser/pkg/utils/csv_utils"
 	"strings"
 )
 
@@ -51,8 +52,36 @@ func main() {
 		errorOut(err.Error())
 	}
 
+	// 创建一个 SIP 会话管理器
+	manager := sip.NewSipSessionManager()
+
 	// Search the SIP packets for the filters
-	sip.HandleSipPackets(fp)
+	sip.HandleSipPackets(manager, fp)
+
+	callId := ""
+	if callId != "" {
+		session, exists := manager.GetSession(callId)
+		if !exists {
+			log.Fatal("获取session失败")
+		}
+		for _, msg := range session.Messages {
+			fmt.Println(msg.String())
+		}
+		fmt.Println(session.String())
+	} else {
+		sessions := manager.Sessions
+
+		// 写入数据
+		csv_utils.SaveDataCsv("data.csv", sessions)
+		/*
+			for _, session := range sessions {
+				if session.Status == sip.COMPLETED { //只解析成功的
+					fmt.Println(session.String())
+				}
+			}
+
+		*/
+	}
 
 	select {}
 }

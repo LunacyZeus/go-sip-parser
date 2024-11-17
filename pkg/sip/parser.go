@@ -82,10 +82,7 @@ func ParseSIPTrace(trace gopcap.PcapFile) ([]*siprocket.SipMsg, error) {
 	return results, nil
 }
 
-func HandleSipPackets(sipPackets []*siprocket.SipMsg) {
-	// 创建一个 SIP 会话管理器
-	manager := NewSipSessionManager()
-
+func HandleSipPackets(manager *SipSessionManager, sipPackets []*siprocket.SipMsg) {
 	for _, sipp := range sipPackets {
 		//fmt.Println(sipp.timestamp.Microseconds(), sipp.pct)
 		//fmt.Println(sipp.Timestamp.Microseconds(), string(sipp.pct.CallId.Src), string(sipp.pct.Cseq.Src), string(sipp.pct.From.Src), string(sipp.pct.To.Src))
@@ -106,25 +103,6 @@ func HandleSipPackets(sipPackets []*siprocket.SipMsg) {
 
 			// 添加消息到会话
 			session.AddMessage(sipp)
-		}
-	}
-
-	callId := ""
-	if callId != "" {
-		session, exists := manager.GetSession(callId)
-		if !exists {
-			log.Fatal("获取session失败")
-		}
-		for _, msg := range session.Messages {
-			fmt.Println(msg.String())
-		}
-		fmt.Println(session.String())
-	} else {
-		sessions := manager.Sessions
-		for _, session := range sessions {
-			if session.Status == COMPLETED { //只解析成功的
-				fmt.Println(session.String())
-			}
 		}
 	}
 

@@ -59,14 +59,17 @@ func (s SipSessionStatus) String() string {
 // SipSession 表示一个完整的 SIP 会话
 type SipSession struct {
 	CallID        string     // 唯一标识会话的 Call-ID
+	ANI           string     //ANI to_addr
+	DNIS          string     //DNIS from_addr
+	CallBound     bool       //呼叫方向 true 呼出 false 呼入
 	Messages      []*Message // 该会话中所有的请求/响应消息
 	CreatedAt     int64      // 会话的创建时间（通常是第一个消息的时间）
 	EndedAt       int64      // 会话结束时间（通常是最后一个消息的时间）
-	InviteTime    int64      //发起通话时间 Microseconds
-	RingTime      int64      //响铃时间 Microseconds
-	AnswerTime    int64      //应答时间 Microseconds
-	HangUpTime    int64      //挂起时间 Microseconds
-	Duration      int64      // 会话持续时长 Microseconds
+	InviteTime    int64      //发起通话时间 Milliseconds
+	RingTime      int64      //响铃时间 Milliseconds
+	AnswerTime    int64      //应答时间 Milliseconds
+	HangUpTime    int64      //挂起时间 Milliseconds
+	Duration      int64      // 会话持续时长 Milliseconds
 	IsFirstInvite bool
 	IsFirst200    bool
 
@@ -103,9 +106,19 @@ func (s *SipSession) CalcStatus(simMsg *siprocket.SipMsg) (*Message, error) {
 
 	if method == "INVITE" {
 		if s.IsFirstInvite { //第一次收到200响应 设置应答时间
-			s.InviteTime = msg.Timestamp.Microseconds() //设置发起时间
+			s.InviteTime = msg.Timestamp.Milliseconds() //设置发起时间
 			s.Stage = "INVITE"                          //INVITE阶段
 			s.IsFirstInvite = false
+
+			s.ANI = msg.ToAddr
+			s.DNIS = msg.FromAddr
+
+			if utils.IsOutbound(s.DNIS) {
+				s.CallBound = true
+			} else {
+				s.CallBound = false
+			}
+
 		}
 	} else if method == "CANCEL" {
 		s.Stage = "CANCEL"   //CANCEL 取消会话
@@ -116,7 +129,7 @@ func (s *SipSession) CalcStatus(simMsg *siprocket.SipMsg) (*Message, error) {
 		} else {
 			s.Stage = "BYE OK"
 			s.Status = COMPLETED
-			s.HangUpTime = msg.Timestamp.Microseconds() //挂起时间
+			s.HangUpTime = msg.Timestamp.Milliseconds() //挂起时间
 			s.Duration = s.HangUpTime - s.InviteTime    //计算通话时间
 		}
 
@@ -139,7 +152,7 @@ func (s *SipSession) CalcStatus(simMsg *siprocket.SipMsg) (*Message, error) {
 			s.Stage = "Ringing 183"
 		} else if strings.Contains(startLine, "SIP/2.0 200 OK") { //对端返回200响应 代表收到
 			if s.IsFirst200 { //第一次收到200响应 设置应答时间
-				s.AnswerTime = msg.Timestamp.Microseconds()
+				s.AnswerTime = msg.Timestamp.Milliseconds()
 				s.IsFirst200 = false
 			}
 			if strings.Contains(cSeq, "INVITE") { //这是代表对端收到我方INVITE 请求
@@ -154,7 +167,7 @@ func (s *SipSession) CalcStatus(simMsg *siprocket.SipMsg) (*Message, error) {
 				} else {
 					s.Stage = "BYE OK"
 					s.Status = COMPLETED
-					s.HangUpTime = msg.Timestamp.Microseconds() //挂起时间
+					s.HangUpTime = msg.Timestamp.Milliseconds() //挂起时间
 					s.Duration = s.HangUpTime - s.InviteTime    //计算通话时间
 				}
 
@@ -175,9 +188,9 @@ func (s *SipSession) AddMessage(simMsg *siprocket.SipMsg) {
 	}
 	s.Messages = append(s.Messages, msg)
 	if len(s.Messages) == 1 {
-		s.CreatedAt = msg.Timestamp.Microseconds()
+		s.CreatedAt = msg.Timestamp.Milliseconds()
 	}
-	s.EndedAt = msg.Timestamp.Microseconds()
+	s.EndedAt = msg.Timestamp.Milliseconds()
 	//s.Duration = s.EndedAt - s.CreatedAt
 
 }

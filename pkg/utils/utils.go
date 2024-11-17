@@ -1,6 +1,7 @@
 package utils
 
 import (
+	"regexp"
 	"strings"
 	"unicode"
 )
@@ -46,4 +47,22 @@ func GetRequestLine(line string) (string, string) {
 
 	// 如果没有匹配到任何请求行或响应行，则返回空字符串
 	return "", ""
+}
+
+// 判断 SIP 地址是否为呼出或呼入
+func IsOutbound(sip string) bool {
+	// 使用正则表达式提取 SIP 地址中的 IP 部分
+	re := regexp.MustCompile(`@([0-9]+\.[0-9]+\.[0-9]+\.[0-9]+)`)
+	matches := re.FindStringSubmatch(sip)
+
+	if len(matches) > 1 {
+		// 提取到的 IP 地址
+		ip := matches[1]
+		// 判断 IP 是否以 "172." 开头，判断是否是呼出
+		if strings.HasPrefix(ip, "172.") {
+			return true
+		}
+	}
+	// 如果没有匹配到或者 IP 不是以 "172." 开头，则返回 false，表示是呼入
+	return false
 }
