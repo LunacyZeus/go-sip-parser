@@ -1,0 +1,4 @@
+github.com/Lukasa/gopcap v0.1.0 h1:nQcBEJIjZY6MZcahMsdg5DiDFoxvZlw/JESfLr9RgA0=
+github.com/Lukasa/gopcap v0.1.0/go.mod h1:MRDj3vGmXGsgV92ZuWKK9YJ1zpjk+wtB4GuGjmXEyxM=
+github.com/marv2097/siprocket v0.0.0-20190829114445-b2fe8c7d1589 h1:THpJtV1kQGYqdLuoGSEFmnoT4HC6IBUIpkRC4zG1fvo=
+github.com/marv2097/siprocket v0.0.0-20190829114445-b2fe8c7d1589/go.mod h1:ugcl88hxQtl/mELfV2aI++IuON0tVkBG4HJfDLvzVb0=
