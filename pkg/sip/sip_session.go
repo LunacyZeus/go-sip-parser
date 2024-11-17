@@ -2,7 +2,6 @@ package sip
 
 import (
 	"fmt"
-	"github.com/marv2097/siprocket"
 	"sip-parser/pkg/utils"
 	"strings"
 	"time"
@@ -10,7 +9,7 @@ import (
 
 type Message struct {
 	Timestamp time.Duration
-	pct       siprocket.SipMsg
+	//pct       siprocket.SipMsg
 	Method    string
 	CallID    string
 	StartLine string

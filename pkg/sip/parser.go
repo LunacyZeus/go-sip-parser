@@ -7,8 +7,8 @@ import (
 	"os"
 	"time"
 
-	"github.com/marv2097/siprocket"
 	"sip-parser/pkg/gopcap"
+	"sip-parser/pkg/siprocket"
 )
 
 type SipMessage struct {
@@ -29,10 +29,9 @@ func ParsePcapFile(file string) (gopcap.PcapFile, error) {
 	return parsed, nil
 }
 
-func ParseSIPTrace(trace gopcap.PcapFile) ([]SipMessage, error) {
-	var results []SipMessage
+func ParseSIPTrace(trace gopcap.PcapFile) ([]siprocket.SipMsg, error) {
+	var results []siprocket.SipMsg
 	for _, packet := range trace.Packets {
-		var r SipMessage
 		d := packet.Data
 		if d == nil {
 			continue
@@ -44,10 +43,9 @@ func ParseSIPTrace(trace gopcap.PcapFile) ([]SipMessage, error) {
 			continue
 		}
 
-		sipPacket := siprocket.Parse(td)
-		r.pct = sipPacket
-		r.Timestamp = packet.Timestamp
-		results = append(results, r)
+		sipPacket := siprocket.Parse(td, packet.Timestamp)
+
+		results = append(results, sipPacket)
 	}
 	return results, nil
 }
@@ -101,19 +99,20 @@ func HandleSipPackets(sipPackets []SipMessage) {
 	return
 }
 
-func HandleSipPackets1(sipPackets []SipMessage) {
+func HandleSipPackets1(sipPackets []siprocket.SipMsg) {
 	for _, sipp := range sipPackets {
 		//fmt.Println(sipp.timestamp.Microseconds(), sipp.pct)
 		//fmt.Println(sipp.Timestamp.Microseconds(), string(sipp.pct.CallId.Src), string(sipp.pct.Cseq.Src), string(sipp.pct.From.Src), string(sipp.pct.To.Src))
 		//siprocket.PrintSipStruct(&sipp.pct)
 
-		callID := string(sipp.pct.CallId.Value)
+		callID := string(sipp.CallId.Value)
 
 		// 如果 Call-ID 存在，则处理该会话
 		if callID != "" {
-			fmt.Println(callID)
+			//fmt.Println(callID)
 		}
 	}
+	fmt.Println("done")
 
 	return
 }
