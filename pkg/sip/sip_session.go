@@ -2,6 +2,7 @@ package sip
 
 import (
 	"fmt"
+	"sip-parser/pkg/siprocket"
 	"sip-parser/pkg/utils"
 	"strings"
 	"time"
@@ -78,16 +79,16 @@ func (s SipSession) String() string {
 }
 
 // 基于传入的消息计算当前会话的状态
-func (s *SipSession) CalcStatus(simMsg *SipMessage) (*Message, error) {
-	method, startLine := utils.GetRequestLine(string(simMsg.pct.Req.Src))
+func (s *SipSession) CalcStatus(simMsg *siprocket.SipMsg) (*Message, error) {
+	method, startLine := utils.GetRequestLine(string(simMsg.Req.Src))
 	if startLine == "" {
 		return &Message{}, fmt.Errorf("invalid request line")
 	}
 
-	callId := string(simMsg.pct.CallId.Value)
-	cSeq := string(simMsg.pct.Cseq.Src)
-	toAddr := string(simMsg.pct.To.Src)
-	fromAddr := string(simMsg.pct.From.Src)
+	callId := string(simMsg.CallId.Value)
+	cSeq := string(simMsg.Cseq.Src)
+	toAddr := string(simMsg.To.Src)
+	fromAddr := string(simMsg.From.Src)
 
 	// 创建一个 SIPInfo 实例
 	msg := &Message{
@@ -167,7 +168,7 @@ func (s *SipSession) CalcStatus(simMsg *SipMessage) (*Message, error) {
 }
 
 // AddMessage 添加一条消息到会话中
-func (s *SipSession) AddMessage(simMsg *SipMessage) {
+func (s *SipSession) AddMessage(simMsg *siprocket.SipMsg) {
 	msg, err := s.CalcStatus(simMsg)
 	if err != nil {
 		return

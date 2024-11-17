@@ -43,9 +43,9 @@ type sipVal struct {
 func Parse(v []byte, timeStamp time.Duration) (output SipMsg) {
 	// Allow multiple vias and media Attribs
 	via_idx := 0
-	output.Via = make([]sipVia, 0, 8)
+	//output.Via = make([]sipVia, 0, 8)
 	attr_idx := 0
-	output.Sdp.Attrib = make([]sdpAttrib, 0, 8)
+	//output.Sdp.Attrib = make([]sdpAttrib, 0, 8)
 	output.Timestamp = timeStamp
 
 	lines := bytes.Split(v, []byte("\r\n"))
@@ -74,9 +74,9 @@ func Parse(v []byte, timeStamp time.Duration) (output SipMsg) {
 				case lhdr == "m" || lhdr == "contact":
 					parseSipContact(lval, &output.Contact)
 				case lhdr == "v" || lhdr == "via":
-					var tmpVia sipVia
-					output.Via = append(output.Via, tmpVia)
-					parseSipVia(lval, &output.Via[via_idx])
+					//var tmpVia sipVia
+					//output.Via = append(output.Via, tmpVia)
+					//parseSipVia(lval, &output.Via[via_idx])
 					via_idx++
 				case lhdr == "i" || lhdr == "call-id":
 					output.CallId.Value = lval
@@ -97,18 +97,18 @@ func Parse(v []byte, timeStamp time.Duration) (output SipMsg) {
 			if spos == 1 && stype == '=' {
 				// SDP: Break up into header and value
 				lhdr := strings.ToLower(string(line[0]))
-				lval := bytes.TrimSpace(line[2:])
+				//lval := bytes.TrimSpace(line[2:])
 				// Switch on the line header
 				//fmt.Println(i, spos, string(lhdr), string(lval))
 				switch {
 				case lhdr == "m":
-					parseSdpMediaDesc(lval, &output.Sdp.MediaDesc)
+					//parseSdpMediaDesc(lval, &output.Sdp.MediaDesc)
 				case lhdr == "c":
-					parseSdpConnectionData(lval, &output.Sdp.ConnData)
+					//parseSdpConnectionData(lval, &output.Sdp.ConnData)
 				case lhdr == "a":
-					var tmpAttrib sdpAttrib
-					output.Sdp.Attrib = append(output.Sdp.Attrib, tmpAttrib)
-					parseSdpAttrib(lval, &output.Sdp.Attrib[attr_idx])
+					//var tmpAttrib sdpAttrib
+					//output.Sdp.Attrib = append(output.Sdp.Attrib, tmpAttrib)
+					//parseSdpAttrib(lval, &output.Sdp.Attrib[attr_idx])
 					attr_idx++
 
 				} // End of Switch

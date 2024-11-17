@@ -46,21 +46,13 @@ func main() {
 	*to = strings.ToLower(*to)
 	*callid = strings.ToLower(*callid)
 
-	trace, err := sip.ParsePcapFile(*file)
-	if err != nil {
-		errorOut(fmt.Sprintf("cannot parse SIP trace: %s", err))
-	}
-
-	// Parse the the SIP data
-	//sip.ParseSIPTrace(trace)
-
-	fp, err := sip.ParseSIPTrace(trace)
+	fp, err := sip.LoadSIPTraceFromPcap(*file)
 	if err != nil {
 		errorOut(err.Error())
 	}
 
 	// Search the SIP packets for the filters
-	sip.HandleSipPackets1(fp)
+	sip.HandleSipPackets(fp)
 
 	select {}
 }

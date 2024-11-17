@@ -29,8 +29,19 @@ func ParsePcapFile(file string) (gopcap.PcapFile, error) {
 	return parsed, nil
 }
 
-func ParseSIPTrace(trace gopcap.PcapFile) ([]siprocket.SipMsg, error) {
-	var results []siprocket.SipMsg
+func LoadSIPTraceFromPcap(file string) ([]*siprocket.SipMsg, error) {
+	if file == "" {
+		return nil, errors.New("empty file specified")
+	}
+
+	pcapfile, _ := os.Open(file)
+	trace, err := gopcap.Parse(pcapfile)
+	if err != nil {
+		return nil, fmt.Errorf("cannot parse the pcap file: %s", err)
+	}
+	pcapfile.Close()
+
+	var results []*siprocket.SipMsg
 	for _, packet := range trace.Packets {
 		d := packet.Data
 		if d == nil {
@@ -45,12 +56,33 @@ func ParseSIPTrace(trace gopcap.PcapFile) ([]siprocket.SipMsg, error) {
 
 		sipPacket := siprocket.Parse(td, packet.Timestamp)
 
-		results = append(results, sipPacket)
+		results = append(results, &sipPacket)
 	}
 	return results, nil
 }
 
-func HandleSipPackets(sipPackets []SipMessage) {
+func ParseSIPTrace(trace gopcap.PcapFile) ([]*siprocket.SipMsg, error) {
+	var results []*siprocket.SipMsg
+	for _, packet := range trace.Packets {
+		d := packet.Data
+		if d == nil {
+			continue
+		}
+
+		td := d.LinkData().InternetData().TransportData()
+		if td == nil {
+			log.Println("unexpected transport data")
+			continue
+		}
+
+		sipPacket := siprocket.Parse(td, packet.Timestamp)
+
+		results = append(results, &sipPacket)
+	}
+	return results, nil
+}
+
+func HandleSipPackets(sipPackets []*siprocket.SipMsg) {
 	// 创建一个 SIP 会话管理器
 	manager := NewSipSessionManager()
 
@@ -59,7 +91,7 @@ func HandleSipPackets(sipPackets []SipMessage) {
 		//fmt.Println(sipp.Timestamp.Microseconds(), string(sipp.pct.CallId.Src), string(sipp.pct.Cseq.Src), string(sipp.pct.From.Src), string(sipp.pct.To.Src))
 		//siprocket.PrintSipStruct(&sipp.pct)
 
-		callID := string(sipp.pct.CallId.Value)
+		callID := string(sipp.CallId.Value)
 
 		// 如果 Call-ID 存在，则处理该会话
 		if callID != "" {
@@ -73,7 +105,7 @@ func HandleSipPackets(sipPackets []SipMessage) {
 			}
 
 			// 添加消息到会话
-			session.AddMessage(&sipp)
+			session.AddMessage(sipp)
 		}
 	}
 
@@ -99,7 +131,7 @@ func HandleSipPackets(sipPackets []SipMessage) {
 	return
 }
 
-func HandleSipPackets1(sipPackets []siprocket.SipMsg) {
+func HandleSipPackets1(sipPackets []*siprocket.SipMsg) {
 	for _, sipp := range sipPackets {
 		//fmt.Println(sipp.timestamp.Microseconds(), sipp.pct)
 		//fmt.Println(sipp.Timestamp.Microseconds(), string(sipp.pct.CallId.Src), string(sipp.pct.Cseq.Src), string(sipp.pct.From.Src), string(sipp.pct.To.Src))
