@@ -3,7 +3,6 @@ package sip
 import (
 	"fmt"
 	"github.com/marv2097/siprocket"
-	"log"
 	"sip-parser/pkg/utils"
 	"strings"
 	"time"
@@ -59,13 +58,24 @@ func (s SipSessionStatus) String() string {
 
 // SipSession 表示一个完整的 SIP 会话
 type SipSession struct {
-	CallID    string           // 唯一标识会话的 Call-ID
-	Messages  []Message        // 该会话中所有的请求/响应消息
-	CreatedAt int64            // 会话的创建时间（通常是第一个消息的时间）
-	EndedAt   int64            // 会话结束时间（通常是最后一个消息的时间）
-	Duration  int64            // 会话持续时长
-	Stage     string           //会话阶段
-	Status    SipSessionStatus // 会话的状态（如进行中、已结束等）
+	CallID        string    // 唯一标识会话的 Call-ID
+	Messages      []Message // 该会话中所有的请求/响应消息
+	CreatedAt     int64     // 会话的创建时间（通常是第一个消息的时间）
+	EndedAt       int64     // 会话结束时间（通常是最后一个消息的时间）
+	InviteTime    int64     //发起通话时间 Microseconds
+	RingTime      int64     //响铃时间 Microseconds
+	AnswerTime    int64     //应答时间 Microseconds
+	HangUpTime    int64     //挂起时间 Microseconds
+	Duration      int64     // 会话持续时长 Microseconds
+	IsFirstInvite bool
+	IsFirst200    bool
+
+	Stage  string           //会话阶段
+	Status SipSessionStatus // 会话的状态（如进行中、已结束等）
+}
+
+func (s SipSession) String() string {
+	return fmt.Sprintf(" call_id=%s, length=%d, dur=%d stage=%s status=%s invite=%d dur=%d", s.CallID, len(s.Messages), s.Duration, s.Stage, s.Status, s.InviteTime, s.Duration)
 }
 
 // 基于传入的消息计算当前会话的状态
@@ -92,30 +102,62 @@ func (s *SipSession) CalcStatus(simMsg SipMessage) (Message, error) {
 	}
 
 	if method == "INVITE" {
-		s.Stage = "INVITE" //INVITE阶段
+		if s.IsFirstInvite { //第一次收到200响应 设置应答时间
+			s.InviteTime = msg.Timestamp.Microseconds() //设置发起时间
+			s.Stage = "INVITE"                          //INVITE阶段
+			s.IsFirstInvite = false
+		}
 	} else if method == "CANCEL" {
 		s.Stage = "CANCEL"   //CANCEL 取消会话
 		s.Status = CANCELLED //取消会话
 	} else if method == "BYE" {
-		s.Stage = "BYE" //BYE 结束会话
+		if s.IsFirstInvite { //收到BYE但是没收到invite请求 异常请求
+			s.Status = UNKNOWN
+		} else {
+			s.Stage = "BYE OK"
+			s.Status = COMPLETED
+			s.HangUpTime = msg.Timestamp.Microseconds() //挂起时间
+			s.Duration = s.HangUpTime - s.InviteTime    //计算通话时间
+		}
 
-		//s.Status = BYE  //结束会话
+	} else if method == "PRACK" {
+		s.Stage = "PRACK" //PRACK
+	} else if method == "UPDATE" {
+		s.Stage = "UPDATE" //UPDATE
+	} else if method == "ACK" {
+		s.Stage = "ACK" //ACK
 	} else {
 		if strings.Contains(startLine, "SIP/2.0 100") { //握手阶段
 			s.Stage = "Trying"
+			s.Status = CALLSETUP
 		} else if strings.Contains(startLine, "SIP/2.0 503") {
 			s.Stage = "Service Unavailable"
 			s.Status = REJECTED //返回503 这是服务不可用
 		} else if strings.Contains(startLine, "SIP/2.0 180") {
-			s.Stage = "Ringing"
-			//s.Status = REJECTED //返回503 这是服务不可用
+			s.Stage = "Ringing 180"
+		} else if strings.Contains(startLine, "SIP/2.0 183") {
+			s.Stage = "Ringing 183"
 		} else if strings.Contains(startLine, "SIP/2.0 200 OK") { //对端返回200响应 代表收到
+			if s.IsFirst200 { //第一次收到200响应 设置应答时间
+				s.AnswerTime = msg.Timestamp.Microseconds()
+				s.IsFirst200 = false
+			}
 			if strings.Contains(cSeq, "INVITE") { //这是代表对端收到我方INVITE 请求
 				s.Stage = "INVITE OK"
 			}
+			if strings.Contains(cSeq, "PRACK") { //这是代表对端收到我方INVITE 请求
+				s.Stage = "PRACK OK"
+			}
 			if strings.Contains(cSeq, "BYE") { //这是代表对端收到我方INVITE 请求
-				s.Stage = "BYE OK"
-				s.Status = COMPLETED
+				if s.IsFirstInvite { //收到BYE但是没收到invite请求 异常请求
+					s.Status = UNKNOWN
+				} else {
+					s.Stage = "BYE OK"
+					s.Status = COMPLETED
+					s.HangUpTime = msg.Timestamp.Microseconds() //挂起时间
+					s.Duration = s.HangUpTime - s.InviteTime    //计算通话时间
+				}
+
 			}
 		}
 	}
@@ -136,15 +178,17 @@ func (s *SipSession) AddMessage(simMsg SipMessage) {
 		s.CreatedAt = msg.Timestamp.Microseconds()
 	}
 	s.EndedAt = msg.Timestamp.Microseconds()
-	s.Duration = s.EndedAt - s.CreatedAt
+	//s.Duration = s.EndedAt - s.CreatedAt
 
 }
 
 // NewSipSession 创建一个新的 SIP 会话
 func NewSipSession(callID string) *SipSession {
 	return &SipSession{
-		CallID: callID,
-		Status: UNKNOWN, // 默认状态为进行中
+		CallID:        callID,
+		Status:        UNKNOWN, // 默认状态为进行中
+		IsFirst200:    true,
+		IsFirstInvite: true,
 	}
 }
 
@@ -169,10 +213,4 @@ func (manager *SipSessionManager) AddSession(session *SipSession) {
 func (manager *SipSessionManager) GetSession(callID string) (*SipSession, bool) {
 	session, exists := manager.Sessions[callID]
 	return session, exists
-}
-
-func (m *SipSessionManager) GetAllSessions() {
-	for call_id, session := range m.Sessions {
-		log.Println(call_id, len(session.Messages))
-	}
 }

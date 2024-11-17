@@ -80,15 +80,24 @@ func HandleSipPackets(sipPackets []SipMessage) {
 		}
 	}
 
-	session, exists := manager.GetSession("8b6f7bd3-a633-41fe-ae36-8e6a8653a8e6")
-	if !exists {
-		log.Fatal("获取session失败")
+	callId := "b4cc32e0-a5e5-45cc-9d94-77fc26d38b83"
+	if callId != "" {
+		session, exists := manager.GetSession(callId)
+		if !exists {
+			log.Fatal("获取session失败")
+		}
+		for _, msg := range session.Messages {
+			fmt.Println(msg.String())
+		}
+		fmt.Println(session.String())
+	} else {
+		sessions := manager.Sessions
+		for _, session := range sessions {
+			if session.Status == COMPLETED { //只解析成功的
+				fmt.Println(session.String())
+			}
+		}
 	}
-	for _, msg := range session.Messages {
-		fmt.Println(msg.String())
-	}
-
-	//manager.GetAllSessions()
 
 	return
 }
