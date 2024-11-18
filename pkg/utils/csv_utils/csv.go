@@ -69,5 +69,5 @@ func SaveDataCsv(csvFilePath string, sessions map[string]*sip.SipSession) {
 		}
 	}
 
-	fmt.Println("CSV file created successfully")
+	fmt.Printf("CSV file-(%s) created successfully", csvFilePath)
 }
