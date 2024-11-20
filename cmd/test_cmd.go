@@ -1,8 +1,7 @@
 package cmd
 
 import (
-	"sip-parser/pkg/process"
-
+	"fmt"
 	"github.com/spf13/cobra"
 )
 
@@ -12,6 +11,6 @@ var testCmd = &cobra.Command{
 	Short: "test",
 	Long:  "test",
 	Run: func(cmd *cobra.Command, args []string) {
-		process.TestFunc()
+		fmt.Println("hello")
 	},
 }
