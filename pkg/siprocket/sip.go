@@ -43,7 +43,7 @@ type sipVal struct {
 func Parse(v []byte, timeStamp time.Duration) (output SipMsg) {
 	// Allow multiple vias and media Attribs
 	via_idx := 0
-	//output.Via = make([]sipVia, 0, 8)
+	output.Via = make([]sipVia, 0, 8)
 	//attr_idx := 0
 	//output.Sdp.Attrib = make([]sdpAttrib, 0, 8)
 	output.Timestamp = timeStamp
@@ -74,9 +74,9 @@ func Parse(v []byte, timeStamp time.Duration) (output SipMsg) {
 				case lhdr == "m" || lhdr == "contact":
 					parseSipContact(lval, &output.Contact)
 				case lhdr == "v" || lhdr == "via":
-					//var tmpVia sipVia
-					//output.Via = append(output.Via, tmpVia)
-					//parseSipVia(lval, &output.Via[via_idx])
+					var tmpVia sipVia
+					output.Via = append(output.Via, tmpVia)
+					parseSipVia(lval, &output.Via[via_idx])
 					via_idx++
 				case lhdr == "i" || lhdr == "call-id":
 					output.CallId.Value = lval

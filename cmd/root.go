@@ -21,4 +21,5 @@ func init() {
 	rootCmd.AddCommand(loadCmd)
 	rootCmd.AddCommand(getCostCmd)
 	rootCmd.AddCommand(testCmd)
+	rootCmd.AddCommand(filterCmd)
 }

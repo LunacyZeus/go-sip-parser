@@ -10,7 +10,7 @@ import (
 
 func SaveDataCsv(csvFilePath string, sessions map[string]*sip.SipSession) {
 	// 写入 CSV 文件的表头
-	header := []string{"Call-ID", "ANI", "DNIS", "Invite Time", "Ring Time", "Answer Time", "Hangup Time", "Duration (msec)", "Rate", "Cost"}
+	header := []string{"Call-ID", "ANI", "DNIS", "Via", "Invite Time", "Ring Time", "Answer Time", "Hangup Time", "Duration (msec)", "Rate", "Cost"}
 
 	// 创建或打开 CSV 文件
 	in_file, err := os.Create("in_" + csvFilePath)
@@ -48,6 +48,7 @@ func SaveDataCsv(csvFilePath string, sessions map[string]*sip.SipSession) {
 				session.CallID,
 				session.ANI,
 				session.DNIS,
+				session.Via,
 				fmt.Sprintf("%d", session.InviteTime),
 				fmt.Sprintf("%d", session.RingTime),
 				fmt.Sprintf("%d", session.AnswerTime),

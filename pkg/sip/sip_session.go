@@ -61,6 +61,7 @@ type SipSession struct {
 	CallID        string     // 唯一标识会话的 Call-ID
 	ANI           string     //ANI to_addr
 	DNIS          string     //DNIS from_addr
+	Via           string     //via 数据
 	CallBound     bool       //呼叫方向 true 呼出 false 呼入
 	Messages      []*Message // 该会话中所有的请求/响应消息
 	CreatedAt     int64      // 会话的创建时间（通常是第一个消息的时间）
@@ -113,6 +114,11 @@ func (s *SipSession) CalcStatus(simMsg *siprocket.SipMsg) (*Message, error) {
 			s.ANI = msg.ToAddr
 			s.DNIS = msg.FromAddr
 
+			if len(simMsg.Via) > 0 {
+				via := simMsg.Via[0]
+				s.Via = string(via.Src)
+			}
+
 			if utils.IsOutbound(s.DNIS) {
 				s.CallBound = true
 			} else {
@@ -148,8 +154,17 @@ func (s *SipSession) CalcStatus(simMsg *siprocket.SipMsg) (*Message, error) {
 			s.Status = REJECTED //返回503 这是服务不可用
 		} else if strings.Contains(startLine, "SIP/2.0 180") {
 			s.Stage = "Ringing 180"
+			s.RingTime = msg.Timestamp.Milliseconds()
 		} else if strings.Contains(startLine, "SIP/2.0 183") {
 			s.Stage = "Ringing 183"
+			s.RingTime = msg.Timestamp.Milliseconds()
+
+		} else if strings.Contains(startLine, "SIP/2.0 487") {
+			s.Stage = "Request Terminated"
+			s.Status = REJECTED
+		} else if strings.Contains(startLine, "SIP/2.0 408") {
+			s.Stage = "Request Timeout"
+			s.Status = REJECTED
 		} else if strings.Contains(startLine, "SIP/2.0 200 OK") { //对端返回200响应 代表收到
 			if s.IsFirst200 { //第一次收到200响应 设置应答时间
 				s.AnswerTime = msg.Timestamp.Milliseconds()
