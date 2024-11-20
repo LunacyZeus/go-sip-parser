@@ -46,7 +46,7 @@ func StartTelnet(csvFilePath string) {
 	reader := bufio.NewReader(conn)
 
 	// 发送 login 命令
-	if err := sendCommand(conn, "login\n", reader); err != nil {
+	if err := sendCommand(conn, "login\n\n", reader); err != nil {
 		fmt.Println("Error during login:", err)
 		os.Exit(1)
 	}
