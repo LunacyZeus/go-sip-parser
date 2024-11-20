@@ -116,6 +116,8 @@ func sendCommand(conn net.Conn, command string, reader *bufio.Reader) (string, e
 			// 将读取的行追加到响应结果
 			responseBuilder.WriteString(line)
 
+			log.Println(line)
+
 			// 如果返回某些预定义的结束标记，可以在此处判断并终止读取
 			if strings.HasSuffix(line, "<Call Simulation Test progress>Done</Call Simulation Test progress>") {
 				break
