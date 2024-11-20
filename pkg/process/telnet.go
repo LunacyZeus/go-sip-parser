@@ -2,6 +2,7 @@ package process
 
 import (
 	"fmt"
+	"log"
 	"os"
 	"sip-parser/pkg/telnet"
 )
@@ -24,6 +25,7 @@ func writeToFile(filename, content string) error {
 }
 
 func StartTelnet(csvFilePath string) {
+	log.Println("start telnet")
 	tc := telnet.TelnetClient{
 		Address:  "127.0.0.1",
 		Port:     "4320",
