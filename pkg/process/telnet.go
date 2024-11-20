@@ -50,12 +50,18 @@ func writeToFile(filename, content string) error {
 func StartTelnet(csvFilePath string) {
 	log.Println(csvFilePath)
 
+	// 设置连接超时时间（例如 10 秒）
+	dialer := &net.Dialer{
+		Timeout: 25 * time.Second, // 设置连接超时
+	}
+
 	// 连接到 127.0.0.1:4320
-	conn, err := net.Dial("tcp", "127.0.0.1:4320")
+	conn, err := dialer.Dial("tcp", "127.0.0.1:4320")
 	if err != nil {
 		fmt.Println("Error connecting to server:", err)
 		os.Exit(1)
 	}
+
 	defer conn.Close()
 
 	fmt.Println("Connected to 127.0.0.1:4320")
