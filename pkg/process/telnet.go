@@ -10,23 +10,22 @@ import (
 	"time"
 )
 
-func sendCommand(conn net.Conn, command string, reader *bufio.Reader) error {
+func sendCommand(conn net.Conn, command string, reader *bufio.Reader) (string, error) {
 	// 发送命令
-	fmt.Printf("Sending command: %s", command)
+	fmt.Printf("Sending: %s", command)
 	_, err := conn.Write([]byte(command))
 	if err != nil {
-		return fmt.Errorf("failed to send command: %w", err)
+		return "", fmt.Errorf("failed to send command: %w", err)
 	}
 
 	// 读取服务器响应
 	fmt.Println("Waiting for response...")
-	conn.SetReadDeadline(time.Now().Add(5 * time.Second)) // 设置超时时间
+	conn.SetReadDeadline(time.Now().Add(8 * time.Second)) // 设置超时时间
 	response, err := reader.ReadString('\n')
 	if err != nil {
-		return fmt.Errorf("failed to read response: %w", err)
+		return "", fmt.Errorf("failed to read response: %w", err)
 	}
-	fmt.Printf("Server response: %s", strings.TrimSpace(response))
-	return nil
+	return strings.TrimSpace(response), nil
 }
 
 func StartTelnet(csvFilePath string) {
@@ -46,14 +45,20 @@ func StartTelnet(csvFilePath string) {
 	reader := bufio.NewReader(conn)
 
 	// 发送 login 命令
-	if err := sendCommand(conn, "login\r\n", reader); err != nil {
+	login_resp, err := sendCommand(conn, "login\r\n", reader)
+	if err != nil {
 		fmt.Println("Error during login:", err)
 		os.Exit(1)
 	}
+	fmt.Printf("login recv: %s", login_resp)
 
 	// 等待服务器响应后发送 call_simulation
-	if err := sendCommand(conn, "call_simulation\r\n", reader); err != nil {
+	call_simulation_resp, err := sendCommand(conn, "call_simulation 88.151.132.30,5060,9123887982,5482#+14049179360\r\n", reader)
+	if err != nil {
 		fmt.Println("Error during call_simulation:", err)
 		os.Exit(1)
 	}
+
+	fmt.Printf("call recv: %s", call_simulation_resp)
+
 }
