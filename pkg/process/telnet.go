@@ -2,9 +2,8 @@ package process
 
 import (
 	"fmt"
-	"log"
 	"os"
-	"sip-parser/pkg/telnet"
+	"sip-parser/pkg/utils/telnet"
 )
 
 // 将字符串写入文件
@@ -25,26 +24,5 @@ func writeToFile(filename, content string) error {
 }
 
 func StartTelnet(csvFilePath string) {
-	log.Println("start telnet")
-	tc := telnet.TelnetClient{
-		Address:  "127.0.0.1",
-		Port:     "4320",
-		Login:    "",
-		Password: "",
-	}
-	err := tc.Dial()
-	if err != nil {
-		fmt.Printf("failed open connect with error = %v\n", err)
-		return
-	}
-	defer tc.Close()
-
-	stdout, err := tc.Execute("login")
-	if err != nil {
-		fmt.Printf("failed execute command with error = %v\n", err)
-		return
-	}
-
-	fmt.Printf(string(stdout))
-
+	telnet.TestMain()
 }
