@@ -104,12 +104,13 @@ func sendCommand(conn net.Conn, command string, reader *bufio.Reader) (string, e
 			}
 			return "", fmt.Errorf("failed to read response: %w", err)
 		}
-		responseBuilder.WriteString(strings.TrimSpace(line) + "\n")
+		responseBuilder.WriteString(line + "\n")
 
 		// 如果返回某些预定义的结束标记，可以在此处判断并终止读取
-		if strings.HasSuffix(line, "END\n") { // 假设服务器返回 "END" 表示结束
+		if strings.HasSuffix(line, "<Call Simulation Test progress>Done</Call Simulation Test progress>") { // 假设服务器返回 "END" 表示结束
 			break
 		}
+		//<Call Simulation Test progress>Done</Call Simulation Test progress>
 	}
 
 	return responseBuilder.String(), nil
