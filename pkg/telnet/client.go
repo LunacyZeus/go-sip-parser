@@ -3,7 +3,7 @@ package telnet
 import (
 	"bufio"
 	"bytes"
-	"fmt"
+	"log"
 	"os"
 	"regexp"
 	"strings"
@@ -68,8 +68,8 @@ func (tc *TelnetClient) setDefaultParams() {
 
 func (tc *TelnetClient) log(format string, params ...interface{}) {
 	if tc.Verbose {
-		fmt.Fprintf(tc.LogWriter, "telnet: "+format+"\n", params...)
-		tc.LogWriter.Flush()
+		log.Printf("telnet: "+format+"\n", params...)
+		//tc.LogWriter.Flush()
 	}
 }
 
@@ -91,7 +91,7 @@ func (tc *TelnetClient) Dial() (err error) {
 	}
 
 	tc.log("Waiting for the first banner")
-	err = tc.waitWelcomeSigns()
+	//err = tc.waitWelcomeSigns()
 
 	return
 }
