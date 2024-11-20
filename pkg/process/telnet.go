@@ -81,8 +81,6 @@ func StartTelnet(csvFilePath string) {
 	writeToFile("call", call_simulation_resp)
 
 }
-
-// 发送命令并获取响应
 func sendCommand(conn net.Conn, command string, reader *bufio.Reader) (string, error) {
 	// 发送命令
 	fmt.Printf("Sending command: %s", command)
@@ -91,8 +89,8 @@ func sendCommand(conn net.Conn, command string, reader *bufio.Reader) (string, e
 		return "", fmt.Errorf("failed to send command: %w", err)
 	}
 
-	// 设置读取超时时间
-	timeoutDuration := 60 * time.Second
+	// 设置超时时间（5秒）
+	timeoutDuration := 5 * time.Second
 	timer := time.NewTimer(timeoutDuration)
 	defer timer.Stop()
 
@@ -101,6 +99,7 @@ func sendCommand(conn net.Conn, command string, reader *bufio.Reader) (string, e
 	for {
 		select {
 		case <-timer.C: // 超时
+			log.Println("i/o timeout")
 			return "", fmt.Errorf("read timeout after %v", timeoutDuration)
 		default:
 			// 从连接读取数据
@@ -108,17 +107,17 @@ func sendCommand(conn net.Conn, command string, reader *bufio.Reader) (string, e
 			if err != nil {
 				return "", fmt.Errorf("failed to read response: %w", err)
 			}
-
-			// 将每行数据拼接成一个字符串
-			responseBuilder.WriteString(strings.TrimSpace(line) + "\n")
+			responseBuilder.WriteString(line)
 
 			// 如果返回某些预定义的结束标记，可以在此处判断并终止读取
-			if strings.HasSuffix(line, "END\n") { // 假设服务器返回 "END" 表示结束
-				return responseBuilder.String(), nil
+			if strings.HasSuffix(line, "<Call Simulation Test progress>Done</Call Simulation Test progress>") {
+				break
 			}
 
 			// 重置超时定时器
 			timer.Reset(timeoutDuration)
 		}
 	}
+
+	return responseBuilder.String(), nil
 }
