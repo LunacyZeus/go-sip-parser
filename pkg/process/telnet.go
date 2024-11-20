@@ -64,6 +64,11 @@ func StartTelnet(csvFilePath string) {
 
 	defer conn.Close()
 
+	err = conn.SetReadDeadline(time.Now().Add(30 * time.Second))
+	if err != nil {
+		return
+	}
+
 	fmt.Println("Connected to 127.0.0.1:4320")
 
 	// 创建读取器，用于接收服务器返回的数据
