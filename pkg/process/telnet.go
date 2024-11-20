@@ -96,7 +96,7 @@ func sendCommand(conn net.Conn, command string, reader *bufio.Reader) (string, e
 	}
 
 	// 设置超时时间（5秒）
-	timeoutDuration := 15 * time.Second
+	timeoutDuration := 5 * time.Second
 	timer := time.NewTimer(timeoutDuration)
 	defer timer.Stop()
 
@@ -111,18 +111,17 @@ func sendCommand(conn net.Conn, command string, reader *bufio.Reader) (string, e
 			// 从连接读取数据
 			line, err := reader.ReadString('\n')
 			if err != nil {
-				// 处理读取错误
-				if strings.Contains(err.Error(), "i/o timeout") {
+				// 检查错误是否是超时错误
+				if netErr, ok := err.(net.Error); ok && netErr.Timeout() {
 					log.Println("i/o timeout")
 					return "", fmt.Errorf("failed to read response: %w", err)
 				}
+				// 其他错误
 				return "", fmt.Errorf("failed to read response: %w", err)
 			}
 
 			// 将读取的行追加到响应结果
 			responseBuilder.WriteString(line)
-
-			log.Println(line)
 
 			// 如果返回某些预定义的结束标记，可以在此处判断并终止读取
 			if strings.HasSuffix(line, "<Call Simulation Test progress>Done</Call Simulation Test progress>") {
