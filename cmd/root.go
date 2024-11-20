@@ -20,6 +20,8 @@ func init() {
 	// Add subcommands to the root command
 	rootCmd.AddCommand(loadCmd)
 	rootCmd.AddCommand(getCostCmd)
-	rootCmd.AddCommand(testCmd)
+	rootCmd.AddCommand(telnetCmd)
 	rootCmd.AddCommand(filterCmd)
+	rootCmd.AddCommand(testCmd)
+
 }
