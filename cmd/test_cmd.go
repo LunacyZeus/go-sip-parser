@@ -1,8 +1,8 @@
 package cmd
 
 import (
-	"fmt"
 	"github.com/spf13/cobra"
+	"sip-parser/pkg/process"
 )
 
 // getCostCmd represents the `get_cost` command
@@ -11,6 +11,6 @@ var testCmd = &cobra.Command{
 	Short: "test",
 	Long:  "test",
 	Run: func(cmd *cobra.Command, args []string) {
-		fmt.Println("hello")
+		process.TestFunc()
 	},
 }
