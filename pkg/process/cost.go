@@ -123,25 +123,6 @@ func CalculateSipCost(path string) {
 	// 创建客户端实例
 	client := telnet.NewTelnetClient("127.0.0.1", "4320")
 
-	// 建立连接
-	err := client.Connect()
-	if err != nil {
-		fmt.Println(err)
-		return
-	}
-	defer client.Close()
-
-	// 发送登录命令
-	err = client.Login()
-	if err != nil {
-		fmt.Println(err)
-		return
-	}
-
-	defer client.LoginOut()
-
-	log.Println("Login successfully!")
-
 	file, err := os.Open(path)
 	if err != nil {
 		fmt.Println("Error opening file:", err)
@@ -184,6 +165,23 @@ func CalculateSipCost(path string) {
 		ani := GetSipPart(row[1])
 		dnis := GetSipPart(row[2])
 
+		// 建立连接
+		err = client.Connect()
+		if err != nil {
+			fmt.Println(err)
+			return
+		}
+		defer client.Close()
+
+		// 发送登录命令
+		err = client.Login()
+		if err != nil {
+			fmt.Println(err)
+			return
+		}
+
+		log.Println("Login successfully!")
+
 		//fmt.Printf("ani(%s) dnis(%s)\n", row[1], row[2])
 		command := fmt.Sprintf("call_simulation %s,5060,%s,%s", callerIP, ani, dnis)
 		log.Printf("[%s] Exec Command-> %s", callerId, command)
@@ -193,6 +191,8 @@ func CalculateSipCost(path string) {
 			log.Println("CallSimulation", err)
 			return
 		}
+
+		client.LoginOut()
 
 		result := ""
 		if strings.Contains(content, "No Ingress Resource Found") {
