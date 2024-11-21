@@ -1,8 +1,10 @@
 package telnet
 
 import (
+	"bufio"
 	"fmt"
 	"net"
+	"strings"
 	"time"
 )
 
@@ -26,9 +28,9 @@ func NewTelnetClient(ip string, port string) *TelnetClient {
 // Connect 建立连接
 func (t *TelnetClient) Connect() error {
 	address := fmt.Sprintf("%s:%s", t.IP, t.Port)
-	conn, err := net.DialTimeout("tcp", address, 10*time.Second)
+	conn, err := net.DialTimeout("tcp", address, 15*time.Second)
 	if err != nil {
-		return fmt.Errorf("连接失败: %v", err)
+		return fmt.Errorf("failed to connect: %v", err)
 	}
 	t.conn = conn
 	return nil
@@ -37,17 +39,17 @@ func (t *TelnetClient) Connect() error {
 // Login 发送登录命令
 func (t *TelnetClient) Login() error {
 	if t.conn == nil {
-		return fmt.Errorf("未建立连接")
+		return fmt.Errorf("cannot establish connection")
 	}
 
 	// 设置读写超时
-	t.conn.SetReadDeadline(time.Now().Add(10 * time.Second))
-	t.conn.SetWriteDeadline(time.Now().Add(10 * time.Second))
+	t.conn.SetReadDeadline(time.Now().Add(15 * time.Second))
+	t.conn.SetWriteDeadline(time.Now().Add(15 * time.Second))
 
 	// 发送登录命令
 	_, err := t.conn.Write([]byte("login\r\n"))
 	if err != nil {
-		return fmt.Errorf("发送登录命令失败: %v", err)
+		return fmt.Errorf("Failed to send command: %v", err)
 	}
 
 	// 读取响应
@@ -70,6 +72,40 @@ func (t *TelnetClient) Close() {
 	}
 }
 
+// CallSimulation 发送 call_simulation 命令并读取完整响应
+func (t *TelnetClient) CallSimulation(callerIp, callerPort, ani, dnis string) error {
+	if t.conn == nil {
+		return fmt.Errorf("cannot establish connection")
+	}
+
+	// 构建命令
+	command := fmt.Sprintf("call_simulation %s,%s,%s,%s\r\n", callerIp, callerPort, ani, dnis)
+
+	// 发送命令
+	_, err := t.conn.Write([]byte(command))
+	if err != nil {
+		return fmt.Errorf("Failed to send command: %v", err)
+	}
+
+	// 读取完整响应
+	reader := bufio.NewReader(t.conn)
+	var response strings.Builder
+	for {
+		line, err := reader.ReadString('\n')
+		if err != nil {
+			break
+		}
+		response.WriteString(line)
+		// 假设服务器返回的响应以某个特定标识符结束，比如 "END"
+		if strings.Contains(line, "<Call Simulation Test progress>Done</Call Simulation Test progress>") {
+			break
+		}
+	}
+
+	fmt.Printf("Call Simulation Resp: %s\n", response.String())
+	return nil
+}
+
 // 使用示例
 func main() {
 	// 创建客户端实例
@@ -90,5 +126,5 @@ func main() {
 		return
 	}
 
-	fmt.Println("登录成功!")
+	fmt.Println("successfully login!")
 }

@@ -42,5 +42,7 @@ func StartTelnet(csvFilePath string) {
 		return
 	}
 
-	fmt.Println("登录成功!")
+	fmt.Println("Login successfully!")
+
+	client.CallSimulation("88.151.132.30", "5060", "9123887982", "5482#+14049179360")
 }
