@@ -43,10 +43,10 @@ func StartTelnet(csvFilePath string) {
 	}
 
 	fmt.Println("Login successfully!")
-	callerIp := "88.151.132.30"
+	callerIp := "207.223.71.199"
 	callerPort := "5060"
-	ani := "9123887982"
-	dnis := "5482#+14049179360"
+	ani := "+13134638035"
+	dnis := "+13133854865"
 
 	result, err := client.CallSimulation(callerIp, callerPort, ani, dnis)
 	if err != nil {
