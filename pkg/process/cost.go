@@ -188,10 +188,10 @@ func CalculateSipCost(path string) {
 		result := ""
 		if strings.Contains(content, "No Ingress Resource Found") {
 			result = "No Ingress Resource Found"
-			log.Printf("callId(%s)->%s", row[0], result)
+			log.Printf("[%s]->result: %s", row[0], result)
 		} else if strings.Contains(content, "Unauthorized IP Address") {
 			result = "Unauthorized IP Address"
-			log.Printf("callId(%s)->%s", row[0], result)
+			log.Printf("[%s]->result: %s", row[0], result)
 		} else {
 			rate.ParseRateFromContent(content)
 		}
