@@ -135,7 +135,7 @@ func (t *TelnetClient) CallSimulation(callerIp, callerPort, ani, dnis string) (s
 
 	}
 
-	fmt.Printf("Call Simulation Resp: %s\n", response.String())
+	//fmt.Printf("Call Simulation Resp: %s\n", response.String())
 	return response.String(), nil
 }
 
