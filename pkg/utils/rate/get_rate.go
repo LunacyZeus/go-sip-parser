@@ -6,7 +6,7 @@ import (
 	"sip-parser/pkg/utils/xml_utils"
 )
 
-func ParseRateFromContent(content string) (inbound_rate, inbound_rate_id, outbound_rate, outbound_rate_id string) {
+func ParseRateFromContent(callerID, content string) (inbound_rate, inbound_rate_id, outbound_rate, outbound_rate_id string) {
 	// 将读取的内容转换为字符串
 	//content := string(data)
 
@@ -23,7 +23,7 @@ func ParseRateFromContent(content string) (inbound_rate, inbound_rate_id, outbou
 			raw_data := fmt.Sprintf("<Origination-Trunk-Rate>\n%s\n</Origination-Trunk-Rate>", data)
 			//fmt.Printf("%s->%s", originationTrunkKey, raw_data)
 			originationTrunk := xml_utils.ParseOriginationTrunkRate(raw_data)
-			log.Printf("[inbound] RateID(%s) Rate(%s)\n", originationTrunk.RateID, originationTrunk.Rate)
+			log.Printf("[inbound] CallerID(%s) RateID(%s) Rate(%s)\n", callerID, originationTrunk.RateID, originationTrunk.Rate)
 			inbound_rate = originationTrunk.Rate
 			inbound_rate_id = originationTrunk.RateID
 		}
@@ -41,7 +41,7 @@ func ParseRateFromContent(content string) (inbound_rate, inbound_rate_id, outbou
 					FinalDNIS := trunk.FinalDNIS.DNIS
 					FinalDNISReal := trunk.FinalANI.Real
 
-					log.Printf("[outbound] RateID(%s) Rate(%s) ANI(%s/%s) DNIS(%s/%s)\n", trunk.TrunkRate.RateID, trunk.TrunkRate.Rate, FinalANI, FinalANIReal, FinalDNIS, FinalDNISReal)
+					log.Printf("[outbound] CallerID(%s) RateID(%s) Rate(%s) ANI(%s/%s) DNIS(%s/%s)\n", callerID, trunk.TrunkRate.RateID, trunk.TrunkRate.Rate, FinalANI, FinalANIReal, FinalDNIS, FinalDNISReal)
 
 					outbound_rate = trunk.TrunkRate.Rate
 					outbound_rate_id = trunk.TrunkRate.RateID

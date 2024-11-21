@@ -164,6 +164,7 @@ func CalculateSipCost(path string) {
 			continue
 		}
 
+		callerId := row[0]
 		// Parse the row into CallRecord
 		inviteTime, _ := parseTime(row[4])
 		ringTime, _ := parseTime(row[5])
@@ -177,7 +178,7 @@ func CalculateSipCost(path string) {
 
 		//fmt.Printf("ani(%s) dnis(%s)\n", row[1], row[2])
 		command := fmt.Sprintf("call_simulation %s,5060,%s,%s", callerIP, ani, dnis)
-		log.Printf("[%s] Exec Command-> %s", row[0], command)
+		log.Printf("[%s] Exec Command-> %s", callerId, command)
 
 		content, err := client.CallSimulation(callerIP, "5060", ani, dnis)
 		if err != nil {
@@ -188,12 +189,12 @@ func CalculateSipCost(path string) {
 		result := ""
 		if strings.Contains(content, "No Ingress Resource Found") {
 			result = "No Ingress Resource Found"
-			log.Printf("[%s]->result: %s", row[0], result)
+			log.Printf("[%s]->result: %s", callerId, result)
 		} else if strings.Contains(content, "Unauthorized IP Address") {
 			result = "Unauthorized IP Address"
-			log.Printf("[%s]->result: %s", row[0], result)
+			log.Printf("[%s]->result: %s", callerId, result)
 		} else {
-			rate.ParseRateFromContent(content)
+			rate.ParseRateFromContent(callerId, content)
 		}
 
 		//fmt.Println(content)
