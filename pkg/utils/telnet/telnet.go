@@ -1,208 +1,94 @@
 package telnet
 
 import (
-	"bufio"
 	"fmt"
-	"io"
-	"log"
 	"net"
-	"os"
-	"strings"
 	"time"
 )
 
+// TelnetClient 定义telnet客户端结构体
 type TelnetClient struct {
 	IP               string
 	Port             string
 	IsAuthentication bool
-	UserName         string
-	Password         string
+	conn             net.Conn
 }
 
-const (
-	//经过测试，linux下，延时需要大于100ms
-	TIME_DELAY_AFTER_WRITE = 500 //500ms
-)
-
-var g_WriteChan chan string
-
-func TestMain() {
-	g_WriteChan = make(chan string)
-	telnetClientObj := new(TelnetClient)
-	telnetClientObj.IP = "127.0.0.1"
-	telnetClientObj.Port = "4320"
-	telnetClientObj.IsAuthentication = false
-	//telnetClientObj.UserName = "userOne"
-	//telnetClientObj.Password = "123456"
-	//fmt.Println(telnetClientObj.PortIsOpen(5))
-	go telnetClientObj.Telnet(20)
-
-	for {
-		line := readLine()
-		g_WriteChan <- string(line)
+// NewTelnetClient 创建新的telnet客户端
+func NewTelnetClient(ip string, port string) *TelnetClient {
+	return &TelnetClient{
+		IP:               ip,
+		Port:             port,
+		IsAuthentication: false,
 	}
 }
 
-func readLine() string {
-	//fmt.Print("> ")
-	line, err := bufio.NewReader(os.Stdin).ReadString('\n')
-	if err != nil && err != io.EOF {
-		log.Fatal(err)
+// Connect 建立连接
+func (t *TelnetClient) Connect() error {
+	address := fmt.Sprintf("%s:%s", t.IP, t.Port)
+	conn, err := net.DialTimeout("tcp", address, 10*time.Second)
+	if err != nil {
+		return fmt.Errorf("连接失败: %v", err)
 	}
-	return strings.TrimSpace(line)
+	t.conn = conn
+	return nil
 }
 
-func (this *TelnetClient) PortIsOpen(timeout int) bool {
-	raddr := this.IP + ":" + this.Port
-	conn, err := net.DialTimeout("tcp", raddr, time.Duration(timeout)*time.Second)
-	if nil != err {
-		log.Println("pkg: model, func: PortIsOpen, method: net.DialTimeout, errInfo:", err)
-		return false
+// Login 发送登录命令
+func (t *TelnetClient) Login() error {
+	if t.conn == nil {
+		return fmt.Errorf("未建立连接")
 	}
-	defer conn.Close()
-	return true
+
+	// 设置读写超时
+	t.conn.SetReadDeadline(time.Now().Add(10 * time.Second))
+	t.conn.SetWriteDeadline(time.Now().Add(10 * time.Second))
+
+	// 发送登录命令
+	_, err := t.conn.Write([]byte("login\r\n"))
+	if err != nil {
+		return fmt.Errorf("发送登录命令失败: %v", err)
+	}
+
+	// 读取响应
+	buffer := make([]byte, 1024)
+	n, err := t.conn.Read(buffer)
+	if err != nil {
+		return fmt.Errorf("failed to load: %v", err)
+	}
+
+	// 收到响应后设置认证状态为true
+	//t.IsAuthentication = true
+	fmt.Printf("Login Resp: %s\n", string(buffer[:n]))
+	return nil
 }
 
-func (this *TelnetClient) Telnet(timeout int) (err error) {
-	raddr := this.IP + ":" + this.Port
-	conn, err := net.DialTimeout("tcp", raddr, time.Duration(timeout)*time.Second)
-	if nil != err {
-		log.Println("pkg: model, func: Telnet, method: net.DialTimeout, errInfo:", err)
+// Close 关闭连接
+func (t *TelnetClient) Close() {
+	if t.conn != nil {
+		t.conn.Close()
+	}
+}
+
+// 使用示例
+func main() {
+	// 创建客户端实例
+	client := NewTelnetClient("192.168.1.1", "23")
+
+	// 建立连接
+	err := client.Connect()
+	if err != nil {
+		fmt.Println(err)
 		return
 	}
-	defer conn.Close()
-	if false == this.telnetProtocolHandshake(conn) {
-		log.Println("pkg: model, func: Telnet, method: this.telnetProtocolHandshake, errInfo: telnet protocol handshake failed!!!")
+	defer client.Close()
+
+	// 发送登录命令
+	err = client.Login()
+	if err != nil {
+		fmt.Println(err)
 		return
 	}
-	go func() {
-		for {
-			data := make([]byte, 1024)
-			_, err := conn.Read(data)
-			if err != nil {
-				fmt.Println(err)
-				break
-			}
-			//strData := string(data)
-			fmt.Printf("%s", data)
-		}
-	}()
 
-	//	conn.SetReadDeadline(time.Now().Add(time.Second * 30))
-	for {
-		select {
-		case cmd, _ := <-g_WriteChan:
-			_, err = conn.Write([]byte(cmd + "\n"))
-			if nil != err {
-				log.Println("pkg: model, func: Telnet, method: conn.Write, errInfo:", err)
-				return
-			}
-			break
-		default:
-			time.Sleep(100 * time.Millisecond)
-			continue
-		}
-	}
-	fmt.Println("Out telnet!!!!!!")
-	return
-}
-
-func (this *TelnetClient) telnetProtocolHandshake(conn net.Conn) bool {
-	var buf [4096]byte
-	n, err := conn.Read(buf[0:])
-	if nil != err {
-		log.Println("pkg: model, func: telnetProtocolHandshake, method: conn.Read, errInfo:", err)
-		return false
-	}
-	//fmt.Println(string(buf[0:n]))
-	//fmt.Println((buf[0:n]))
-
-	buf[1] = 252
-	buf[4] = 252
-	buf[7] = 252
-	buf[10] = 252
-	//fmt.Println((buf[0:n]))
-	n, err = conn.Write(buf[0:n])
-	if nil != err {
-		log.Println("pkg: model, func: telnetProtocolHandshake, method: conn.Write, errInfo:", err)
-		return false
-	}
-
-	n, err = conn.Read(buf[0:])
-	if nil != err {
-		log.Println("pkg: model, func: telnetProtocolHandshake, method: conn.Read, errInfo:", err)
-		return false
-	}
-	//fmt.Println(string(buf[0:n]))
-	//fmt.Println((buf[0:n]))
-
-	buf[1] = 252
-	buf[4] = 251
-	buf[7] = 252
-	buf[10] = 254
-	buf[13] = 252
-	fmt.Println((buf[0:n]))
-	n, err = conn.Write(buf[0:n])
-	if nil != err {
-		log.Println("pkg: model, func: telnetProtocolHandshake, method: conn.Write, errInfo:", err)
-		return false
-	}
-
-	n, err = conn.Read(buf[0:])
-	if nil != err {
-		log.Println("pkg: model, func: telnetProtocolHandshake, method: conn.Read, errInfo:", err)
-		return false
-	}
-	//fmt.Println(string(buf[0:n]))
-	//fmt.Println((buf[0:n]))
-
-	buf[1] = 252
-	buf[4] = 252
-	//fmt.Println((buf[0:n]))
-	n, err = conn.Write(buf[0:n])
-	if nil != err {
-		log.Println("pkg: model, func: telnetProtocolHandshake, method: conn.Write, errInfo:", err)
-		return false
-	}
-
-	n, err = conn.Read(buf[0:])
-	if nil != err {
-		log.Println("pkg: model, func: telnetProtocolHandshake, method: conn.Read, errInfo:", err)
-		return false
-	}
-	//fmt.Println(string(buf[0:n]))
-	//fmt.Println((buf[0:n]))
-
-	if false == this.IsAuthentication {
-		return true
-	}
-
-	n, err = conn.Write([]byte(this.UserName + "\n"))
-	if nil != err {
-		log.Println("pkg: model, func: telnetProtocolHandshake, method: conn.Write, errInfo:", err)
-		return false
-	}
-	time.Sleep(time.Millisecond * TIME_DELAY_AFTER_WRITE)
-
-	n, err = conn.Read(buf[0:])
-	if nil != err {
-		log.Println("pkg: model, func: telnetProtocolHandshake, method: conn.Read, errInfo:", err)
-		return false
-	}
-	//fmt.Println(string(buf[0:n]))
-
-	n, err = conn.Write([]byte(this.Password + "\n"))
-	if nil != err {
-		log.Println("pkg: model, func: telnetProtocolHandshake, method: conn.Write, errInfo:", err)
-		return false
-	}
-	time.Sleep(time.Millisecond * TIME_DELAY_AFTER_WRITE)
-
-	n, err = conn.Read(buf[0:])
-	if nil != err {
-		log.Println("pkg: model, func: telnetProtocolHandshake, method: conn.Read, errInfo:", err)
-		return false
-	}
-	//fmt.Println(string(buf[0:n]))
-	return true
+	fmt.Println("登录成功!")
 }

@@ -24,5 +24,23 @@ func writeToFile(filename, content string) error {
 }
 
 func StartTelnet(csvFilePath string) {
-	telnet.TestMain()
+	// 创建客户端实例
+	client := telnet.NewTelnetClient("127.0.0.1", "4320")
+
+	// 建立连接
+	err := client.Connect()
+	if err != nil {
+		fmt.Println(err)
+		return
+	}
+	defer client.Close()
+
+	// 发送登录命令
+	err = client.Login()
+	if err != nil {
+		fmt.Println(err)
+		return
+	}
+
+	fmt.Println("登录成功!")
 }
