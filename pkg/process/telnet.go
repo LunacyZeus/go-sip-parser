@@ -62,6 +62,8 @@ func StartTelnet(params CallSimulationParams) {
 		return
 	}
 
+	//No Ingress Resource Found
+
 	writeToFile("call1.xml", content)
 
 	rate.ParseRateFromContent(content)
