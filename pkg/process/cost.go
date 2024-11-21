@@ -177,7 +177,7 @@ func CalculateSipCost(path string) {
 
 		//fmt.Printf("ani(%s) dnis(%s)\n", row[1], row[2])
 		command := fmt.Sprintf("call_simulation %s,5060,%s,%s", callerIP, ani, dnis)
-		log.Printf("[%s] Exec Command->", command, row[0])
+		log.Printf("[%s] Exec Command-> %s", row[0], command)
 
 		content, err := client.CallSimulation(callerIP, "5060", ani, dnis)
 		if err != nil {
