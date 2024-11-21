@@ -3,6 +3,7 @@ package telnet
 import (
 	"bufio"
 	"fmt"
+	"log"
 	"net"
 	"strings"
 	"time"
@@ -61,7 +62,7 @@ func (t *TelnetClient) Login() error {
 
 	// 收到响应后设置认证状态为true
 	//t.IsAuthentication = true
-	fmt.Printf("Login Resp: %s\n", string(buffer[:n]))
+	log.Printf("Login Resp: %s\n", string(buffer[:n]))
 	return nil
 }
 
@@ -83,14 +84,14 @@ func (t *TelnetClient) LoginOut() error {
 
 	// 读取响应
 	buffer := make([]byte, 1024)
-	n, err := t.conn.Read(buffer)
+	_, err = t.conn.Read(buffer)
 	if err != nil {
 		return fmt.Errorf("failed to load: %v", err)
 	}
 
 	// 收到响应后设置认证状态为true
 	//t.IsAuthentication = true
-	fmt.Printf("LoginOut Resp: %s\n", string(buffer[:n]))
+	//fmt.Printf("LoginOut Resp: %s\n", string(buffer[:n]))
 	return nil
 }
 
