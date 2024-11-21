@@ -111,6 +111,14 @@ func writeCsv(csvPath string, headers []string, records []CallRecord) {
 	fmt.Printf("Modified CSV written successfully to '%s'\n", csvPath)
 }
 
+func extractIP(input string) string {
+	// 正则表达式匹配IPv4地址
+	re := regexp.MustCompile(`(\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3})`)
+	// FindString 返回第一个匹配的字符串
+	ip := re.FindString(input)
+	return ip
+}
+
 func CalculateSipCost(path string) {
 	// 创建客户端实例
 	client := telnet.NewTelnetClient("127.0.0.1", "4320")
@@ -171,7 +179,7 @@ func CalculateSipCost(path string) {
 		answerTime, _ := parseTime(row[6])
 		hangupTime, _ := parseTime(row[7])
 
-		callerIP := GetCallerIP(row[2])
+		callerIP := extractIP(row[3])
 
 		ani := GetSipPart(row[1])
 		dnis := GetSipPart(row[2])
