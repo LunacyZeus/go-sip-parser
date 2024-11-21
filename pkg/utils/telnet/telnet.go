@@ -43,8 +43,8 @@ func (t *TelnetClient) Login() error {
 	}
 
 	// 设置读写超时
-	t.conn.SetReadDeadline(time.Now().Add(45 * time.Second))
-	t.conn.SetWriteDeadline(time.Now().Add(45 * time.Second))
+	//t.conn.SetReadDeadline(time.Now().Add(45 * time.Second))
+	//t.conn.SetWriteDeadline(time.Now().Add(45 * time.Second))
 
 	// 发送登录命令
 	_, err := t.conn.Write([]byte("login\r\n"))
