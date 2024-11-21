@@ -1,183 +1,86 @@
 <Origination-Ignored-Trunk>
-  <Trunk-ID>430</Trunk-ID>
-  <Trunk-Name>VOIP Innovations - US SD</Trunk-Name>
-  <Cause>Resource prefix not found</Cause>
 </Origination-Ignored-Trunk>
 <Origination-Trunk>
   <CAP>0</CAP>
   <CPS>0</CPS>
-  <Carrier-Name>VoIP InnovationsLLC</Carrier-Name>
-  <Trunk-ID>435</Trunk-ID>
-  <Trunk-Name>VOIP Innovations - US 45sec</Trunk-Name>
+  <Carrier-Name>Peerless Network Inc _BAN 4000438_Client</Carrier-Name>
+  <Trunk-ID>142</Trunk-ID>
+  <Trunk-Name>Peerless - Dialer IB</Trunk-Name>
   <Route-Type>First static routing, then dynamic routing</Route-Type>
   <Media-Type>Bypass Media</Media-Type>
   <Profit-Margin>0.000000</Profit-Margin>
   <Profit-Type>By Percentage</Profit-Type>
   <SHAKEN>
-    <Vfy-policy>Disabled</Vfy-policy>
+    <Vfy-policy>Block if invalid</Vfy-policy>
     <Sign-policy>Disabled</Sign-policy>
     <ANI-Pool></ANI-Pool>
     <Allow-resign>False</Allow-resign>
   </SHAKEN>
-  <Static-Route-Name>BTS_First for TMob</Static-Route-Name>
-  <Dynamic-Route-Name>US Convo 45</Dynamic-Route-Name>
-  <Rate-Table-Name>IB_VOIP Innovations 45sec</Rate-Table-Name>
-  <Route-Strategy-Name>US Convo 45</Route-Strategy-Name>
+  <Static-Route-Name>Dialer_Static</Static-Route-Name>
+  <Dynamic-Route-Name>Dialer LCR</Dynamic-Route-Name>
+  <Rate-Table-Name>IB_Peerless Dialer</Rate-Table-Name>
+  <Route-Strategy-Name>Dialer Routing</Route-Strategy-Name>
 </Origination-Trunk>
-<Origination-SRC-ANI>9123887982</Origination-SRC-ANI>
-<Origination-SRC-DNIS>5482#+14049179360</Origination-SRC-DNIS>
-<Origination-Route-DNIS>14049179360</Origination-Route-DNIS>
+<Origination-SRC-ANI>+13134638035</Origination-SRC-ANI>
+<Origination-SRC-DNIS>13133854865</Origination-SRC-DNIS>
+<Origination-Route-DNIS>13133854865</Origination-Route-DNIS>
 <Origination-Digit-Mapped-ANI>
-  <ANI>9123887982</ANI>
+  <ANI>+13134638035</ANI>
 </Origination-Digit-Mapped-ANI>
 <Origination-Digit-Mapped-DNIS>
-  <DNIS>14049179360</DNIS>
+  <DNIS>13133854865</DNIS>
 </Origination-Digit-Mapped-DNIS>
 <Origination-Translation-ANI>
-  <ANI>9123887982</ANI>
+  <ANI>+13134638035</ANI>
   <LERG></LERG>
   <DNO>none</DNO>
   <DNO>none</DNO>
   <YOUMAIL></YOUMAIL>
 </Origination-Translation-ANI>
 <Origination-Translation-DNIS>
-  <DNIS>14049179360</DNIS>
+  <DNIS>13133854865</DNIS>
   <LERG></LERG>
   <DNC>False</DNC>
 </Origination-Translation-DNIS>
 <Origination-LRN-Action-DNIS-Before>
-  <DNIS>14049179360</DNIS>
+  <DNIS>13133854865</DNIS>
 </Origination-LRN-Action-DNIS-Before>
-<Origination-Respond-LRN-DNIS>14046630080</Origination-Respond-LRN-DNIS>
+<Origination-Respond-LRN-DNIS>19478958000</Origination-Respond-LRN-DNIS>
 <Origination-LRN-Action-DNIS-After>
-  <DNIS>14046630080</DNIS>
+  <DNIS>19478958000</DNIS>
   <LERG></LERG>
   <DNC>False</DNC>
 </Origination-LRN-Action-DNIS-After>
 <Origination-Trunk-Rate>
-  <Code>1404663</Code>
+  <Code>1947895</Code>
   <Country>USA</Country>
-  <Code-Name>POWERTEL ATLANTA LICENSES </Code-Name>
-  <Rate-ID>142195554</Rate-ID>
-  <Rate>0.002034</Rate>
+  <Code-Name>TWILIO INTERNATIONAL </Code-Name>
+  <Rate-ID>156529940</Rate-ID>
+  <Rate>0.002307</Rate>
   <Rate-Type>Other</Rate-Type>
   <Dnis-Type>LRN</Dnis-Type>
   <Jur-Type>US JD</Jur-Type>
-  <Rate-Effective>2024-09-24 00:00:00+GMT</Rate-Effective>
+  <Rate-Effective>2024-10-30 00:00:00+GMT</Rate-Effective>
 </Origination-Trunk-Rate>
 <Termination-Route>
-  <Static-Route-Name>BTS_First for TMob</Static-Route-Name>
-  <Static-Prefix>14046630080</Static-Prefix>
-  <Route-Strategy>Top Down</Route-Strategy>
-  <Termination-Trunk>
-    <Carrier-Name>BTS</Carrier-Name>
-    <Trunk-ID>66</Trunk-ID>
-    <Trunk-Name>BTS - TMo IJ</Trunk-Name>
-    <Rate-Table-Name>OB_BTS TMob IJ Only</Rate-Table-Name>
-    <CPS>0</CPS>
-    <CAP>0</CAP>
-    <Bill-After-Action>True</Bill-After-Action>
-    <Strategy>Round Robin</Strategy>
-    <SHAKEN>
-      <Vfy-policy>Block if invalid</Vfy-policy>
-    </SHAKEN>
-    <Final-ANI>
-      <Actions>
-        <Action>Add Prefix</Action>
-        <Digit>+</Digit>
-      </Actions>
-      <Actions>
-        <Action>Add Prefix</Action>
-        <Digit>+</Digit>
-      </Actions>
-      <ANI>+9123887982</ANI>
-      <Real>9123887982</Real>
-      <DNO>none</DNO>
-      <DNO>none</DNO>
-    </Final-ANI>
-    <Final-DNIS>
-      <Actions>
-        <Action>Add Prefix</Action>
-        <Digit></Digit>
-      </Actions>
-      <Actions>
-        <Action>Add Prefix</Action>
-        <Digit></Digit>
-      </Actions>
-      <DNIS>14049179360</DNIS>
-      <Real>14049179360</Real>
-      <DNC>False</DNC>
-    </Final-DNIS>
-    <ASR>0.000000</ASR>
-    <ACD>0.000000</ACD>
-    <Trunk-Rate>
-      <Code>1404663</Code>
-      <Country>USA</Country>
-      <Code-Name>POWERTEL ATLANTA LICENSES </Code-Name>
-      <Rate-ID>169811972</Rate-ID>
-      <Rate>0.001125</Rate>
-      <Rate-Type>Other</Rate-Type>
-      <Dnis-Type>LRN</Dnis-Type>
-      <Jur-Type>US JD</Jur-Type>
-      <Rate-Effective>2024-09-24 00:00:00+GMT</Rate-Effective>
-    </Trunk-Rate>
-    <Termination-Host>
-      <CPS>0</CPS>
-      <CAP>0</CAP>
-      <Port>5060</Port>
-      <Host-IP>87.237.87.14</Host-IP>
-    </Termination-Host>
-    <Termination-Host>
-      <CPS>0</CPS>
-      <CAP>0</CAP>
-      <Port>5060</Port>
-      <Host-IP>87.237.87.13</Host-IP>
-    </Termination-Host>
-    <Termination-Host>
-      <CPS>0</CPS>
-      <CAP>0</CAP>
-      <Port>5060</Port>
-      <Host-IP>79.170.68.163</Host-IP>
-    </Termination-Host>
-    <Termination-Host>
-      <CPS>0</CPS>
-      <CAP>0</CAP>
-      <Port>5060</Port>
-      <Host-IP>79.170.68.151</Host-IP>
-    </Termination-Host>
-    <Termination-Signature>
-    </Termination-Signature>
-    <P-Headers>
-    </P-Headers>
-  </Termination-Trunk>
-</Termination-Route>
-<Termination-Route>
-  <Static-Route-Name>BTS_First for TMob</Static-Route-Name>
+  <Static-Route-Name>Dialer_Static</Static-Route-Name>
   <Static-Prefix></Static-Prefix>
   <Route-Strategy>Dynamic LCR</Route-Strategy>
   <Termination-Trunk>
-    <Carrier-Name>BTS</Carrier-Name>
-    <Trunk-ID>66</Trunk-ID>
-    <Trunk-Name>BTS - TMo IJ</Trunk-Name>
-    <Rate-Table-Name>OB_BTS TMob IJ Only</Rate-Table-Name>
-    <CPS>0</CPS>
-    <CAP>0</CAP>
+    <Carrier-Name>Touchtone</Carrier-Name>
+    <Trunk-ID>45</Trunk-ID>
+    <Trunk-Name>Touchtone - Dialer</Trunk-Name>
+    <Rate-Table-Name>OB _Touchtone Dialer</Rate-Table-Name>
+    <CPS>300</CPS>
+    <CAP>6000</CAP>
     <Bill-After-Action>True</Bill-After-Action>
     <Strategy>Round Robin</Strategy>
     <SHAKEN>
       <Vfy-policy>Block if invalid</Vfy-policy>
     </SHAKEN>
     <Final-ANI>
-      <Actions>
-        <Action>Add Prefix</Action>
-        <Digit>+</Digit>
-      </Actions>
-      <Actions>
-        <Action>Add Prefix</Action>
-        <Digit>+</Digit>
-      </Actions>
-      <ANI>+9123887982</ANI>
-      <Real>9123887982</Real>
+      <ANI>+13134638035</ANI>
+      <Real>+13134638035</Real>
       <DNO>none</DNO>
       <DNO>none</DNO>
     </Final-ANI>
@@ -186,50 +89,34 @@
         <Action>Add Prefix</Action>
         <Digit></Digit>
       </Actions>
-      <Actions>
-        <Action>Add Prefix</Action>
-        <Digit></Digit>
-      </Actions>
-      <DNIS>14049179360</DNIS>
-      <Real>14049179360</Real>
+      <DNIS>13133854865</DNIS>
+      <Real>13133854865</Real>
       <DNC>False</DNC>
     </Final-DNIS>
     <ASR>0.000000</ASR>
     <ACD>0.000000</ACD>
     <Trunk-Rate>
-      <Code>1404663</Code>
+      <Code>1947895</Code>
       <Country>USA</Country>
-      <Code-Name>POWERTEL ATLANTA LICENSES </Code-Name>
-      <Rate-ID>169811972</Rate-ID>
-      <Rate>0.001125</Rate>
+      <Code-Name>TWILIO INTERNATIONAL </Code-Name>
+      <Rate-ID>110777909</Rate-ID>
+      <Rate>0.002100</Rate>
       <Rate-Type>Other</Rate-Type>
       <Dnis-Type>LRN</Dnis-Type>
       <Jur-Type>US JD</Jur-Type>
-      <Rate-Effective>2024-09-24 00:00:00+GMT</Rate-Effective>
+      <Rate-Effective>2024-10-30 00:00:00+GMT</Rate-Effective>
     </Trunk-Rate>
     <Termination-Host>
       <CPS>0</CPS>
       <CAP>0</CAP>
       <Port>5060</Port>
-      <Host-IP>87.237.87.14</Host-IP>
+      <Host-IP>192.104.111.76</Host-IP>
     </Termination-Host>
     <Termination-Host>
       <CPS>0</CPS>
       <CAP>0</CAP>
       <Port>5060</Port>
-      <Host-IP>87.237.87.13</Host-IP>
-    </Termination-Host>
-    <Termination-Host>
-      <CPS>0</CPS>
-      <CAP>0</CAP>
-      <Port>5060</Port>
-      <Host-IP>79.170.68.163</Host-IP>
-    </Termination-Host>
-    <Termination-Host>
-      <CPS>0</CPS>
-      <CAP>0</CAP>
-      <Port>5060</Port>
-      <Host-IP>79.170.68.151</Host-IP>
+      <Host-IP>192.40.216.76</Host-IP>
     </Termination-Host>
     <Termination-Signature>
     </Termination-Signature>
@@ -237,50 +124,152 @@
     </P-Headers>
   </Termination-Trunk>
   <Termination-Trunk>
-    <Carrier-Name>Range Inc</Carrier-Name>
-    <Trunk-ID>51</Trunk-ID>
-    <Trunk-Name>Range - Convo US Diam33</Trunk-Name>
-    <Rate-Table-Name>OB_Range Conversational_33</Rate-Table-Name>
-    <CPS>100</CPS>
-    <CAP>2500</CAP>
+    <Carrier-Name>Contact Center Spec</Carrier-Name>
+    <Trunk-ID>456</Trunk-ID>
+    <Trunk-Name>CCS - US SD</Trunk-Name>
+    <Rate-Table-Name>OB_CCS US SD</Rate-Table-Name>
+    <CPS>30</CPS>
+    <CAP>1000</CAP>
     <Bill-After-Action>True</Bill-After-Action>
-    <Strategy>Round Robin</Strategy>
+    <Strategy>Top Down</Strategy>
     <SHAKEN>
-      <Vfy-policy>Block if invalid</Vfy-policy>
+      <Vfy-policy>Block if missing</Vfy-policy>
     </SHAKEN>
     <Final-ANI>
-      <ANI>9123887982</ANI>
-      <Real>9123887982</Real>
+      <ANI>+13134638035</ANI>
+      <Real>+13134638035</Real>
       <DNO>none</DNO>
       <DNO>none</DNO>
     </Final-ANI>
     <Final-DNIS>
       <Actions>
         <Action>Add Prefix</Action>
-        <Digit>33#</Digit>
+        <Digit></Digit>
       </Actions>
-      <DNIS>33#14049179360</DNIS>
-      <Real>14049179360</Real>
+      <DNIS>13133854865</DNIS>
+      <Real>13133854865</Real>
       <DNC>False</DNC>
     </Final-DNIS>
     <ASR>0.000000</ASR>
     <ACD>0.000000</ACD>
     <Trunk-Rate>
-      <Code>1404663</Code>
+      <Code>1947895</Code>
       <Country>USA</Country>
-      <Code-Name>POWERTEL ATLANTA LICENSES </Code-Name>
-      <Rate-ID>137670204</Rate-ID>
-      <Rate>0.001370</Rate>
+      <Code-Name>TWILIO INTERNATIONAL </Code-Name>
+      <Rate-ID>169557870</Rate-ID>
+      <Rate>0.002142</Rate>
       <Rate-Type>Other</Rate-Type>
       <Dnis-Type>LRN</Dnis-Type>
       <Jur-Type>US JD</Jur-Type>
-      <Rate-Effective>2024-09-24 00:00:00+GMT</Rate-Effective>
+      <Rate-Effective>2024-10-30 00:00:00+GMT</Rate-Effective>
     </Trunk-Rate>
     <Termination-Host>
       <CPS>0</CPS>
       <CAP>0</CAP>
       <Port>5060</Port>
-      <Host-IP>88.151.130.65</Host-IP>
+      <Host-IP>207.38.67.25</Host-IP>
+    </Termination-Host>
+    <Termination-Signature>
+    </Termination-Signature>
+    <P-Headers>
+    </P-Headers>
+  </Termination-Trunk>
+  <Termination-Trunk>
+    <Carrier-Name>Smartbiz</Carrier-Name>
+    <Trunk-ID>70</Trunk-ID>
+    <Trunk-Name>Smartbiz - Dialer OB</Trunk-Name>
+    <Rate-Table-Name>OB_Smartbiz Dialer</Rate-Table-Name>
+    <CPS>1000</CPS>
+    <CAP>8000</CAP>
+    <Bill-After-Action>True</Bill-After-Action>
+    <Strategy>Round Robin</Strategy>
+    <SHAKEN>
+      <Vfy-policy>Block if invalid</Vfy-policy>
+    </SHAKEN>
+    <Final-ANI>
+      <ANI>+13134638035</ANI>
+      <Real>+13134638035</Real>
+      <DNO>none</DNO>
+      <DNO>none</DNO>
+    </Final-ANI>
+    <Final-DNIS>
+      <Actions>
+        <Action>Add Prefix</Action>
+        <Digit>6622#</Digit>
+      </Actions>
+      <DNIS>6622#13133854865</DNIS>
+      <Real>13133854865</Real>
+      <DNC>False</DNC>
+    </Final-DNIS>
+    <ASR>0.000000</ASR>
+    <ACD>0.000000</ACD>
+    <Trunk-Rate>
+      <Code>1947895</Code>
+      <Country>USA</Country>
+      <Code-Name>TWILIO INTERNATIONAL </Code-Name>
+      <Rate-ID>43726529</Rate-ID>
+      <Rate>0.002200</Rate>
+      <Rate-Type>Other</Rate-Type>
+      <Dnis-Type>LRN</Dnis-Type>
+      <Jur-Type>US JD</Jur-Type>
+      <Rate-Effective>2024-10-30 00:00:00+GMT</Rate-Effective>
+    </Trunk-Rate>
+    <Termination-Host>
+      <CPS>0</CPS>
+      <CAP>0</CAP>
+      <Port>5060</Port>
+      <Host-IP>174.34.132.79</Host-IP>
+    </Termination-Host>
+    <Termination-Signature>
+    </Termination-Signature>
+    <P-Headers>
+    </P-Headers>
+  </Termination-Trunk>
+  <Termination-Trunk>
+    <Carrier-Name>IP Transfer</Carrier-Name>
+    <Trunk-ID>429</Trunk-ID>
+    <Trunk-Name>IP Transfer - US SD</Trunk-Name>
+    <Rate-Table-Name>OB_IP Transfer US SD</Rate-Table-Name>
+    <CPS>0</CPS>
+    <CAP>0</CAP>
+    <Bill-After-Action>True</Bill-After-Action>
+    <Strategy>Round Robin</Strategy>
+    <SHAKEN>
+      <Vfy-policy>Disabled</Vfy-policy>
+    </SHAKEN>
+    <Final-ANI>
+      <ANI>+13134638035</ANI>
+      <Real>+13134638035</Real>
+      <DNO>none</DNO>
+      <DNO>none</DNO>
+    </Final-ANI>
+    <Final-DNIS>
+      <Actions>
+        <Action>Add Prefix</Action>
+        <Digit>6759#</Digit>
+      </Actions>
+      <DNIS>6759#13133854865</DNIS>
+      <Real>13133854865</Real>
+      <DNC>False</DNC>
+    </Final-DNIS>
+    <ASR>0.000000</ASR>
+    <ACD>0.000000</ACD>
+    <Trunk-Rate>
+      <Code>1947895</Code>
+      <Country>USA</Country>
+      <Code-Name>TWILIO INTERNATIONAL </Code-Name>
+      <Rate-ID>144327635</Rate-ID>
+      <Rate>0.002300</Rate>
+      <Rate-Type>Other</Rate-Type>
+      <Dnis-Type>LRN</Dnis-Type>
+      <Jur-Type>US JD</Jur-Type>
+      <Rate-Effective>2024-10-30 00:00:00+GMT</Rate-Effective>
+    </Trunk-Rate>
+    <Termination-Host>
+      <CPS>0</CPS>
+      <CAP>0</CAP>
+      <Port>5060</Port>
+      <Host-IP>147.28.149.249</Host-IP>
     </Termination-Host>
     <Termination-Signature>
     </Termination-Signature>
@@ -295,40 +284,39 @@
     <Route-Types>DNIS Static Routing</Route-Types>
   </Termination-Route>
   <Termination-Trunk>
+    <Trunk-ID>28</Trunk-ID>
+    <Trunk-Name>Netvoice - DID 2</Trunk-Name>
+    <Cause>Trunk Disabled</Cause>
+  </Termination-Trunk>
+  <Termination-Trunk>
     <Trunk-ID>27</Trunk-ID>
     <Trunk-Name>Netvoice - DIDs</Trunk-Name>
     <Cause>No Profitable Trunk</Cause>
     <Rate>0.003300</Rate>
   </Termination-Trunk>
   <Termination-Trunk>
-    <Trunk-ID>54</Trunk-ID>
-    <Trunk-Name>Last Mile OB</Trunk-Name>
-    <Cause>Egress invalid ANI block</Cause>
-  </Termination-Trunk>
-  <Termination-Trunk>
-    <Trunk-ID>66</Trunk-ID>
-    <Trunk-Name>BTS - TMo IJ</Trunk-Name>
-    <Cause>Normal</Cause>
+    <Trunk-ID>47</Trunk-ID>
+    <Trunk-Name>Peerless - US SD</Trunk-Name>
+    <Cause>Block All Resouce</Cause>
   </Termination-Trunk>
   <Termination-Route>
     <State>Normal</State>
     <Route-Types>DNIS Dynamic Routing</Route-Types>
   </Termination-Route>
   <Termination-Trunk>
-    <Trunk-ID>388</Trunk-ID>
-    <Trunk-Name>ActionVox - Convo</Trunk-Name>
+    <Trunk-ID>389</Trunk-ID>
+    <Trunk-Name>Action_Vox - Dialer</Trunk-Name>
     <Cause>Egress invalid ANI block</Cause>
   </Termination-Trunk>
   <Termination-Trunk>
-    <Trunk-ID>392</Trunk-ID>
-    <Trunk-Name>Dialworld - Convo</Trunk-Name>
+    <Trunk-ID>393</Trunk-ID>
+    <Trunk-Name>Dialworld - SD</Trunk-Name>
     <Cause>Trunk Disabled</Cause>
   </Termination-Trunk>
   <Termination-Trunk>
-    <Trunk-ID>17</Trunk-ID>
-    <Trunk-Name>Voyce - Convo</Trunk-Name>
-    <Cause>No Profitable Trunk</Cause>
-    <Rate>0.002700</Rate>
+    <Trunk-ID>9</Trunk-ID>
+    <Trunk-Name>IP Link - Coretel</Trunk-Name>
+    <Cause>Rate Not Found</Cause>
   </Termination-Trunk>
   <Termination-Trunk>
     <Trunk-ID>402</Trunk-ID>
@@ -336,14 +324,15 @@
     <Cause>Egress invalid ANI block</Cause>
   </Termination-Trunk>
   <Termination-Trunk>
-    <Trunk-ID>20</Trunk-ID>
-    <Trunk-Name>Directo - US Convo</Trunk-Name>
-    <Cause>Rate Not Found</Cause>
+    <Trunk-ID>18</Trunk-ID>
+    <Trunk-Name>Voyce - Dialer Platinum</Trunk-Name>
+    <Cause>No Profitable Trunk</Cause>
+    <Rate>0.004200</Rate>
   </Termination-Trunk>
   <Termination-Trunk>
-    <Trunk-ID>407</Trunk-ID>
-    <Trunk-Name>Allure Telecom - US 45sec</Trunk-Name>
-    <Cause>Egress invalid ANI block</Cause>
+    <Trunk-ID>406</Trunk-ID>
+    <Trunk-Name>Allure Telecom - US SD</Trunk-Name>
+    <Cause>Trunk Disabled</Cause>
   </Termination-Trunk>
   <Termination-Trunk>
     <Trunk-ID>27</Trunk-ID>
@@ -352,14 +341,20 @@
     <Rate>0.003300</Rate>
   </Termination-Trunk>
   <Termination-Trunk>
-    <Trunk-ID>28</Trunk-ID>
-    <Trunk-Name>Netvoice - DID 2</Trunk-Name>
-    <Cause>Trunk Disabled</Cause>
-  </Termination-Trunk>
-  <Termination-Trunk>
     <Trunk-ID>412</Trunk-ID>
     <Trunk-Name>VoIP Innovations - US SD</Trunk-Name>
     <Cause>Egress invalid ANI block</Cause>
+  </Termination-Trunk>
+  <Termination-Trunk>
+    <Trunk-ID>418</Trunk-ID>
+    <Trunk-Name>My CC - Dialer</Trunk-Name>
+    <Cause>Block All Resouce</Cause>
+  </Termination-Trunk>
+  <Termination-Trunk>
+    <Trunk-ID>420</Trunk-ID>
+    <Trunk-Name>Nuso - Silver All SD</Trunk-Name>
+    <Cause>No Profitable Trunk</Cause>
+    <Rate>0.002750</Rate>
   </Termination-Trunk>
   <Termination-Trunk>
     <Trunk-ID>40</Trunk-ID>
@@ -367,197 +362,92 @@
     <Cause>Egress invalid ANI block</Cause>
   </Termination-Trunk>
   <Termination-Trunk>
-    <Trunk-ID>44</Trunk-ID>
-    <Trunk-Name>Touchtone - Convo</Trunk-Name>
-    <Cause>No Profitable Trunk</Cause>
-    <Rate>0.002300</Rate>
+    <Trunk-ID>429</Trunk-ID>
+    <Trunk-Name>IP Transfer - US SD</Trunk-Name>
+    <Cause>Normal</Cause>
+  </Termination-Trunk>
+  <Termination-Trunk>
+    <Trunk-ID>45</Trunk-ID>
+    <Trunk-Name>Touchtone - Dialer</Trunk-Name>
+    <Cause>Normal</Cause>
+  </Termination-Trunk>
+  <Termination-Trunk>
+    <Trunk-ID>47</Trunk-ID>
+    <Trunk-Name>Peerless - US SD</Trunk-Name>
+    <Cause>Block All Resouce</Cause>
   </Termination-Trunk>
   <Termination-Trunk>
     <Trunk-ID>46</Trunk-ID>
     <Trunk-Name>Touchtone - HS Dialer</Trunk-Name>
     <Cause>No Profitable Trunk</Cause>
-    <Rate>0.002520</Rate>
+    <Rate>0.002580</Rate>
   </Termination-Trunk>
   <Termination-Trunk>
-    <Trunk-ID>50</Trunk-ID>
-    <Trunk-Name>Range - Convo Prem 45</Trunk-Name>
+    <Trunk-ID>58</Trunk-ID>
+    <Trunk-Name>Dawz - Dialer low SD</Trunk-Name>
     <Cause>No Profitable Trunk</Cause>
-    <Rate>0.003140</Rate>
+    <Rate>0.002771</Rate>
   </Termination-Trunk>
   <Termination-Trunk>
-    <Trunk-ID>51</Trunk-ID>
-    <Trunk-Name>Range - Convo US Diam33</Trunk-Name>
+    <Trunk-ID>59</Trunk-ID>
+    <Trunk-Name>Dawz - Hi SD Dialer</Trunk-Name>
+    <Cause>No Profitable Trunk</Cause>
+    <Rate>0.002910</Rate>
+  </Termination-Trunk>
+  <Termination-Trunk>
+    <Trunk-ID>61</Trunk-ID>
+    <Trunk-Name>VoiceTerm - Dialer Marketing</Trunk-Name>
+    <Cause>No Profitable Trunk</Cause>
+    <Rate>0.002790</Rate>
+  </Termination-Trunk>
+  <Termination-Trunk>
+    <Trunk-ID>70</Trunk-ID>
+    <Trunk-Name>Smartbiz - Dialer OB</Trunk-Name>
     <Cause>Normal</Cause>
   </Termination-Trunk>
   <Termination-Trunk>
-    <Trunk-ID>53</Trunk-ID>
-    <Trunk-Name>Last Mile - Non TMobile</Trunk-Name>
-    <Cause>Block All Resouce</Cause>
-  </Termination-Trunk>
-  <Termination-Trunk>
-    <Trunk-ID>54</Trunk-ID>
-    <Trunk-Name>Last Mile OB</Trunk-Name>
-    <Cause>Egress invalid ANI block</Cause>
-  </Termination-Trunk>
-  <Termination-Trunk>
-    <Trunk-ID>66</Trunk-ID>
-    <Trunk-Name>BTS - TMo IJ</Trunk-Name>
-    <Cause>Normal</Cause>
-  </Termination-Trunk>
-  <Termination-Trunk>
-    <Trunk-ID>72</Trunk-ID>
-    <Trunk-Name>Skyetel - CC 30 sec - 3761</Trunk-Name>
-    <Cause>Egress invalid ANI block</Cause>
-  </Termination-Trunk>
-  <Termination-Trunk>
-    <Trunk-ID>331</Trunk-ID>
-    <Trunk-Name>Nuso Convo - Gold 30sec</Trunk-Name>
+    <Trunk-ID>77</Trunk-ID>
+    <Trunk-Name>All Clear -Dialer</Trunk-Name>
     <Cause>No Profitable Trunk</Cause>
-    <Rate>0.002500</Rate>
-  </Termination-Trunk>
-  <Termination-Trunk>
-    <Trunk-ID>76</Trunk-ID>
-    <Trunk-Name>All Clear - Conversational</Trunk-Name>
-    <Cause>No Profitable Trunk</Cause>
-    <Rate>0.002892</Rate>
-  </Termination-Trunk>
-  <Termination-Trunk>
-    <Trunk-ID>78</Trunk-ID>
-    <Trunk-Name>All Clear - Flat USA</Trunk-Name>
-    <Cause>Trunk Disabled</Cause>
-  </Termination-Trunk>
-  <Termination-Trunk>
-    <Trunk-ID>335</Trunk-ID>
-    <Trunk-Name>Nuso - Convo Plat  BLC957</Trunk-Name>
-    <Cause>No Profitable Trunk</Cause>
-    <Rate>0.002500</Rate>
+    <Rate>0.003751</Rate>
   </Termination-Trunk>
   <Termination-Trunk>
     <Trunk-ID>80</Trunk-ID>
     <Trunk-Name>Connexum  - Prem SD</Trunk-Name>
     <Cause>No Profitable Trunk</Cause>
-    <Rate>0.003475</Rate>
+    <Rate>0.003014</Rate>
   </Termination-Trunk>
   <Termination-Trunk>
-    <Trunk-ID>88</Trunk-ID>
-    <Trunk-Name>NGL - Convo</Trunk-Name>
+    <Trunk-ID>83</Trunk-ID>
+    <Trunk-Name>DID Cent - Dialer</Trunk-Name>
+    <Cause>Trunk Disabled</Cause>
+  </Termination-Trunk>
+  <Termination-Trunk>
+    <Trunk-ID>87</Trunk-ID>
+    <Trunk-Name>Glotell - Dialer</Trunk-Name>
     <Cause>No Profitable Trunk</Cause>
-    <Rate>0.002400</Rate>
+    <Rate>0.002319</Rate>
   </Termination-Trunk>
   <Termination-Trunk>
-    <Trunk-ID>89</Trunk-ID>
-    <Trunk-Name>NGL - Convo Prem 2032</Trunk-Name>
+    <Trunk-ID>90</Trunk-ID>
+    <Trunk-Name>NGL - US SD</Trunk-Name>
     <Cause>No Profitable Trunk</Cause>
-    <Rate>0.002400</Rate>
+    <Rate>0.002500</Rate>
   </Termination-Trunk>
   <Termination-Trunk>
-    <Trunk-ID>91</Trunk-ID>
-    <Trunk-Name>NGL - TMobile Out</Trunk-Name>
-    <Cause>No Profitable Trunk</Cause>
-    <Rate>0.002355</Rate>
-  </Termination-Trunk>
-  <Termination-Trunk>
-    <Trunk-ID>350</Trunk-ID>
-    <Trunk-Name>BTS - NPA-NXX Convo</Trunk-Name>
-    <Cause>Trunk Bind SIP Profile Reject</Cause>
+    <Trunk-ID>93</Trunk-ID>
+    <Trunk-Name>Powernet  OB - Dialer 3692</Trunk-Name>
+    <Cause>Egress invalid ANI block</Cause>
   </Termination-Trunk>
   <Termination-Trunk>
     <Trunk-ID>95</Trunk-ID>
     <Trunk-Name>Qwality - Cellular Convo</Trunk-Name>
+    <Cause>Block All Resouce</Cause>
+  </Termination-Trunk>
+  <Termination-Trunk>
+    <Trunk-ID>96</Trunk-ID>
+    <Trunk-Name>QwalityTel 2 Econ</Trunk-Name>
     <Cause>Egress invalid ANI block</Cause>
-  </Termination-Trunk>
-  <Termination-Trunk>
-    <Trunk-ID>356</Trunk-ID>
-    <Trunk-Name>ATI - Convo</Trunk-Name>
-    <Cause>Trunk Disabled</Cause>
-  </Termination-Trunk>
-  <Termination-Trunk>
-    <Trunk-ID>102</Trunk-ID>
-    <Trunk-Name>RSCOM - Convo</Trunk-Name>
-    <Cause>Trunk Disabled</Cause>
-  </Termination-Trunk>
-  <Termination-Trunk>
-    <Trunk-ID>103</Trunk-ID>
-    <Trunk-Name>RSCOM - Convo Lumen</Trunk-Name>
-    <Cause>Egress invalid ANI block</Cause>
-  </Termination-Trunk>
-  <Termination-Trunk>
-    <Trunk-ID>365</Trunk-ID>
-    <Trunk-Name>Range Convo - 55</Trunk-Name>
-    <Cause>No Profitable Trunk</Cause>
-    <Rate>0.003140</Rate>
-  </Termination-Trunk>
-  <Termination-Trunk>
-    <Trunk-ID>111</Trunk-ID>
-    <Trunk-Name>Secure Voice - Special SONOC</Trunk-Name>
-    <Cause>Egress invalid ANI block</Cause>
-  </Termination-Trunk>
-  <Termination-Trunk>
-    <Trunk-ID>112</Trunk-ID>
-    <Trunk-Name>Secure Voice - C0nvo</Trunk-Name>
-    <Cause>Egress invalid ANI block</Cause>
-  </Termination-Trunk>
-  <Termination-Trunk>
-    <Trunk-ID>113</Trunk-ID>
-    <Trunk-Name>TelcoCon - Convo Offpeak</Trunk-Name>
-    <Cause>Trunk Disabled</Cause>
-  </Termination-Trunk>
-  <Termination-Trunk>
-    <Trunk-ID>114</Trunk-ID>
-    <Trunk-Name>TelcoCon - Intelliquent</Trunk-Name>
-    <Cause>No Profitable Trunk</Cause>
-    <Rate>0.004135</Rate>
-  </Termination-Trunk>
-  <Termination-Trunk>
-    <Trunk-ID>115</Trunk-ID>
-    <Trunk-Name>TelcoCon - TFT</Trunk-Name>
-    <Cause>Rate Not Found</Cause>
-  </Termination-Trunk>
-  <Termination-Trunk>
-    <Trunk-ID>116</Trunk-ID>
-    <Trunk-Name>Televoip - Conversational</Trunk-Name>
-    <Cause>Trunk Disabled</Cause>
-  </Termination-Trunk>
-  <Termination-Trunk>
-    <Trunk-ID>373</Trunk-ID>
-    <Trunk-Name>BTS - ATT</Trunk-Name>
-    <Cause>Egress invalid ANI block</Cause>
-  </Termination-Trunk>
-  <Termination-Trunk>
-    <Trunk-ID>425</Trunk-ID>
-    <Trunk-Name>BICS - CAN and Offshore</Trunk-Name>
-    <Cause>Rate Not Found</Cause>
-  </Termination-Trunk>
-  <Termination-Trunk>
-    <Trunk-ID>43</Trunk-ID>
-    <Trunk-Name>TBI - SD Gold 45sec</Trunk-Name>
-    <Cause>No Profitable Trunk</Cause>
-    <Rate>0.005580</Rate>
-  </Termination-Trunk>
-  <Termination-Trunk>
-    <Trunk-ID>433</Trunk-ID>
-    <Trunk-Name>C3ntro - INTL to US Convo</Trunk-Name>
-    <Cause>Egress invalid ANI block</Cause>
-  </Termination-Trunk>
-  <Termination-Trunk>
-    <Trunk-ID>434</Trunk-ID>
-    <Trunk-Name>C3ntro - US to US Convo</Trunk-Name>
-    <Cause>Egress invalid ANI block</Cause>
-  </Termination-Trunk>
-  <Termination-Trunk>
-    <Trunk-ID>25</Trunk-ID>
-    <Trunk-Name>Inteliquent - Convo</Trunk-Name>
-    <Cause>Egress invalid ANI block</Cause>
-  </Termination-Trunk>
-  <Termination-Trunk>
-    <Trunk-ID>359</Trunk-ID>
-    <Trunk-Name>Smartbiz - Convo 45</Trunk-Name>
-    <Cause>Egress invalid ANI block</Cause>
-  </Termination-Trunk>
-  <Termination-Trunk>
-    <Trunk-ID>442</Trunk-ID>
-    <Trunk-Name>GCI_US AK Only</Trunk-Name>
-    <Cause>Rate Not Found</Cause>
   </Termination-Trunk>
   <Termination-Trunk>
     <Trunk-ID>97</Trunk-ID>
@@ -565,16 +455,56 @@
     <Cause>Egress invalid ANI block</Cause>
   </Termination-Trunk>
   <Termination-Trunk>
-    <Trunk-ID>452</Trunk-ID>
-    <Trunk-Name>382 US Convo</Trunk-Name>
-    <Cause>No Profitable Trunk</Cause>
-    <Rate>0.002660</Rate>
+    <Trunk-ID>98</Trunk-ID>
+    <Trunk-Name>QwalityTel 2 Std</Trunk-Name>
+    <Cause>Block All Resouce</Cause>
   </Termination-Trunk>
   <Termination-Trunk>
-    <Trunk-ID>49</Trunk-ID>
-    <Trunk-Name>Peerless - US Convo</Trunk-Name>
+    <Trunk-ID>357</Trunk-ID>
+    <Trunk-Name>ATI - Dialer</Trunk-Name>
     <Cause>No Profitable Trunk</Cause>
-    <Rate>0.002691</Rate>
+    <Rate>0.003200</Rate>
+  </Termination-Trunk>
+  <Termination-Trunk>
+    <Trunk-ID>101</Trunk-ID>
+    <Trunk-Name>QwalityTel - Red Econ Plus</Trunk-Name>
+    <Cause>Egress invalid ANI block</Cause>
+  </Termination-Trunk>
+  <Termination-Trunk>
+    <Trunk-ID>360</Trunk-ID>
+    <Trunk-Name>Dialworld - Canda</Trunk-Name>
+    <Cause>Trunk Disabled</Cause>
+  </Termination-Trunk>
+  <Termination-Trunk>
+    <Trunk-ID>104</Trunk-ID>
+    <Trunk-Name>RSCOM - Dialer</Trunk-Name>
+    <Cause>Trunk Disabled</Cause>
+  </Termination-Trunk>
+  <Termination-Trunk>
+    <Trunk-ID>108</Trunk-ID>
+    <Trunk-Name>Secure Voice - Dialer OB</Trunk-Name>
+    <Cause>Block All Resouce</Cause>
+  </Termination-Trunk>
+  <Termination-Trunk>
+    <Trunk-ID>52</Trunk-ID>
+    <Trunk-Name>Range - Low SDP Pearl</Trunk-Name>
+    <Cause>No Profitable Trunk</Cause>
+    <Rate>0.002320</Rate>
+  </Termination-Trunk>
+  <Termination-Trunk>
+    <Trunk-ID>111</Trunk-ID>
+    <Trunk-Name>Secure Voice - Special SONOC</Trunk-Name>
+    <Cause>Egress invalid ANI block</Cause>
+  </Termination-Trunk>
+  <Termination-Trunk>
+    <Trunk-ID>16</Trunk-ID>
+    <Trunk-Name>Telcast - Premium Dialer</Trunk-Name>
+    <Cause>Trunk Disabled</Cause>
+  </Termination-Trunk>
+  <Termination-Trunk>
+    <Trunk-ID>456</Trunk-ID>
+    <Trunk-Name>CCS - US SD</Trunk-Name>
+    <Cause>Normal</Cause>
   </Termination-Trunk>
 </Global-Route-State>
 <Call Simulation Test progress>Done</Call Simulation Test progress>

@@ -3,7 +3,7 @@ package process
 import (
 	"io/ioutil"
 	"log"
-	"sip-parser/pkg/utils/xml_utils"
+	"sip-parser/pkg/utils/rate"
 )
 
 func TestFunc() {
@@ -19,10 +19,6 @@ func TestFunc() {
 	// 将读取的内容转换为字符串
 	content := string(data)
 
-	xmlList, err := xml_utils.ParseXMLToNodeList(content)
-	//fmt.Println(xml_list, err)
-	for _, xml := range xmlList {
-		log.Println(xml)
-	}
+	rate.ParseRateFromContent(content)
 
 }

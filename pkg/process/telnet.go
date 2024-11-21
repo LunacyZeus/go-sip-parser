@@ -3,6 +3,7 @@ package process
 import (
 	"fmt"
 	"os"
+	"sip-parser/pkg/utils/rate"
 	"sip-parser/pkg/utils/telnet"
 )
 
@@ -23,7 +24,14 @@ func writeToFile(filename, content string) error {
 	return nil
 }
 
-func StartTelnet(csvFilePath string) {
+type CallSimulationParams struct {
+	CallerIp   string
+	CallerPort string
+	Ani        string
+	Dnis       string
+}
+
+func StartTelnet(params CallSimulationParams) {
 	// 创建客户端实例
 	client := telnet.NewTelnetClient("127.0.0.1", "4320")
 
@@ -43,16 +51,19 @@ func StartTelnet(csvFilePath string) {
 	}
 
 	fmt.Println("Login successfully!")
-	callerIp := "207.223.71.199"
-	callerPort := "5060"
-	ani := "+13134638035"
-	dnis := "+13133854865"
+	callerIp := params.CallerIp
+	callerPort := params.CallerPort
+	ani := params.Ani
+	dnis := params.Dnis
 
-	result, err := client.CallSimulation(callerIp, callerPort, ani, dnis)
+	content, err := client.CallSimulation(callerIp, callerPort, ani, dnis)
 	if err != nil {
 		fmt.Println("CallSimulation", err)
 		return
 	}
 
-	writeToFile("call.xml", result)
+	writeToFile("call1.xml", content)
+
+	rate.ParseRateFromContent(content)
+
 }

@@ -2,17 +2,16 @@ package xml_utils
 
 import (
 	"encoding/xml"
-	"fmt"
 	"log"
 )
 
 // Define the struct types to match the XML structure
 type TerminationRoute struct {
-	XMLName          xml.Name         `xml:"Termination-Route"`
-	StaticRouteName  string           `xml:"Static-Route-Name"`
-	StaticPrefix     string           `xml:"Static-Prefix"`
-	RouteStrategy    string           `xml:"Route-Strategy"`
-	TerminationTrunk TerminationTrunk `xml:"Termination-Trunk"`
+	XMLName          xml.Name           `xml:"Termination-Route"`
+	StaticRouteName  string             `xml:"Static-Route-Name"`
+	StaticPrefix     string             `xml:"Static-Prefix"`
+	RouteStrategy    string             `xml:"Route-Strategy"`
+	TerminationTrunk []TerminationTrunk `xml:"Termination-Trunk"`
 }
 
 type TerminationTrunk struct {
@@ -77,7 +76,7 @@ type TerminationHost struct {
 	HostIP string `xml:"Host-IP"`
 }
 
-func ParseTrunkData(data string) {
+func ParseTrunkData(data string) TerminationRoute {
 	xmlData := []byte(data)
 
 	var route TerminationRoute
@@ -86,9 +85,11 @@ func ParseTrunkData(data string) {
 		log.Fatalf("Error unmarshalling XML: %v", err)
 	}
 
-	fmt.Printf("Static Route Name: %s\n", route.StaticRouteName)
-	fmt.Printf("Static Prefix: %s\n", route.StaticPrefix)
-	fmt.Printf("Route Strategy: %s\n", route.RouteStrategy)
-	fmt.Printf("Carrier Name: %s\n", route.TerminationTrunk.CarrierName)
+	//fmt.Printf("Static Route Name: %s\n", route.StaticRouteName)
+	//fmt.Printf("Static Prefix: %s\n", route.StaticPrefix)
+	//fmt.Printf("Route Strategy: %s\n", route.RouteStrategy)
+	//fmt.Printf("Carrier Name: %s\n", route.TerminationTrunk.CarrierName)
 	// Add more print statements as needed to access other fields
+
+	return route
 }

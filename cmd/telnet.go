@@ -5,7 +5,10 @@ import (
 	"sip-parser/pkg/process"
 )
 
-var csvFilePath string
+var cip string
+var cport string
+var ani string
+var dnis string
 
 // telnetCmd represents the `load` command
 var telnetCmd = &cobra.Command{
@@ -13,11 +16,24 @@ var telnetCmd = &cobra.Command{
 	Short: "telnet",
 	Long:  "telnet.",
 	Run: func(cmd *cobra.Command, args []string) {
-		process.StartTelnet(csvFilePath)
+		params := process.CallSimulationParams{
+			CallerIp:   cip,
+			CallerPort: cport,
+			Ani:        ani,
+			Dnis:       dnis,
+		}
+		process.StartTelnet(params)
 	},
 }
 
 func init() {
-	telnetCmd.Flags().StringVarP(&csvFilePath, "file", "f", "", "Csv file")
-	telnetCmd.MarkFlagRequired("file")
+	telnetCmd.Flags().StringVarP(&cip, "cip", "", "", "CallerIp")
+	telnetCmd.Flags().StringVarP(&cport, "cport", "", "", "CallerPort")
+	telnetCmd.Flags().StringVarP(&ani, "ani", "", "", "Ani")
+	telnetCmd.Flags().StringVarP(&dnis, "dnis", "", "", "Dnis")
+
+	telnetCmd.MarkFlagRequired("cip")
+	telnetCmd.MarkFlagRequired("cport")
+	telnetCmd.MarkFlagRequired("ani")
+	telnetCmd.MarkFlagRequired("dnis")
 }

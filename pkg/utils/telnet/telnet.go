@@ -65,6 +65,35 @@ func (t *TelnetClient) Login() error {
 	return nil
 }
 
+// LoginOut 发送登录命令
+func (t *TelnetClient) LoginOut() error {
+	if t.conn == nil {
+		return fmt.Errorf("cannot establish connection")
+	}
+
+	// 设置读写超时
+	//t.conn.SetReadDeadline(time.Now().Add(45 * time.Second))
+	//t.conn.SetWriteDeadline(time.Now().Add(45 * time.Second))
+
+	// 发送注销命令
+	_, err := t.conn.Write([]byte("logout\r\n"))
+	if err != nil {
+		return fmt.Errorf("Failed to send command: %v", err)
+	}
+
+	// 读取响应
+	buffer := make([]byte, 1024)
+	n, err := t.conn.Read(buffer)
+	if err != nil {
+		return fmt.Errorf("failed to load: %v", err)
+	}
+
+	// 收到响应后设置认证状态为true
+	//t.IsAuthentication = true
+	fmt.Printf("LoginOut Resp: %s\n", string(buffer[:n]))
+	return nil
+}
+
 // Close 关闭连接
 func (t *TelnetClient) Close() {
 	if t.conn != nil {
