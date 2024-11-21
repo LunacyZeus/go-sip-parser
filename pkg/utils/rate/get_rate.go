@@ -2,6 +2,7 @@ package rate
 
 import (
 	"fmt"
+	"log"
 	"sip-parser/pkg/utils/xml_utils"
 )
 
@@ -11,7 +12,7 @@ func ParseRateFromContent(content string) (inbound_rate, inbound_rate_id, outbou
 
 	xmlList, err := xml_utils.ParseXMLToNodeList(content)
 	if err != nil {
-		fmt.Println("Error parsing XML:", err)
+		log.Println("Error parsing XML:", err)
 		return
 	}
 	//fmt.Println(xml_list, err)
@@ -22,7 +23,7 @@ func ParseRateFromContent(content string) (inbound_rate, inbound_rate_id, outbou
 			raw_data := fmt.Sprintf("<Origination-Trunk-Rate>\n%s\n</Origination-Trunk-Rate>", data)
 			//fmt.Printf("%s->%s", originationTrunkKey, raw_data)
 			originationTrunk := xml_utils.ParseOriginationTrunkRate(raw_data)
-			fmt.Printf("[inbound] RateID(%s) Rate(%s)\n", originationTrunk.RateID, originationTrunk.Rate)
+			log.Printf("[inbound] RateID(%s) Rate(%s)\n", originationTrunk.RateID, originationTrunk.Rate)
 			inbound_rate = originationTrunk.Rate
 			inbound_rate_id = originationTrunk.RateID
 		}
@@ -40,7 +41,7 @@ func ParseRateFromContent(content string) (inbound_rate, inbound_rate_id, outbou
 					FinalDNIS := trunk.FinalDNIS.DNIS
 					FinalDNISReal := trunk.FinalANI.Real
 
-					fmt.Printf("[outbound] RateID(%s) Rate(%s) ANI(%s/%s) DNIS(%s/%s)\n", trunk.TrunkRate.RateID, trunk.TrunkRate.Rate, FinalANI, FinalANIReal, FinalDNIS, FinalDNISReal)
+					log.Printf("[outbound] RateID(%s) Rate(%s) ANI(%s/%s) DNIS(%s/%s)\n", trunk.TrunkRate.RateID, trunk.TrunkRate.Rate, FinalANI, FinalANIReal, FinalDNIS, FinalDNISReal)
 
 					outbound_rate = trunk.TrunkRate.Rate
 					outbound_rate_id = trunk.TrunkRate.RateID
