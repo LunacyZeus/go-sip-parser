@@ -5,7 +5,6 @@ import (
 	"fmt"
 	"os"
 	"strconv"
-	"time"
 )
 
 type CallRecord struct {
@@ -13,10 +12,10 @@ type CallRecord struct {
 	ANI        string
 	DNIS       string
 	Via        string
-	InviteTime time.Time
-	RingTime   time.Time
-	AnswerTime time.Time
-	HangupTime time.Time
+	InviteTime string
+	RingTime   string
+	AnswerTime string
+	HangupTime string
 	Duration   int // in milliseconds
 	Rate       float64
 	RateID     string
@@ -25,9 +24,9 @@ type CallRecord struct {
 	Result     string
 }
 
-func parseTime(value string) (time.Time, error) {
-	layout := "2006-01-02 15:04:05" // Adjust based on your time format
-	return time.Parse(layout, value)
+func parseTime(value string) (string, error) {
+	//layout := "2006-01-02 15:04:05" // Adjust based on your time format
+	return value, nil
 }
 
 func CalculateSipCost(path string) {
