@@ -73,9 +73,9 @@ func (t *TelnetClient) Close() {
 }
 
 // CallSimulation 发送 call_simulation 命令并读取完整响应
-func (t *TelnetClient) CallSimulation(callerIp, callerPort, ani, dnis string) error {
+func (t *TelnetClient) CallSimulation(callerIp, callerPort, ani, dnis string) (string, error) {
 	if t.conn == nil {
-		return fmt.Errorf("cannot establish connection")
+		return "", fmt.Errorf("cannot establish connection")
 	}
 
 	// 构建命令
@@ -84,7 +84,7 @@ func (t *TelnetClient) CallSimulation(callerIp, callerPort, ani, dnis string) er
 	// 发送命令
 	_, err := t.conn.Write([]byte(command))
 	if err != nil {
-		return fmt.Errorf("Failed to send command: %v", err)
+		return "", fmt.Errorf("Failed to send command: %v", err)
 	}
 
 	// 读取完整响应
@@ -103,7 +103,7 @@ func (t *TelnetClient) CallSimulation(callerIp, callerPort, ani, dnis string) er
 	}
 
 	fmt.Printf("Call Simulation Resp: %s\n", response.String())
-	return nil
+	return response.String(), nil
 }
 
 // 使用示例

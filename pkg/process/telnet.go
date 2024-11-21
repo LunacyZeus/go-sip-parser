@@ -48,5 +48,11 @@ func StartTelnet(csvFilePath string) {
 	ani := "9123887982"
 	dnis := "5482#+14049179360"
 
-	client.CallSimulation(callerIp, callerPort, ani, dnis)
+	result, err := client.CallSimulation(callerIp, callerPort, ani, dnis)
+	if err != nil {
+		fmt.Println("CallSimulation", err)
+		return
+	}
+
+	writeToFile("call.xml", result)
 }
