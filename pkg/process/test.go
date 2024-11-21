@@ -8,7 +8,7 @@ import (
 
 func TestFunc() {
 	// 指定要读取的文件路径
-	filePath := "call.xml"
+	filePath := "1.xml"
 
 	// 读取文件内容
 	data, err := ioutil.ReadFile(filePath)

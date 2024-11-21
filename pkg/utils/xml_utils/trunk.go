@@ -2,6 +2,7 @@ package xml_utils
 
 import (
 	"encoding/xml"
+	"fmt"
 	"log"
 )
 
@@ -77,12 +78,16 @@ type TerminationHost struct {
 }
 
 func ParseTrunkData(data string) TerminationRoute {
-	xmlData := []byte(data)
+	buff, err := sanitizeXML(data)
+	if err != nil {
+		fmt.Println(data)
+		log.Fatalf("[TerminationRoute] XML sanitizeXML error: %v", err)
+	}
 
 	var route TerminationRoute
-	err := xml.Unmarshal(xmlData, &route)
+	err = xml.Unmarshal([]byte(buff), &route)
 	if err != nil {
-		log.Fatalf("Error unmarshalling XML: %v", err)
+		log.Fatalf("[TerminationRoute] Error unmarshalling XML: %v", err)
 	}
 
 	//fmt.Printf("Static Route Name: %s\n", route.StaticRouteName)

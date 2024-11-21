@@ -2,7 +2,9 @@ package xml_utils
 
 import (
 	"encoding/xml"
+	"fmt"
 	"log"
+	"strings"
 )
 
 // 定义结构体与 XML 标签对应
@@ -18,15 +20,27 @@ type OriginationTrunkRate struct {
 	RateEffective string `xml:"Rate-Effective"`
 }
 
+func sanitizeXML(input string) (string, error) {
+	// 将未转义的 & 替换为 &amp;
+	return strings.ReplaceAll(input, "&", "&amp;"), nil
+}
+
 func ParseOriginationTrunkRate(data string) OriginationTrunkRate {
 	// 输入的 XML 数据
 	// 创建结构体实例
 	var rate OriginationTrunkRate
 
-	// 解析 XML 数据
-	err := xml.Unmarshal([]byte(data), &rate)
+	buff, err := sanitizeXML(data)
 	if err != nil {
-		log.Fatalf("XML Unmarshal error: %v", err)
+		fmt.Println(buff)
+		log.Fatalf("[OriginationTrunkRate] XML sanitizeXML error: %v", err)
+	}
+
+	// 解析 XML 数据
+	err = xml.Unmarshal([]byte(buff), &rate)
+	if err != nil {
+		fmt.Println(buff)
+		log.Fatalf("[OriginationTrunkRate] XML Unmarshal error: %v", err)
 	}
 
 	// 打印解析结果
