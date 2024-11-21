@@ -6,6 +6,7 @@ import (
 	"log"
 	"os"
 	"regexp"
+	"sip-parser/pkg/utils/rate"
 	"sip-parser/pkg/utils/telnet"
 	"strings"
 )
@@ -129,6 +130,8 @@ func CalculateSipCost(path string) {
 		return
 	}
 
+	defer client.LoginOut()
+
 	log.Println("Login successfully!")
 
 	file, err := os.Open(path)
@@ -181,7 +184,19 @@ func CalculateSipCost(path string) {
 			fmt.Println("CallSimulation", err)
 			return
 		}
-		fmt.Println(content)
+
+		result := ""
+		if strings.Contains(content, "No Ingress Resource Found") {
+			result = "No Ingress Resource Found"
+			log.Printf("callId(%s)->%s", row[0], result)
+		} else if strings.Contains(content, "Unauthorized IP Address") {
+			result = "Unauthorized IP Address"
+			log.Printf("callId(%s)->%s", row[0], result)
+		} else {
+			rate.ParseRateFromContent(content)
+		}
+
+		//fmt.Println(content)
 
 		record := CallRecord{
 			CallID:     row[0],
@@ -197,7 +212,7 @@ func CalculateSipCost(path string) {
 			RateID:     row[10],
 			Cost:       row[11],
 			Command:    command,
-			Result:     row[13],
+			Result:     result,
 		}
 		records = append(records, record)
 	}

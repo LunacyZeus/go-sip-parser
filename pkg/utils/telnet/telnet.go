@@ -129,6 +129,10 @@ func (t *TelnetClient) CallSimulation(callerIp, callerPort, ani, dnis string) (s
 		if strings.Contains(line, "<Call Simulation Test progress>Done</Call Simulation Test progress>") {
 			break
 		}
+		if strings.Contains(line, "<Global-Route-State>") {
+			break
+		}
+
 	}
 
 	fmt.Printf("Call Simulation Resp: %s\n", response.String())
