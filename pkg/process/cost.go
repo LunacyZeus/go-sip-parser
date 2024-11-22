@@ -185,7 +185,7 @@ func handleRow(row []string) (record CallRecord, err error) {
 		result = "Ingress Rate Not Found"
 		log.Printf("[%s]->result: %s", callerId, result)
 	} else {
-		rate_utils.ParseRateFromContent(callerId, ani, dnis, content)
+		rate_utils.ParseRateFromContent(callerId, aniSip, dnisSip, content)
 	}
 
 	//fmt.Println(content)
