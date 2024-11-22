@@ -47,16 +47,35 @@ func ProcessFileOrFolder(path string) {
 }
 
 func processFolder(folderPath string) {
+	folderPathFileName := strings.ReplaceAll(folderPath, "/", "-")
+
 	err := filepath.Walk(folderPath, func(path string, info os.FileInfo, err error) error {
 		if err != nil {
 			return err
 		}
 		if !info.IsDir() && strings.HasSuffix(info.Name(), ".pcap") {
 			fmt.Printf("Found pcap file: %s\n", path)
+			//fileName := filepath.Base(path)
+
+			fp, err := sip.LoadSIPTraceFromPcap(path)
+			if err != nil {
+				log.Panic(err)
+			}
+
+			// Search the SIP packets for the filters
+			sip.HandleSipPackets(manager, fp)
 		}
 		return nil
 	})
 	if err != nil {
 		fmt.Printf("Error processing folder: %v\n", err)
+		return
 	}
+
+	sessions := manager.Sessions
+
+	saveCsvFileName := fmt.Sprintf("%s.csv", folderPathFileName)
+	// 写入数据
+	csv_utils.SaveDataCsv(saveCsvFileName, sessions)
+
 }
