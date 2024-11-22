@@ -59,7 +59,8 @@ func processFolder(folderPath string) {
 
 			fp, err := sip.LoadSIPTraceFromPcap(path)
 			if err != nil {
-				log.Panic(err)
+				log.Printf("cannot parsing file: %s err:%v", path, err)
+				return nil
 			}
 
 			// Search the SIP packets for the filters

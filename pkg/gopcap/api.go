@@ -8,6 +8,7 @@ package gopcap
 
 import (
 	"errors"
+	"fmt"
 	"io"
 	"time"
 )
@@ -212,13 +213,13 @@ func Parse(src io.Reader) (PcapFile, error) {
 	// Check whether this is a libpcap file at all, and if so what byte ordering it has.
 	_, flipped, err := checkMagicNum(src)
 	if err != nil {
-		return *file, err
+		return *file, fmt.Errorf("checkMagicNum: %v", err)
 	}
 
 	// Then populate the file header.
 	err = populateFileHeader(file, src, flipped)
 	if err != nil {
-		return *file, err
+		return *file, fmt.Errorf("populateFileHeader: %v", err)
 	}
 
 	// Whatever remains now are packets. Parse the rest of the file.

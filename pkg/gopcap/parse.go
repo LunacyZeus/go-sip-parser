@@ -2,6 +2,7 @@ package gopcap
 
 import (
 	"bytes"
+	"fmt"
 	"io"
 	"time"
 )
@@ -40,14 +41,18 @@ func parsePacket(pkt *Packet, src io.Reader, flipped bool, linkType Link) error 
 	err := populatePacketHeader(pkt, src, flipped)
 
 	if err != nil {
-		return err
+		return fmt.Errorf("populatePacketHeader: %v", err)
 	}
 
 	data := make([]byte, pkt.IncludedLen)
-	readlen, err := src.Read(data)
-	if uint32(readlen) != pkt.IncludedLen {
-		return UnexpectedEOF
-	}
+	//readlen, err := src.Read(data)
+
+	/*
+		if uint32(readlen) != pkt.IncludedLen {
+			return UnexpectedEOF
+		}
+
+	*/
 
 	pkt.Data, err = parseLinkData(data, linkType)
 
