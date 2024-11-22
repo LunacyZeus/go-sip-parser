@@ -44,7 +44,7 @@ func ParseOriginationTrunkRate(data string) OriginationTrunkRate {
 	}
 
 	// 打印解析结果
-	//fmt.Printf("Parsed Struct: %+v\n", rate)
+	//fmt.Printf("Parsed Struct: %+v\n", rate_utils)
 
 	return rate
 }

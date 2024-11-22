@@ -3,7 +3,7 @@ package process
 import (
 	"fmt"
 	"os"
-	"sip-parser/pkg/utils/rate"
+	"sip-parser/pkg/utils/rate_utils"
 	"sip-parser/pkg/utils/telnet"
 )
 
@@ -66,6 +66,6 @@ func StartTelnet(params CallSimulationParams) {
 
 	writeToFile("call1.xml", content)
 
-	rate.ParseRateFromContent("", content)
+	rate_utils.ParseRateFromContent("", content)
 
 }

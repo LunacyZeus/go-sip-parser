@@ -1,4 +1,4 @@
-package rate
+package rate_utils
 
 import (
 	"fmt"

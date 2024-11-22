@@ -3,7 +3,7 @@ package process
 import (
 	"io/ioutil"
 	"log"
-	"sip-parser/pkg/utils/rate"
+	"sip-parser/pkg/utils/rate_utils"
 )
 
 func TestFunc() {
@@ -19,6 +19,6 @@ func TestFunc() {
 	// 将读取的内容转换为字符串
 	content := string(data)
 
-	rate.ParseRateFromContent("", content)
+	rate_utils.ParseRateFromContent("", content)
 
 }
