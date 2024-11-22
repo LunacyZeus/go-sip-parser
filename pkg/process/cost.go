@@ -277,6 +277,8 @@ func CalculateSipCost(path string) {
 	var updatedRecords [][]string
 	updatedRecords = append(updatedRecords, headers) // 保留标题行
 
+	n := 1
+	all_count := len(rows)
 	// 实时处理每一行
 	for i, row := range rows[1:] { // 跳过标题行
 		record, err := handleRow(row)
@@ -284,6 +286,7 @@ func CalculateSipCost(path string) {
 			log.Println("Skip row:", err)
 			continue
 		}
+		fmt.Printf("%d/%d", n, all_count)
 
 		// 修改后的记录写入 new_rows
 		newRows[i+1] = recordToRow(record)
