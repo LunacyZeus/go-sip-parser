@@ -286,7 +286,7 @@ func CalculateSipCost(path string) {
 			log.Println("Skip row:", err)
 			continue
 		}
-		fmt.Printf("%d/%d", n, all_count)
+		log.Printf("processing->%d/%d", n, all_count)
 
 		// 修改后的记录写入 new_rows
 		newRows[i+1] = recordToRow(record)
