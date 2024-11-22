@@ -141,7 +141,7 @@ func handleRow(row []string) (record CallRecord, err error) {
 	result := row[13]
 
 	if result != "" || rate != "" || rateID != "" {
-		log.Printf("calld(%s) already exists", callerId)
+		err = fmt.Errorf("calld(%s) already exists", callerId)
 		record = CallRecord{
 			CallID:     callerId,
 			ANI:        ani,
@@ -265,6 +265,10 @@ func CalculateSipCost(path string) {
 		return
 	}
 
+	// 克隆 rows 为 new_rows
+	newRows := make([][]string, len(rows))
+	copy(newRows, rows)
+
 	// 提取标题行
 	headers := rows[0]
 	fmt.Println("Headers:", headers)
@@ -277,22 +281,15 @@ func CalculateSipCost(path string) {
 	for i, row := range rows[1:] { // 跳过标题行
 		record, err := handleRow(row)
 		if err != nil {
-			log.Println("Error parsing row:", err)
+			log.Println("Skip row:", err)
 			continue
 		}
 
-		// 将修改后的数据记录转回字符串切片格式
-		updatedRow := recordToRow(record)
-
-		// 添加到更新记录的切片
-		if i < len(updatedRecords) {
-			updatedRecords[i+1] = updatedRow // 替换对应行
-		} else {
-			updatedRecords = append(updatedRecords, updatedRow) // 新增行
-		}
+		// 修改后的记录写入 new_rows
+		newRows[i+1] = recordToRow(record)
 
 		// 实时写入修改后的数据到文件
-		err = updateCsv(path, updatedRecords)
+		err = updateCsv("res_"+path, newRows)
 		if err != nil {
 			fmt.Println("Error writing CSV:", err)
 			return

@@ -19,3 +19,6 @@ call_simulation 88.151.132.30,5060,5482#+13236778193,9093237141
 ./go_sip_parser_amd64_linux telnet --cip "208.79.54.183" --cport "5060" --ani "+16787784146" --dnis "+17065423030"
 
 call_simulation 208.79.54.183,5060,+16787784146,+17065423030
+
+
+./go_sip_parser_amd64_linux get_cost -f out_202411142355.pcap.csv
