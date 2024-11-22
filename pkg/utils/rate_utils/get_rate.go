@@ -14,12 +14,12 @@ func removePlusPrefix(s string) string {
 	return s // 原样返回
 }
 
-func ParseRateFromContent(callerID, ani, dnis, content string) (inbound_rate, inbound_rate_id, outbound_rate, outbound_rate_id string) {
+func ParseRateFromContent(callerID, ani, dnis, aniSip, dnisSip, content string) (inbound_rate, inbound_rate_id, outbound_rate, outbound_rate_id string) {
 	// 将读取的内容转换为字符串
 	//content := string(data)
 
-	ani = removePlusPrefix(ani)
-	dnis = removePlusPrefix(dnis)
+	aniSip = removePlusPrefix(aniSip)
+	dnisSip = removePlusPrefix(dnisSip)
 
 	xmlList, err := xml_utils.ParseXMLToNodeList(content)
 	if err != nil {
@@ -47,15 +47,22 @@ func ParseRateFromContent(callerID, ani, dnis, content string) (inbound_rate, in
 			//fmt.Println(terminationRoute.TerminationTrunk)
 			if len(terminationRoute.TerminationTrunk) > 0 {
 				for _, trunk := range terminationRoute.TerminationTrunk {
-					FinalANI := trunk.FinalANI.ANI
-					FinalANIReal := trunk.FinalANI.Real
-					FinalDNIS := trunk.FinalDNIS.DNIS
-					FinalDNISReal := trunk.FinalANI.Real
+					hosts := []string{}
+					for _, host := range trunk.TerminationHost {
+						hosts = append(hosts, host.HostIP)
+					}
 
-					if ani == removePlusPrefix(FinalANI) && (dnis == removePlusPrefix(FinalDNIS)) {
-						log.Printf("[outbound] CallerID(%s) RateID(%s) Rate(%s) ANI(%s/%s) DNIS(%s/%s)\n", callerID, trunk.TrunkRate.RateID, trunk.TrunkRate.Rate, FinalANI, FinalANIReal, FinalDNIS, FinalDNISReal)
+					hostsStr := strings.Join(hosts, ",")
+
+					FinalANI := trunk.FinalANI.ANI
+					//FinalANIReal := trunk.FinalANI.Real
+					FinalDNIS := trunk.FinalDNIS.DNIS
+					//FinalDNISReal := trunk.FinalANI.Real
+
+					if aniSip == removePlusPrefix(FinalANI) && (dnisSip == removePlusPrefix(FinalDNIS)) {
+						log.Printf("[outbound] CallerID(%s) RateID(%s) Rate(%s) ANI(%s-%s) DNIS(%s-%s) host(%s)\n", callerID, trunk.TrunkRate.RateID, trunk.TrunkRate.Rate, FinalANI, ani, FinalDNIS, dnis, hostsStr)
 					} else {
-						log.Printf("[outbound] CallerID(%s) RateID(%s) Rate(%s) ANI(%s!=%s) DNIS(%s!=%s) not match\n", callerID, trunk.TrunkRate.RateID, trunk.TrunkRate.Rate, ani, removePlusPrefix(FinalANI), dnis, removePlusPrefix(FinalDNIS))
+						log.Printf("[outbound] CallerID(%s) RateID(%s) Rate(%s) ANI(%s!=%s) DNIS(%s!=%s) host(%s) not match\n", callerID, trunk.TrunkRate.RateID, trunk.TrunkRate.Rate, aniSip, removePlusPrefix(FinalANI), dnisSip, removePlusPrefix(FinalDNIS), hostsStr)
 					}
 
 					outbound_rate = trunk.TrunkRate.Rate

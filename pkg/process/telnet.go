@@ -66,6 +66,6 @@ func StartTelnet(params CallSimulationParams) {
 
 	writeToFile("call1.xml", content)
 
-	rate_utils.ParseRateFromContent("", "", "", content)
+	rate_utils.ParseRateFromContent("", "", "", "", "", content)
 
 }
