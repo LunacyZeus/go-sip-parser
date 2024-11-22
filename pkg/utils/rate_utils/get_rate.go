@@ -54,6 +54,8 @@ func ParseRateFromContent(callerID, ani, dnis, content string) (inbound_rate, in
 
 					if ani == removePlusPrefix(FinalANI) && (dnis == removePlusPrefix(FinalDNIS)) {
 						log.Printf("[outbound] CallerID(%s) RateID(%s) Rate(%s) ANI(%s/%s) DNIS(%s/%s)\n", callerID, trunk.TrunkRate.RateID, trunk.TrunkRate.Rate, FinalANI, FinalANIReal, FinalDNIS, FinalDNISReal)
+					} else {
+						log.Printf("[outbound] CallerID(%s) RateID(%s) Rate(%s) ANI(%s!=%s) DNIS(%s!=%s)\n", callerID, trunk.TrunkRate.RateID, trunk.TrunkRate.Rate, ani, removePlusPrefix(FinalANI), dnis, removePlusPrefix(FinalDNIS))
 					}
 
 					outbound_rate = trunk.TrunkRate.Rate
