@@ -3,12 +3,12 @@ package process
 import (
 	"io/ioutil"
 	"log"
-	"sip-parser/pkg/utils/rate"
+	"sip-parser/pkg/utils/rate_utils"
 )
 
 func TestFunc() {
 	// 指定要读取的文件路径
-	filePath := "1.xml"
+	filePath := "call.xml"
 
 	// 读取文件内容
 	data, err := ioutil.ReadFile(filePath)
@@ -19,6 +19,6 @@ func TestFunc() {
 	// 将读取的内容转换为字符串
 	content := string(data)
 
-	rate.ParseRateFromContent("", content)
+	rate_utils.ParseRateFromContent("", "", "", "", "", content)
 
 }

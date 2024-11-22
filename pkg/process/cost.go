@@ -6,7 +6,7 @@ import (
 	"log"
 	"os"
 	"regexp"
-	"sip-parser/pkg/utils/rate"
+	"sip-parser/pkg/utils/rate_utils"
 	"sip-parser/pkg/utils/telnet"
 	"strings"
 )
@@ -27,6 +27,8 @@ type CallRecord struct {
 	Command    string
 	Result     string
 }
+
+var client *telnet.TelnetClient
 
 func parseTime(value string) (string, error) {
 	//layout := "2006-01-02 15:04:05" // Adjust based on your time format
@@ -119,9 +121,98 @@ func extractIP(input string) string {
 	return ip
 }
 
+func handleRow(row []string) (record CallRecord, err error) {
+	callerId := row[0]
+	ani := row[1]
+	dnis := row[2]
+	via := row[3]
+
+	// Parse the row into CallRecord
+	inviteTime, _ := parseTime(row[4])
+	ringTime, _ := parseTime(row[5])
+	answerTime, _ := parseTime(row[6])
+	hangupTime, _ := parseTime(row[7])
+
+	duration := row[8]
+	rate := row[9]
+	rateID := row[10]
+	cost := row[11]
+
+	callerIP := extractIP(row[3])
+
+	aniSip := GetSipPart(row[1])
+	dnisSip := GetSipPart(row[2])
+
+	// 建立连接
+	err = client.Connect()
+	if err != nil {
+		log.Println(err)
+		return
+	}
+	defer client.Close()
+
+	// 发送登录命令
+	err = client.Login()
+	if err != nil {
+		err = fmt.Errorf("login->%v", err)
+		return
+	}
+
+	//log.Println("Login successfully!")
+
+	//fmt.Printf("ani(%s) dnis(%s)\n", row[1], row[2])
+	command := fmt.Sprintf("call_simulation %s,5060,%s,%s", callerIP, aniSip, dnisSip)
+	log.Printf("[%s] Exec Command-> %s", callerId, command)
+
+	content, err := client.CallSimulation(callerIP, "5060", aniSip, dnisSip)
+	if err != nil {
+		err = fmt.Errorf("CallSimulation->%v", err)
+		return
+	}
+
+	_ = client.LoginOut()
+
+	//
+
+	result := ""
+	if strings.Contains(content, "No Ingress Resource Found") {
+		result = "No Ingress Resource Found"
+		log.Printf("[%s]->result: %s", callerId, result)
+	} else if strings.Contains(content, "Unauthorized IP Address") {
+		result = "Unauthorized IP Address"
+		log.Printf("[%s]->result: %s", callerId, result)
+	} else if strings.Contains(content, "Ingress Rate Not Found") {
+		result = "Ingress Rate Not Found"
+		log.Printf("[%s]->result: %s", callerId, result)
+	} else {
+		rate_utils.ParseRateFromContent(callerId, ani, dnis, aniSip, dnisSip, content)
+	}
+
+	//fmt.Println(content)
+
+	record = CallRecord{
+		CallID:     callerId,
+		ANI:        ani,
+		DNIS:       dnis,
+		Via:        via,
+		InviteTime: inviteTime,
+		RingTime:   ringTime,
+		AnswerTime: answerTime,
+		HangupTime: hangupTime,
+		Duration:   duration,
+		Rate:       rate,
+		RateID:     rateID,
+		Cost:       cost,
+		Command:    command,
+		Result:     result,
+	}
+
+	return
+}
+
 func CalculateSipCost(path string) {
 	// 创建客户端实例
-	client := telnet.NewTelnetClient("127.0.0.1", "4320")
+	client = telnet.NewTelnetClient("127.0.0.1", "4320")
 
 	file, err := os.Open(path)
 	if err != nil {
@@ -153,76 +244,11 @@ func CalculateSipCost(path string) {
 			continue
 		}
 
-		callerId := row[0]
-		// Parse the row into CallRecord
-		inviteTime, _ := parseTime(row[4])
-		ringTime, _ := parseTime(row[5])
-		answerTime, _ := parseTime(row[6])
-		hangupTime, _ := parseTime(row[7])
-
-		callerIP := extractIP(row[3])
-
-		ani := GetSipPart(row[1])
-		dnis := GetSipPart(row[2])
-
-		// 建立连接
-		err = client.Connect()
+		record, err := handleRow(row)
 		if err != nil {
-			fmt.Println(err)
-			return
-		}
-		defer client.Close()
-
-		// 发送登录命令
-		err = client.Login()
-		if err != nil {
-			fmt.Println(err)
-			return
+			log.Println("Error parsing row:", err)
 		}
 
-		log.Println("Login successfully!")
-
-		//fmt.Printf("ani(%s) dnis(%s)\n", row[1], row[2])
-		command := fmt.Sprintf("call_simulation %s,5060,%s,%s", callerIP, ani, dnis)
-		log.Printf("[%s] Exec Command-> %s", callerId, command)
-
-		content, err := client.CallSimulation(callerIP, "5060", ani, dnis)
-		if err != nil {
-			log.Println("CallSimulation", err)
-			return
-		}
-
-		client.LoginOut()
-
-		result := ""
-		if strings.Contains(content, "No Ingress Resource Found") {
-			result = "No Ingress Resource Found"
-			log.Printf("[%s]->result: %s", callerId, result)
-		} else if strings.Contains(content, "Unauthorized IP Address") {
-			result = "Unauthorized IP Address"
-			log.Printf("[%s]->result: %s", callerId, result)
-		} else {
-			rate.ParseRateFromContent(callerId, content)
-		}
-
-		//fmt.Println(content)
-
-		record := CallRecord{
-			CallID:     row[0],
-			ANI:        row[1],
-			DNIS:       row[2],
-			Via:        row[3],
-			InviteTime: inviteTime,
-			RingTime:   ringTime,
-			AnswerTime: answerTime,
-			HangupTime: hangupTime,
-			Duration:   row[8],
-			Rate:       row[9],
-			RateID:     row[10],
-			Cost:       row[11],
-			Command:    command,
-			Result:     result,
-		}
 		records = append(records, record)
 	}
 
