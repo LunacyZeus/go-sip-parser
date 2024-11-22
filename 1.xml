@@ -1,0 +1,458 @@
+<Origination-Ignored-Trunk>
+</Origination-Ignored-Trunk>
+<Origination-Trunk>
+  <CAP>0</CAP>
+  <CPS>0</CPS>
+  <Carrier-Name>Peerless Network Inc _BAN 4000438_Client</Carrier-Name>
+  <Trunk-ID>142</Trunk-ID>
+  <Trunk-Name>Peerless - Dialer IB</Trunk-Name>
+  <Route-Type>First static routing, then dynamic routing</Route-Type>
+  <Media-Type>Bypass Media</Media-Type>
+  <Profit-Margin>0.000000</Profit-Margin>
+  <Profit-Type>By Percentage</Profit-Type>
+  <SHAKEN>
+    <Vfy-policy>Block if invalid</Vfy-policy>
+    <Sign-policy>Disabled</Sign-policy>
+    <ANI-Pool></ANI-Pool>
+    <Allow-resign>False</Allow-resign>
+  </SHAKEN>
+  <Static-Route-Name>Dialer_Static</Static-Route-Name>
+  <Dynamic-Route-Name>Dialer LCR</Dynamic-Route-Name>
+  <Rate-Table-Name>IB_Peerless Dialer</Rate-Table-Name>
+  <Route-Strategy-Name>Dialer Routing</Route-Strategy-Name>
+</Origination-Trunk>
+<Origination-SRC-ANI>+16787784146</Origination-SRC-ANI>
+<Origination-SRC-DNIS>17065423030</Origination-SRC-DNIS>
+<Origination-Route-DNIS>17065423030</Origination-Route-DNIS>
+<Origination-Digit-Mapped-ANI>
+  <ANI>+16787784146</ANI>
+</Origination-Digit-Mapped-ANI>
+<Origination-Digit-Mapped-DNIS>
+  <DNIS>17065423030</DNIS>
+</Origination-Digit-Mapped-DNIS>
+<Origination-Translation-ANI>
+  <ANI>+16787784146</ANI>
+  <LERG></LERG>
+  <DNO>none</DNO>
+  <DNO>none</DNO>
+  <YOUMAIL></YOUMAIL>
+</Origination-Translation-ANI>
+<Origination-Translation-DNIS>
+  <DNIS>17065423030</DNIS>
+  <LERG></LERG>
+  <DNC>True</DNC>
+</Origination-Translation-DNIS>
+<Origination-LRN-Action-DNIS-Before>
+  <DNIS>17065423030</DNIS>
+</Origination-LRN-Action-DNIS-Before>
+<Origination-Respond-LRN-DNIS>17065423030</Origination-Respond-LRN-DNIS>
+<Origination-LRN-Action-DNIS-After>
+  <DNIS>17065423030</DNIS>
+  <LERG></LERG>
+  <DNC>True</DNC>
+</Origination-LRN-Action-DNIS-After>
+<Origination-Trunk-Rate>
+  <Code>1706542</Code>
+  <Country>USA</Country>
+  <Code-Name>BELLSOUTH TELECOMM  DBA SOUTHERN BELL TEL & TEL</Code-Name>
+  <Rate-ID>156638393</Rate-ID>
+  <Rate>0.001356</Rate>
+  <Rate-Type>Other</Rate-Type>
+  <Dnis-Type>LRN</Dnis-Type>
+  <Jur-Type>US JD</Jur-Type>
+  <Rate-Effective>2024-10-30 00:00:00+GMT</Rate-Effective>
+</Origination-Trunk-Rate>
+<Termination-Route>
+  <Static-Route-Name>Dialer_Static</Static-Route-Name>
+  <Static-Prefix></Static-Prefix>
+  <Route-Strategy>Dynamic LCR</Route-Strategy>
+  <Termination-Trunk>
+    <Carrier-Name>Access Tandem</Carrier-Name>
+    <Trunk-ID>357</Trunk-ID>
+    <Trunk-Name>ATI - Dialer</Trunk-Name>
+    <Rate-Table-Name>OB_AccessTandem_Marketing_7125</Rate-Table-Name>
+    <CPS>300</CPS>
+    <CAP>3000</CAP>
+    <Bill-After-Action>True</Bill-After-Action>
+    <Strategy>Top Down</Strategy>
+    <SHAKEN>
+      <Vfy-policy>Block if invalid</Vfy-policy>
+    </SHAKEN>
+    <Final-ANI>
+      <ANI>+16787784146</ANI>
+      <Real>+16787784146</Real>
+      <DNO>none</DNO>
+      <DNO>none</DNO>
+    </Final-ANI>
+    <Final-DNIS>
+      <Actions>
+        <Action>Add Prefix</Action>
+        <Digit>7125</Digit>
+      </Actions>
+      <DNIS>712517065423030</DNIS>
+      <Real>17065423030</Real>
+      <DNC>True</DNC>
+    </Final-DNIS>
+    <ASR>0.000000</ASR>
+    <ACD>0.000000</ACD>
+    <Trunk-Rate>
+      <Code>1706542</Code>
+      <Country>USA</Country>
+      <Code-Name>BELLSOUTH TELECOMM  DBA SOUTHERN BELL TEL & TEL</Code-Name>
+      <Rate-ID>60764182</Rate-ID>
+      <Rate>0.001300</Rate>
+      <Rate-Type>Other</Rate-Type>
+      <Dnis-Type>LRN</Dnis-Type>
+      <Jur-Type>US JD</Jur-Type>
+      <Rate-Effective>2024-10-30 00:00:00+GMT</Rate-Effective>
+    </Trunk-Rate>
+    <Termination-Host>
+      <CPS>0</CPS>
+      <CAP>0</CAP>
+      <Port>5060</Port>
+      <Host-IP>104.143.1.140</Host-IP>
+    </Termination-Host>
+    <Termination-Host>
+      <CPS>0</CPS>
+      <CAP>0</CAP>
+      <Port>5060</Port>
+      <Host-IP>104.143.1.141</Host-IP>
+    </Termination-Host>
+    <Termination-Host>
+      <CPS>0</CPS>
+      <CAP>0</CAP>
+      <Port>5060</Port>
+      <Host-IP>104.143.1.142</Host-IP>
+    </Termination-Host>
+    <Termination-Host>
+      <CPS>0</CPS>
+      <CAP>0</CAP>
+      <Port>5060</Port>
+      <Host-IP>104.143.1.143</Host-IP>
+    </Termination-Host>
+    <Termination-Host>
+      <CPS>0</CPS>
+      <CAP>0</CAP>
+      <Port>5060</Port>
+      <Host-IP>104.143.1.144</Host-IP>
+    </Termination-Host>
+    <Termination-Host>
+      <CPS>0</CPS>
+      <CAP>0</CAP>
+      <Port>5060</Port>
+      <Host-IP>104.143.1.145</Host-IP>
+    </Termination-Host>
+    <Termination-Host>
+      <CPS>0</CPS>
+      <CAP>0</CAP>
+      <Port>5060</Port>
+      <Host-IP>104.143.1.146</Host-IP>
+    </Termination-Host>
+    <Termination-Host>
+      <CPS>0</CPS>
+      <CAP>0</CAP>
+      <Port>5060</Port>
+      <Host-IP>104.143.1.147</Host-IP>
+    </Termination-Host>
+    <Termination-Host>
+      <CPS>0</CPS>
+      <CAP>0</CAP>
+      <Port>5060</Port>
+      <Host-IP>104.143.1.148</Host-IP>
+    </Termination-Host>
+    <Termination-Host>
+      <CPS>0</CPS>
+      <CAP>0</CAP>
+      <Port>5060</Port>
+      <Host-IP>104.143.1.149</Host-IP>
+    </Termination-Host>
+    <Termination-Signature>
+    </Termination-Signature>
+    <P-Headers>
+    </P-Headers>
+  </Termination-Trunk>
+  <Termination-Trunk>
+    <Carrier-Name>Glotell</Carrier-Name>
+    <Trunk-ID>87</Trunk-ID>
+    <Trunk-Name>Glotell - Dialer</Trunk-Name>
+    <Rate-Table-Name>OB_Glotell_Dialer</Rate-Table-Name>
+    <CPS>0</CPS>
+    <CAP>0</CAP>
+    <Bill-After-Action>True</Bill-After-Action>
+    <Strategy>Round Robin</Strategy>
+    <SHAKEN>
+      <Vfy-policy>Block if invalid</Vfy-policy>
+    </SHAKEN>
+    <Final-ANI>
+      <ANI>+16787784146</ANI>
+      <Real>+16787784146</Real>
+      <DNO>none</DNO>
+      <DNO>none</DNO>
+    </Final-ANI>
+    <Final-DNIS>
+      <Actions>
+        <Action>Add Prefix</Action>
+        <Digit>2000</Digit>
+      </Actions>
+      <DNIS>200017065423030</DNIS>
+      <Real>17065423030</Real>
+      <DNC>True</DNC>
+    </Final-DNIS>
+    <ASR>0.000000</ASR>
+    <ACD>0.000000</ACD>
+    <Trunk-Rate>
+      <Code>1706542</Code>
+      <Country>USA</Country>
+      <Code-Name>BELLSOUTH TELECOMM  DBA SOUTHERN BELL TEL & TEL</Code-Name>
+      <Rate-ID>109259383</Rate-ID>
+      <Rate>0.001329</Rate>
+      <Rate-Type>Other</Rate-Type>
+      <Dnis-Type>LRN</Dnis-Type>
+      <Jur-Type>US JD</Jur-Type>
+      <Rate-Effective>2024-10-30 00:00:00+GMT</Rate-Effective>
+    </Trunk-Rate>
+    <Termination-Host>
+      <CPS>0</CPS>
+      <CAP>0</CAP>
+      <Port>5060</Port>
+      <Host-IP>144.202.53.23</Host-IP>
+    </Termination-Host>
+    <Termination-Signature>
+    </Termination-Signature>
+    <P-Headers>
+    </P-Headers>
+  </Termination-Trunk>
+</Termination-Route>
+<Global-Route-State>
+  <Origination-State>Normal</Origination-State>
+  <Termination-Route>
+    <State>Normal</State>
+    <Route-Types>DNIS Static Routing</Route-Types>
+  </Termination-Route>
+  <Termination-Trunk>
+    <Trunk-ID>28</Trunk-ID>
+    <Trunk-Name>Netvoice - DID 2</Trunk-Name>
+    <Cause>Trunk Disabled</Cause>
+  </Termination-Trunk>
+  <Termination-Trunk>
+    <Trunk-ID>27</Trunk-ID>
+    <Trunk-Name>Netvoice - DIDs</Trunk-Name>
+    <Cause>No Profitable Trunk</Cause>
+    <Rate>0.003300</Rate>
+  </Termination-Trunk>
+  <Termination-Trunk>
+    <Trunk-ID>47</Trunk-ID>
+    <Trunk-Name>Peerless - US SD</Trunk-Name>
+    <Cause>Block All Resouce</Cause>
+  </Termination-Trunk>
+  <Termination-Route>
+    <State>Normal</State>
+    <Route-Types>DNIS Dynamic Routing</Route-Types>
+  </Termination-Route>
+  <Termination-Trunk>
+    <Trunk-ID>389</Trunk-ID>
+    <Trunk-Name>Action_Vox - Dialer</Trunk-Name>
+    <Cause>Egress invalid ANI block</Cause>
+  </Termination-Trunk>
+  <Termination-Trunk>
+    <Trunk-ID>393</Trunk-ID>
+    <Trunk-Name>Dialworld - SD</Trunk-Name>
+    <Cause>Trunk Disabled</Cause>
+  </Termination-Trunk>
+  <Termination-Trunk>
+    <Trunk-ID>9</Trunk-ID>
+    <Trunk-Name>IP Link - Coretel</Trunk-Name>
+    <Cause>Rate Not Found</Cause>
+  </Termination-Trunk>
+  <Termination-Trunk>
+    <Trunk-ID>402</Trunk-ID>
+    <Trunk-Name>All Access - US SD</Trunk-Name>
+    <Cause>Egress invalid ANI block</Cause>
+  </Termination-Trunk>
+  <Termination-Trunk>
+    <Trunk-ID>18</Trunk-ID>
+    <Trunk-Name>Voyce - Dialer Platinum</Trunk-Name>
+    <Cause>No Profitable Trunk</Cause>
+    <Rate>0.003000</Rate>
+  </Termination-Trunk>
+  <Termination-Trunk>
+    <Trunk-ID>406</Trunk-ID>
+    <Trunk-Name>Allure Telecom - US SD</Trunk-Name>
+    <Cause>Trunk Disabled</Cause>
+  </Termination-Trunk>
+  <Termination-Trunk>
+    <Trunk-ID>27</Trunk-ID>
+    <Trunk-Name>Netvoice - DIDs</Trunk-Name>
+    <Cause>No Profitable Trunk</Cause>
+    <Rate>0.003300</Rate>
+  </Termination-Trunk>
+  <Termination-Trunk>
+    <Trunk-ID>412</Trunk-ID>
+    <Trunk-Name>VoIP Innovations - US SD</Trunk-Name>
+    <Cause>Egress invalid ANI block</Cause>
+  </Termination-Trunk>
+  <Termination-Trunk>
+    <Trunk-ID>418</Trunk-ID>
+    <Trunk-Name>My CC - Dialer</Trunk-Name>
+    <Cause>Block All Resouce</Cause>
+  </Termination-Trunk>
+  <Termination-Trunk>
+    <Trunk-ID>420</Trunk-ID>
+    <Trunk-Name>Nuso - Silver All SD</Trunk-Name>
+    <Cause>No Profitable Trunk</Cause>
+    <Rate>0.001980</Rate>
+  </Termination-Trunk>
+  <Termination-Trunk>
+    <Trunk-ID>40</Trunk-ID>
+    <Trunk-Name>Teleinx - Low SDP</Trunk-Name>
+    <Cause>Egress invalid ANI block</Cause>
+  </Termination-Trunk>
+  <Termination-Trunk>
+    <Trunk-ID>429</Trunk-ID>
+    <Trunk-Name>IP Transfer - US SD</Trunk-Name>
+    <Cause>No Profitable Trunk</Cause>
+    <Rate>0.003500</Rate>
+  </Termination-Trunk>
+  <Termination-Trunk>
+    <Trunk-ID>45</Trunk-ID>
+    <Trunk-Name>Touchtone - Dialer</Trunk-Name>
+    <Cause>No Profitable Trunk</Cause>
+    <Rate>0.001800</Rate>
+  </Termination-Trunk>
+  <Termination-Trunk>
+    <Trunk-ID>47</Trunk-ID>
+    <Trunk-Name>Peerless - US SD</Trunk-Name>
+    <Cause>Block All Resouce</Cause>
+  </Termination-Trunk>
+  <Termination-Trunk>
+    <Trunk-ID>46</Trunk-ID>
+    <Trunk-Name>Touchtone - HS Dialer</Trunk-Name>
+    <Cause>No Profitable Trunk</Cause>
+    <Rate>0.001520</Rate>
+  </Termination-Trunk>
+  <Termination-Trunk>
+    <Trunk-ID>58</Trunk-ID>
+    <Trunk-Name>Dawz - Dialer low SD</Trunk-Name>
+    <Cause>No Profitable Trunk</Cause>
+    <Rate>0.001928</Rate>
+  </Termination-Trunk>
+  <Termination-Trunk>
+    <Trunk-ID>59</Trunk-ID>
+    <Trunk-Name>Dawz - Hi SD Dialer</Trunk-Name>
+    <Cause>No Profitable Trunk</Cause>
+    <Rate>0.001750</Rate>
+  </Termination-Trunk>
+  <Termination-Trunk>
+    <Trunk-ID>61</Trunk-ID>
+    <Trunk-Name>VoiceTerm - Dialer Marketing</Trunk-Name>
+    <Cause>No Profitable Trunk</Cause>
+    <Rate>0.002030</Rate>
+  </Termination-Trunk>
+  <Termination-Trunk>
+    <Trunk-ID>70</Trunk-ID>
+    <Trunk-Name>Smartbiz - Dialer OB</Trunk-Name>
+    <Cause>No Profitable Trunk</Cause>
+    <Rate>0.001540</Rate>
+  </Termination-Trunk>
+  <Termination-Trunk>
+    <Trunk-ID>77</Trunk-ID>
+    <Trunk-Name>All Clear -Dialer</Trunk-Name>
+    <Cause>No Profitable Trunk</Cause>
+    <Rate>0.001670</Rate>
+  </Termination-Trunk>
+  <Termination-Trunk>
+    <Trunk-ID>80</Trunk-ID>
+    <Trunk-Name>Connexum  - Prem SD</Trunk-Name>
+    <Cause>No Profitable Trunk</Cause>
+    <Rate>0.002078</Rate>
+  </Termination-Trunk>
+  <Termination-Trunk>
+    <Trunk-ID>83</Trunk-ID>
+    <Trunk-Name>DID Cent - Dialer</Trunk-Name>
+    <Cause>Trunk Disabled</Cause>
+  </Termination-Trunk>
+  <Termination-Trunk>
+    <Trunk-ID>87</Trunk-ID>
+    <Trunk-Name>Glotell - Dialer</Trunk-Name>
+    <Cause>Normal</Cause>
+  </Termination-Trunk>
+  <Termination-Trunk>
+    <Trunk-ID>90</Trunk-ID>
+    <Trunk-Name>NGL - US SD</Trunk-Name>
+    <Cause>No Profitable Trunk</Cause>
+    <Rate>0.001700</Rate>
+  </Termination-Trunk>
+  <Termination-Trunk>
+    <Trunk-ID>93</Trunk-ID>
+    <Trunk-Name>Powernet  OB - Dialer 3692</Trunk-Name>
+    <Cause>Egress invalid ANI block</Cause>
+  </Termination-Trunk>
+  <Termination-Trunk>
+    <Trunk-ID>95</Trunk-ID>
+    <Trunk-Name>Qwality - Cellular Convo</Trunk-Name>
+    <Cause>Block All Resouce</Cause>
+  </Termination-Trunk>
+  <Termination-Trunk>
+    <Trunk-ID>96</Trunk-ID>
+    <Trunk-Name>QwalityTel 2 Econ</Trunk-Name>
+    <Cause>Egress invalid ANI block</Cause>
+  </Termination-Trunk>
+  <Termination-Trunk>
+    <Trunk-ID>97</Trunk-ID>
+    <Trunk-Name>QwalityTel 2 Prem</Trunk-Name>
+    <Cause>Egress invalid ANI block</Cause>
+  </Termination-Trunk>
+  <Termination-Trunk>
+    <Trunk-ID>98</Trunk-ID>
+    <Trunk-Name>QwalityTel 2 Std</Trunk-Name>
+    <Cause>Block All Resouce</Cause>
+  </Termination-Trunk>
+  <Termination-Trunk>
+    <Trunk-ID>357</Trunk-ID>
+    <Trunk-Name>ATI - Dialer</Trunk-Name>
+    <Cause>Normal</Cause>
+  </Termination-Trunk>
+  <Termination-Trunk>
+    <Trunk-ID>101</Trunk-ID>
+    <Trunk-Name>QwalityTel - Red Econ Plus</Trunk-Name>
+    <Cause>Egress invalid ANI block</Cause>
+  </Termination-Trunk>
+  <Termination-Trunk>
+    <Trunk-ID>360</Trunk-ID>
+    <Trunk-Name>Dialworld - Canda</Trunk-Name>
+    <Cause>Trunk Disabled</Cause>
+  </Termination-Trunk>
+  <Termination-Trunk>
+    <Trunk-ID>104</Trunk-ID>
+    <Trunk-Name>RSCOM - Dialer</Trunk-Name>
+    <Cause>Trunk Disabled</Cause>
+  </Termination-Trunk>
+  <Termination-Trunk>
+    <Trunk-ID>108</Trunk-ID>
+    <Trunk-Name>Secure Voice - Dialer OB</Trunk-Name>
+    <Cause>Block All Resouce</Cause>
+  </Termination-Trunk>
+  <Termination-Trunk>
+    <Trunk-ID>52</Trunk-ID>
+    <Trunk-Name>Range - Low SDP Pearl</Trunk-Name>
+    <Cause>No Profitable Trunk</Cause>
+    <Rate>0.001490</Rate>
+  </Termination-Trunk>
+  <Termination-Trunk>
+    <Trunk-ID>111</Trunk-ID>
+    <Trunk-Name>Secure Voice - Special SONOC</Trunk-Name>
+    <Cause>Egress invalid ANI block</Cause>
+  </Termination-Trunk>
+  <Termination-Trunk>
+    <Trunk-ID>16</Trunk-ID>
+    <Trunk-Name>Telcast - Premium Dialer</Trunk-Name>
+    <Cause>Trunk Disabled</Cause>
+  </Termination-Trunk>
+  <Termination-Trunk>
+    <Trunk-ID>456</Trunk-ID>
+    <Trunk-Name>CCS - US SD</Trunk-Name>
+    <Cause>No Profitable Trunk</Cause>
+    <Rate>0.001530</Rate>
+  </Termination-Trunk>
+</Global-Route-State>
+<Call Simulation Test progress>Done</Call Simulation Test progress>
