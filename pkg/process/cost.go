@@ -137,6 +137,29 @@ func handleRow(row []string) (record CallRecord, err error) {
 	rate := row[9]
 	rateID := row[10]
 	cost := row[11]
+	command := row[12]
+	result := row[13]
+
+	if result != "" || rate != "" || rateID != "" {
+		log.Printf("calld(%s) already exists", callerId)
+		record = CallRecord{
+			CallID:     callerId,
+			ANI:        ani,
+			DNIS:       dnis,
+			Via:        via,
+			InviteTime: inviteTime,
+			RingTime:   ringTime,
+			AnswerTime: answerTime,
+			HangupTime: hangupTime,
+			Duration:   duration,
+			Rate:       rate,
+			RateID:     rateID,
+			Cost:       cost,
+			Command:    command,
+			Result:     result,
+		}
+		return
+	}
 
 	callerIP := extractIP(row[3])
 
@@ -161,7 +184,7 @@ func handleRow(row []string) (record CallRecord, err error) {
 	//log.Println("Login successfully!")
 
 	//fmt.Printf("ani(%s) dnis(%s)\n", row[1], row[2])
-	command := fmt.Sprintf("call_simulation %s,5060,%s,%s", callerIP, aniSip, dnisSip)
+	command = fmt.Sprintf("call_simulation %s,5060,%s,%s", callerIP, aniSip, dnisSip)
 	log.Printf("[%s] Exec Command-> %s", callerId, command)
 
 	content, err := client.CallSimulation(callerIP, "5060", aniSip, dnisSip)
@@ -173,8 +196,12 @@ func handleRow(row []string) (record CallRecord, err error) {
 	_ = client.LoginOut()
 
 	//
+	inbound_rate := ""
+	inbound_rate_id := ""
+	outbound_rate := ""
+	outbound_rate_id := ""
 
-	result := ""
+	result = ""
 	if strings.Contains(content, "No Ingress Resource Found") {
 		result = "No Ingress Resource Found"
 		log.Printf("[%s]->result: %s", callerId, result)
@@ -185,8 +212,10 @@ func handleRow(row []string) (record CallRecord, err error) {
 		result = "Ingress Rate Not Found"
 		log.Printf("[%s]->result: %s", callerId, result)
 	} else {
-		rate_utils.ParseRateFromContent(callerId, ani, dnis, aniSip, dnisSip, content)
+		inbound_rate, inbound_rate_id, outbound_rate, outbound_rate_id = rate_utils.ParseRateFromContent(callerId, ani, dnis, aniSip, dnisSip, content)
 	}
+
+	_ = fmt.Sprintf("%s %s", inbound_rate, inbound_rate_id)
 
 	//fmt.Println(content)
 
@@ -200,8 +229,8 @@ func handleRow(row []string) (record CallRecord, err error) {
 		AnswerTime: answerTime,
 		HangupTime: hangupTime,
 		Duration:   duration,
-		Rate:       rate,
-		RateID:     rateID,
+		Rate:       outbound_rate,
+		RateID:     outbound_rate_id,
 		Cost:       cost,
 		Command:    command,
 		Result:     result,
@@ -224,39 +253,90 @@ func CalculateSipCost(path string) {
 	reader := csv.NewReader(file)
 	reader.Comma = ',' // Default delimiter is comma; adjust if needed
 
-	// Read the header
-	headers, err := reader.Read()
+	// 读取所有行（包括头部）
+	rows, err := reader.ReadAll()
 	if err != nil {
-		fmt.Println("Error reading header:", err)
+		fmt.Println("Error reading CSV:", err)
 		return
 	}
+
+	if len(rows) == 0 {
+		fmt.Println("CSV file is empty.")
+		return
+	}
+
+	// 提取标题行
+	headers := rows[0]
 	fmt.Println("Headers:", headers)
 
-	// Read and parse each row
-	var records []CallRecord
-	for {
-		row, err := reader.Read()
-		if err != nil {
-			if err.Error() == "EOF" {
-				break
-			}
-			fmt.Println("Error reading row:", err)
-			continue
-		}
+	// 初始化存储修改后的记录的切片
+	var updatedRecords [][]string
+	updatedRecords = append(updatedRecords, headers) // 保留标题行
 
+	// 实时处理每一行
+	for i, row := range rows[1:] { // 跳过标题行
 		record, err := handleRow(row)
 		if err != nil {
 			log.Println("Error parsing row:", err)
+			continue
 		}
 
-		records = append(records, record)
+		// 将修改后的数据记录转回字符串切片格式
+		updatedRow := recordToRow(record)
+
+		// 添加到更新记录的切片
+		if i < len(updatedRecords) {
+			updatedRecords[i+1] = updatedRow // 替换对应行
+		} else {
+			updatedRecords = append(updatedRecords, updatedRow) // 新增行
+		}
+
+		// 实时写入修改后的数据到文件
+		err = updateCsv(path, updatedRecords)
+		if err != nil {
+			fmt.Println("Error writing CSV:", err)
+			return
+		}
+	}
+}
+
+// 将 CallRecord 转换为字符串切片的辅助函数
+func recordToRow(record CallRecord) []string {
+	return []string{
+		record.CallID,
+		record.ANI,
+		record.DNIS,
+		record.Via,
+		record.InviteTime,
+		record.RingTime,
+		record.AnswerTime,
+		record.HangupTime,
+		record.Duration,
+		record.Rate,
+		record.RateID,
+		record.Cost,
+		record.Command,
+		record.Result,
+	}
+}
+
+// 修改后的 CSV 写入函数
+func updateCsv(path string, records [][]string) error {
+	file, err := os.Create(path)
+	if err != nil {
+		return fmt.Errorf("Error creating file: %w", err)
+	}
+	defer file.Close()
+
+	writer := csv.NewWriter(file)
+	defer writer.Flush()
+
+	// 写入所有行
+	for _, record := range records {
+		if err := writer.Write(record); err != nil {
+			return fmt.Errorf("Error writing record: %w", err)
+		}
 	}
 
-	// Output parsed records
-	/*
-		for _, record := range records {
-			//fmt.Printf("Call Record: %+v\n", record)
-		}
-	*/
-	writeCsv("out.csv", headers, records)
+	return nil
 }
