@@ -34,6 +34,7 @@ func ProcessFileOrFolder(path string) {
 		if err != nil {
 			log.Panic(err)
 		}
+		log.Printf("pcap file(%s) loaded", path)
 
 		// Search the SIP packets for the filters
 		sip.HandleSipPackets(manager, fp)
@@ -62,6 +63,7 @@ func processFolder(folderPath string) {
 				log.Printf("cannot parsing file: %s err:%v", path, err)
 				return nil
 			}
+			log.Printf("pcap file(%s) loaded", path)
 
 			// Search the SIP packets for the filters
 			sip.HandleSipPackets(manager, fp)
