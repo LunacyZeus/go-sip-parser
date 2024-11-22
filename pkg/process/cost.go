@@ -158,7 +158,7 @@ func handleRow(row []string) (record CallRecord, err error) {
 		return
 	}
 
-	log.Println("Login successfully!")
+	//log.Println("Login successfully!")
 
 	//fmt.Printf("ani(%s) dnis(%s)\n", row[1], row[2])
 	command := fmt.Sprintf("call_simulation %s,5060,%s,%s", callerIP, aniSip, dnisSip)
@@ -172,6 +172,8 @@ func handleRow(row []string) (record CallRecord, err error) {
 
 	_ = client.LoginOut()
 
+	//
+
 	result := ""
 	if strings.Contains(content, "No Ingress Resource Found") {
 		result = "No Ingress Resource Found"
@@ -179,8 +181,11 @@ func handleRow(row []string) (record CallRecord, err error) {
 	} else if strings.Contains(content, "Unauthorized IP Address") {
 		result = "Unauthorized IP Address"
 		log.Printf("[%s]->result: %s", callerId, result)
+	} else if strings.Contains(content, "Ingress Rate Not Found") {
+		result = "Ingress Rate Not Found"
+		log.Printf("[%s]->result: %s", callerId, result)
 	} else {
-		rate_utils.ParseRateFromContent(callerId, content)
+		rate_utils.ParseRateFromContent(callerId, ani, dnis, content)
 	}
 
 	//fmt.Println(content)

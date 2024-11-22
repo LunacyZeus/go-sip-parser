@@ -19,6 +19,6 @@ func TestFunc() {
 	// 将读取的内容转换为字符串
 	content := string(data)
 
-	rate_utils.ParseRateFromContent("", content)
+	rate_utils.ParseRateFromContent("", "", "", content)
 
 }

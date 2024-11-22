@@ -4,11 +4,22 @@ import (
 	"fmt"
 	"log"
 	"sip-parser/pkg/utils/xml_utils"
+	"strings"
 )
 
-func ParseRateFromContent(callerID, content string) (inbound_rate, inbound_rate_id, outbound_rate, outbound_rate_id string) {
+func removePlusPrefix(s string) string {
+	if strings.HasPrefix(s, "+") {
+		return s[1:] // 去掉第一个字符
+	}
+	return s // 原样返回
+}
+
+func ParseRateFromContent(callerID, ani, dnis, content string) (inbound_rate, inbound_rate_id, outbound_rate, outbound_rate_id string) {
 	// 将读取的内容转换为字符串
 	//content := string(data)
+
+	ani = removePlusPrefix(ani)
+	dnis = removePlusPrefix(dnis)
 
 	xmlList, err := xml_utils.ParseXMLToNodeList(content)
 	if err != nil {
@@ -41,7 +52,9 @@ func ParseRateFromContent(callerID, content string) (inbound_rate, inbound_rate_
 					FinalDNIS := trunk.FinalDNIS.DNIS
 					FinalDNISReal := trunk.FinalANI.Real
 
-					log.Printf("[outbound] CallerID(%s) RateID(%s) Rate(%s) ANI(%s/%s) DNIS(%s/%s)\n", callerID, trunk.TrunkRate.RateID, trunk.TrunkRate.Rate, FinalANI, FinalANIReal, FinalDNIS, FinalDNISReal)
+					if ani == removePlusPrefix(FinalANI) && (dnis == removePlusPrefix(FinalDNIS)) {
+						log.Printf("[outbound] CallerID(%s) RateID(%s) Rate(%s) ANI(%s/%s) DNIS(%s/%s)\n", callerID, trunk.TrunkRate.RateID, trunk.TrunkRate.Rate, FinalANI, FinalANIReal, FinalDNIS, FinalDNISReal)
+					}
 
 					outbound_rate = trunk.TrunkRate.Rate
 					outbound_rate_id = trunk.TrunkRate.RateID
