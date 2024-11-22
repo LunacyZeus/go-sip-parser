@@ -54,7 +54,7 @@ func processFolder(folderPath string) {
 			return err
 		}
 		if !info.IsDir() && strings.HasSuffix(info.Name(), ".pcap") {
-			fmt.Printf("Found pcap file: %s\n", path)
+			log.Printf("Found and parsing pcap file: %s\n", path)
 			//fileName := filepath.Base(path)
 
 			fp, err := sip.LoadSIPTraceFromPcap(path)
