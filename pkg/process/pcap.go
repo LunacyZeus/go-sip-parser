@@ -30,7 +30,7 @@ func ProcessFileOrFolder(path string) {
 
 		fileName := filepath.Base(path)
 
-		fp, err := sip.LoadSIPTraceFromPcap(path)
+		fp, err := sip.LoadSIPTraceFromPcapStream(path)
 		if err != nil {
 			log.Panic(err)
 		}
@@ -58,7 +58,7 @@ func processFolder(folderPath string) {
 			log.Printf("Found and parsing pcap file: %s\n", path)
 			//fileName := filepath.Base(path)
 
-			fp, err := sip.LoadSIPTraceFromPcap(path)
+			fp, err := sip.LoadSIPTraceFromPcapStream(path)
 			if err != nil {
 				log.Printf("cannot parsing file: %s err:%v", path, err)
 				return nil

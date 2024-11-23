@@ -45,16 +45,17 @@ func parsePacket(pkt *Packet, src io.Reader, flipped bool, linkType Link) error 
 	}
 
 	data := make([]byte, pkt.IncludedLen)
-	//readlen, err := src.Read(data)
+	readlen, err := src.Read(data)
 
-	/*
-		if uint32(readlen) != pkt.IncludedLen {
-			return UnexpectedEOF
-		}
-
-	*/
+	if uint32(readlen) != pkt.IncludedLen {
+		return UnexpectedEOF
+	}
 
 	pkt.Data, err = parseLinkData(data, linkType)
+
+	td := pkt.Data.LinkData().InternetData().TransportData()
+
+	fmt.Println(td)
 
 	return err
 }
@@ -62,6 +63,37 @@ func parsePacket(pkt *Packet, src io.Reader, flipped bool, linkType Link) error 
 // populateFileHeader reads the next 20 bytes out of the .pcap file and uses it to populate the
 // PcapFile structure.
 func populateFileHeader(file *PcapFile, src io.Reader, flipped bool) error {
+	buffer := make([]byte, 20)
+	read_count, err := src.Read(buffer)
+
+	if err != nil {
+		return err
+	} else if read_count != 20 {
+		return InsufficientLength
+	}
+
+	// First two bytes are the major version number.
+	file.MajorVersion = getUint16(buffer[0:2], flipped)
+
+	// Next two are the minor version number.
+	file.MinorVersion = getUint16(buffer[2:4], flipped)
+
+	// GMT to local correction, in seconds east of UTC.
+	file.TZCorrection = getInt32(buffer[4:8], flipped)
+
+	// Next is the number of significant figures in the timestamps. Almost always zero.
+	file.SigFigs = getUint32(buffer[8:12], flipped)
+
+	// Now the maximum length of the captured packet data.
+	file.MaxLen = getUint32(buffer[12:16], flipped)
+
+	// And the link type.
+	file.LinkType = Link(getUint32(buffer[16:20], flipped))
+
+	return nil
+}
+
+func streamPopulateFileHeader(file *SipPcapFile, src io.Reader, flipped bool) error {
 	buffer := make([]byte, 20)
 	read_count, err := src.Read(buffer)
 
@@ -109,6 +141,7 @@ func populatePacketHeader(packet *Packet, src io.Reader, flipped bool) error {
 	ts_micros := getUint32(buffer[4:8], flipped)
 	packet.Timestamp = (time.Duration(ts_seconds) * time.Second) + (time.Duration(ts_micros) * time.Microsecond)
 
+	//log.Println(packet.Timestamp)
 	// Next is the length of the data segment.
 	packet.IncludedLen = getUint32(buffer[8:12], flipped)
 

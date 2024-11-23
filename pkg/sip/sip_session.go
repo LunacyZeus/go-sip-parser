@@ -9,7 +9,7 @@ import (
 )
 
 type Message struct {
-	Timestamp time.Duration
+	Timestamp time.Time
 	//pct       siprocket.SipMsg
 	Method    string
 	CallID    string
@@ -94,6 +94,8 @@ func (s *SipSession) CalcStatus(simMsg *siprocket.SipMsg) (*Message, error) {
 	toAddr := string(simMsg.To.Src)
 	fromAddr := string(simMsg.From.Src)
 
+	//fmt.Printf("method(%s) startLine(%s)\n", method, startLine)
+
 	// 创建一个 SIPInfo 实例
 	msg := &Message{
 		Timestamp: simMsg.Timestamp,
@@ -106,9 +108,10 @@ func (s *SipSession) CalcStatus(simMsg *siprocket.SipMsg) (*Message, error) {
 	}
 
 	if method == "INVITE" {
+		//fmt.Println(method)
 		if s.IsFirstInvite { //第一次收到200响应 设置应答时间
-			s.InviteTime = msg.Timestamp.Milliseconds() //设置发起时间
-			s.Stage = "INVITE"                          //INVITE阶段
+			s.InviteTime = msg.Timestamp.UnixMilli() //设置发起时间
+			s.Stage = "INVITE"                       //INVITE阶段
 			s.IsFirstInvite = false
 
 			s.ANI = msg.ToAddr
@@ -135,8 +138,8 @@ func (s *SipSession) CalcStatus(simMsg *siprocket.SipMsg) (*Message, error) {
 		} else {
 			s.Stage = "BYE OK"
 			s.Status = COMPLETED
-			s.HangUpTime = msg.Timestamp.Milliseconds() //挂起时间
-			s.Duration = s.HangUpTime - s.InviteTime    //计算通话时间
+			s.HangUpTime = msg.Timestamp.UnixMilli() //挂起时间
+			s.Duration = s.HangUpTime - s.InviteTime //计算通话时间
 		}
 
 	} else if method == "PRACK" {
@@ -154,10 +157,10 @@ func (s *SipSession) CalcStatus(simMsg *siprocket.SipMsg) (*Message, error) {
 			s.Status = REJECTED //返回503 这是服务不可用
 		} else if strings.Contains(startLine, "SIP/2.0 180") {
 			s.Stage = "Ringing 180"
-			s.RingTime = msg.Timestamp.Milliseconds()
+			s.RingTime = msg.Timestamp.UnixMilli()
 		} else if strings.Contains(startLine, "SIP/2.0 183") {
 			s.Stage = "Ringing 183"
-			s.RingTime = msg.Timestamp.Milliseconds()
+			s.RingTime = msg.Timestamp.UnixMilli()
 
 		} else if strings.Contains(startLine, "SIP/2.0 487") {
 			s.Stage = "Request Terminated"
@@ -167,7 +170,7 @@ func (s *SipSession) CalcStatus(simMsg *siprocket.SipMsg) (*Message, error) {
 			s.Status = REJECTED
 		} else if strings.Contains(startLine, "SIP/2.0 200 OK") { //对端返回200响应 代表收到
 			if s.IsFirst200 { //第一次收到200响应 设置应答时间
-				s.AnswerTime = msg.Timestamp.Milliseconds()
+				s.AnswerTime = msg.Timestamp.UnixMilli()
 				s.IsFirst200 = false
 			}
 			if strings.Contains(cSeq, "INVITE") { //这是代表对端收到我方INVITE 请求
@@ -182,8 +185,8 @@ func (s *SipSession) CalcStatus(simMsg *siprocket.SipMsg) (*Message, error) {
 				} else {
 					s.Stage = "BYE OK"
 					s.Status = COMPLETED
-					s.HangUpTime = msg.Timestamp.Milliseconds() //挂起时间
-					s.Duration = s.HangUpTime - s.InviteTime    //计算通话时间
+					s.HangUpTime = msg.Timestamp.UnixMilli() //挂起时间
+					s.Duration = s.HangUpTime - s.InviteTime //计算通话时间
 				}
 
 			}
@@ -203,9 +206,9 @@ func (s *SipSession) AddMessage(simMsg *siprocket.SipMsg) {
 	}
 	s.Messages = append(s.Messages, msg)
 	if len(s.Messages) == 1 {
-		s.CreatedAt = msg.Timestamp.Milliseconds()
+		s.CreatedAt = msg.Timestamp.UnixMilli()
 	}
-	s.EndedAt = msg.Timestamp.Milliseconds()
+	s.EndedAt = msg.Timestamp.UnixMilli()
 	//s.Duration = s.EndedAt - s.CreatedAt
 
 }

@@ -10,6 +10,8 @@ import (
 	"errors"
 	"fmt"
 	"io"
+	"log"
+	"sip-parser/pkg/siprocket"
 	"time"
 )
 
@@ -168,6 +170,16 @@ type PcapFile struct {
 	Packets      []Packet
 }
 
+type SipPcapFile struct {
+	MajorVersion uint16
+	MinorVersion uint16
+	TZCorrection int32 // In seconds east of UTC
+	SigFigs      uint32
+	MaxLen       uint32
+	LinkType     Link
+	Msgs         []siprocket.SipMsg
+}
+
 // Packet is a representation of a single network packet. The structure
 // contains the timestamp on the packet, some information about packet size,
 // and the recorded bytes from the packet.
@@ -230,6 +242,41 @@ func Parse(src io.Reader) (PcapFile, error) {
 		err = parsePacket(pkt, src, flipped, file.LinkType)
 		file.Packets = append(file.Packets, *pkt)
 	}
+
+	// EOF is a safe error, so switch that to nil.
+	if err == io.EOF {
+		err = nil
+	}
+
+	return *file, err
+}
+
+func StreamParse(src io.Reader) (SipPcapFile, error) {
+	file := new(SipPcapFile)
+
+	// Check whether this is a libpcap file at all, and if so what byte ordering it has.
+	_, flipped, err := checkMagicNum(src)
+	if err != nil {
+		return *file, fmt.Errorf("checkMagicNum: %v", err)
+	}
+
+	// Then populate the file header.
+	err = streamPopulateFileHeader(file, src, flipped)
+	if err != nil {
+		return *file, fmt.Errorf("populateFileHeader: %v", err)
+	}
+
+	// Whatever remains now are packets. Parse the rest of the file.
+	file.Msgs = make([]siprocket.SipMsg, 0)
+
+	for err == nil {
+		msg, err := streamParsePacket(src, flipped, file.LinkType)
+		if err != nil {
+		} else {
+			file.Msgs = append(file.Msgs, msg)
+		}
+	}
+	log.Println("done")
 
 	// EOF is a safe error, so switch that to nil.
 	if err == io.EOF {

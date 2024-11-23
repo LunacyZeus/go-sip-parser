@@ -23,7 +23,7 @@ type SipMsg struct {
 	CallId    sipVal
 	ContType  sipVal
 	ContLen   sipVal
-	Timestamp time.Duration
+	Timestamp time.Time
 
 	Sdp SdpMsg
 }
@@ -40,9 +40,93 @@ type sipVal struct {
 }
 
 // Main parsing routine, passes by value
-func Parse(v []byte, timeStamp time.Duration) (output SipMsg) {
+func Parse(v []byte, timeStamp time.Time) (output SipMsg) {
 	// Allow multiple vias and media Attribs
 	via_idx := 0
+	output.Via = make([]sipVia, 0, 8)
+	//attr_idx := 0
+	//output.Sdp.Attrib = make([]sdpAttrib, 0, 8)
+	output.Timestamp = timeStamp
+
+	lines := bytes.Split(v, []byte("\r\n"))
+
+	for i, line := range lines {
+		//fmt.Println(i, string(line))
+		line = bytes.TrimSpace(line)
+		if i == 0 {
+			// For the first line parse the request
+			parseSipReq(line, &output.Req)
+		} else {
+			// For subsequent lines split in sep (: for sip, = for sdp)
+			spos, stype := indexSep(line)
+			if spos > 0 && stype == ':' {
+				// SIP: Break up into header and value
+				lhdr := strings.ToLower(string(line[0:spos]))
+				lval := bytes.TrimSpace(line[spos+1:])
+
+				// Switch on the line header
+				//fmt.Println(i, string(lhdr), string(lval))
+				switch {
+				case lhdr == "f" || lhdr == "from":
+					parseSipFrom(lval, &output.From)
+				case lhdr == "t" || lhdr == "to":
+					parseSipTo(lval, &output.To)
+				case lhdr == "m" || lhdr == "contact":
+					parseSipContact(lval, &output.Contact)
+				case lhdr == "v" || lhdr == "via":
+					var tmpVia sipVia
+					output.Via = append(output.Via, tmpVia)
+					parseSipVia(lval, &output.Via[via_idx])
+					via_idx++
+				case lhdr == "i" || lhdr == "call-id":
+					output.CallId.Value = lval
+				case lhdr == "c" || lhdr == "content-type":
+					output.ContType.Value = lval
+				case lhdr == "content-length":
+					output.ContLen.Value = lval
+				case lhdr == "user-agent":
+					output.Ua.Value = lval
+				case lhdr == "expires":
+					output.Exp.Value = lval
+				case lhdr == "max-forwards":
+					output.MaxFwd.Value = lval
+				case lhdr == "cseq":
+					parseSipCseq(lval, &output.Cseq)
+				} // End of Switch
+			}
+			if spos == 1 && stype == '=' {
+				/*
+					// SDP: Break up into header and value
+					lhdr := strings.ToLower(string(line[0]))
+					//lval := bytes.TrimSpace(line[2:])
+					// Switch on the line header
+					//fmt.Println(i, spos, string(lhdr), string(lval))
+					switch {
+					case lhdr == "m":
+						//parseSdpMediaDesc(lval, &output.Sdp.MediaDesc)
+					case lhdr == "c":
+						//parseSdpConnectionData(lval, &output.Sdp.ConnData)
+					case lhdr == "a":
+						//var tmpAttrib sdpAttrib
+						//output.Sdp.Attrib = append(output.Sdp.Attrib, tmpAttrib)
+						//parseSdpAttrib(lval, &output.Sdp.Attrib[attr_idx])
+						attr_idx++
+
+					} // End of Switch
+
+				*/
+
+			}
+		}
+	}
+
+	return
+}
+
+func StreamParse(v []byte, timeStamp time.Time) (output *SipMsg) {
+	// Allow multiple vias and media Attribs
+	via_idx := 0
+	output = new(SipMsg)
 	output.Via = make([]sipVia, 0, 8)
 	//attr_idx := 0
 	//output.Sdp.Attrib = make([]sdpAttrib, 0, 8)

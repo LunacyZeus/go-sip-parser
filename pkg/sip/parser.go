@@ -3,6 +3,8 @@ package sip
 import (
 	"errors"
 	"fmt"
+	"github.com/google/gopacket"
+	"github.com/google/gopacket/pcap"
 	"log"
 	"os"
 	"time"
@@ -54,7 +56,7 @@ func LoadSIPTraceFromPcap(file string) ([]*siprocket.SipMsg, error) {
 			continue
 		}
 
-		sipPacket := siprocket.Parse(td, packet.Timestamp)
+		sipPacket := siprocket.Parse(td, time.Now())
 
 		results = append(results, &sipPacket)
 	}
@@ -75,7 +77,7 @@ func ParseSIPTrace(trace gopcap.PcapFile) ([]*siprocket.SipMsg, error) {
 			continue
 		}
 
-		sipPacket := siprocket.Parse(td, packet.Timestamp)
+		sipPacket := siprocket.Parse(td, time.Now())
 
 		results = append(results, &sipPacket)
 	}
@@ -125,4 +127,31 @@ func HandleSipPackets1(sipPackets []*siprocket.SipMsg) {
 	fmt.Println("done")
 
 	return
+}
+
+func LoadSIPTraceFromPcapStream(file string) ([]*siprocket.SipMsg, error) {
+	// 打开PCAP文件，而不是设备
+	handle, err := pcap.OpenOffline(file)
+	// 如果打开文件时发生错误，记录错误并终止程序
+	if err != nil {
+		log.Fatal(err)
+	}
+	// 确保在函数结束时关闭文件句柄
+	defer handle.Close()
+
+	var results []*siprocket.SipMsg
+
+	// 创建一个新的包源，用于从文件中读取包
+	packetSource := gopacket.NewPacketSource(handle, handle.LinkType())
+	// 遍历文件中的所有包
+	for packet := range packetSource.Packets() {
+		// 处理每个包，这里简单地打印出来
+		pkt, err := parsePacket(packet, packet.Metadata().Timestamp)
+		if err != nil {
+			continue
+		} else {
+			results = append(results, pkt)
+		}
+	}
+	return results, nil
 }

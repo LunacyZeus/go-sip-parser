@@ -187,7 +187,7 @@ func handleRow(row []string) (record CallRecord, err error) {
 	command = fmt.Sprintf("call_simulation %s,5060,%s,%s", callerIP, aniSip, dnisSip)
 	log.Printf("[%s] Exec Command-> %s", callerId, command)
 
-	content, err := client.CallSimulation(callerIP, "5060", aniSip, dnisSip)
+	content, err := client.CallSimulation(callerIP, "5060", dnisSip, aniSip)
 	if err != nil {
 		err = fmt.Errorf("CallSimulation->%v", err)
 		return

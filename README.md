@@ -22,3 +22,9 @@ call_simulation 208.79.54.183,5060,+16787784146,+17065423030
 
 
 ./go_sip_parser_amd64_linux get_cost -f out_202411142355.pcap.csv
+
+./go_sip_parser_amd64_linux load -f data/test
+
+./go_sip_parser load -f data/test
+
+call_simulation 87.237.87.28,5060,+12762314480,7193#12762524600
