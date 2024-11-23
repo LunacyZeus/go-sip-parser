@@ -59,13 +59,13 @@ func ParseRateFromContent(callerID, ani, dnis, aniSip, dnisSip, content string) 
 					FinalDNIS := trunk.FinalDNIS.DNIS
 					//FinalDNISReal := trunk.FinalANI.Real
 
-					if aniSip == removePlusPrefix(FinalANI) && (dnisSip == removePlusPrefix(FinalDNIS)) {
+					if dnisSip == removePlusPrefix(FinalANI) && (aniSip == removePlusPrefix(FinalDNIS)) {
 						outbound_rate = trunk.TrunkRate.Rate
 						outbound_rate_id = trunk.TrunkRate.RateID
 
 						log.Printf("[outbound] CallerID(%s) RateID(%s) Rate(%s) ANI(%s) DNIS(%s) host(%s)\n", callerID, trunk.TrunkRate.RateID, trunk.TrunkRate.Rate, FinalANI, FinalDNIS, hostsStr)
 					} else {
-						log.Printf("[outbound] CallerID(%s) RateID(%s) Rate(%s) ANI(%s!=%s) DNIS(%s!=%s) host(%s) not match\n", callerID, trunk.TrunkRate.RateID, trunk.TrunkRate.Rate, aniSip, removePlusPrefix(FinalANI), dnisSip, removePlusPrefix(FinalDNIS), hostsStr)
+						log.Printf("[outbound] CallerID(%s) RateID(%s) Rate(%s) ANI(%s!=%s) DNIS(%s!=%s) host(%s) not match\n", callerID, trunk.TrunkRate.RateID, trunk.TrunkRate.Rate, dnisSip, removePlusPrefix(FinalANI), aniSip, removePlusPrefix(FinalDNIS), hostsStr)
 					}
 
 				}
