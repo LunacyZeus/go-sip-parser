@@ -28,3 +28,5 @@ call_simulation 208.79.54.183,5060,+16787784146,+17065423030
 ./go_sip_parser load -f data/test
 
 call_simulation 87.237.87.28,5060,+12762314480,7193#12762524600
+
+/home/zeusho/go-sip-parser/sip-parser get_cost -f

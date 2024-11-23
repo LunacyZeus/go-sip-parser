@@ -297,6 +297,7 @@ func CalculateSipCost(path string) {
 			fmt.Println("Error writing CSV:", err)
 			return
 		}
+		n += 1
 	}
 }
 
