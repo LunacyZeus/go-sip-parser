@@ -21,9 +21,12 @@ type CallRecord struct {
 	AnswerTime string
 	HangupTime string
 	Duration   string // in milliseconds
-	Rate       string
-	RateID     string
-	Cost       string
+	InRate     string
+	InRateID   string
+	InCost     string
+	OutRate    string
+	OutRateID  string
+	OutCost    string
 	Command    string
 	Result     string
 }
@@ -68,51 +71,6 @@ func GetSipPart(input string) string {
 	return ""
 }
 
-func writeCsv(csvPath string, headers []string, records []CallRecord) {
-	// Write the modified records to a new CSV file
-	outputFile, err := os.Create(csvPath)
-	if err != nil {
-		fmt.Println("Error creating file:", err)
-		return
-	}
-	defer outputFile.Close()
-
-	writer := csv.NewWriter(outputFile)
-	defer writer.Flush()
-
-	// Write the header to the new CSV file
-	if err := writer.Write(headers); err != nil {
-		fmt.Println("Error writing header:", err)
-		return
-	}
-
-	// Write each modified record to the new CSV file
-	for _, record := range records {
-		row := []string{
-			record.CallID,
-			record.ANI,
-			record.DNIS,
-			record.Via,
-			record.InviteTime,
-			record.RingTime,
-			record.AnswerTime,
-			record.HangupTime,
-			record.Duration,
-			record.Rate,
-			record.RateID,
-			record.Cost,
-			record.Command,
-			record.Result,
-		}
-
-		if err := writer.Write(row); err != nil {
-			fmt.Println("Error writing record:", err)
-		}
-	}
-
-	fmt.Printf("Modified CSV written successfully to '%s'\n", csvPath)
-}
-
 func extractIP(input string) string {
 	// 正则表达式匹配IPv4地址
 	re := regexp.MustCompile(`(\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3})`)
@@ -134,13 +92,17 @@ func handleRow(row []string) (record CallRecord, err error) {
 	hangupTime, _ := parseTime(row[7])
 
 	duration := row[8]
-	rate := row[9]
-	rateID := row[10]
-	cost := row[11]
+	inRate := row[9]
+	inRateID := row[10]
+	inCost := row[11]
+	outRate := row[12]
+	outRateID := row[13]
+	outCost := row[14]
+
 	command := row[12]
 	result := row[13]
 
-	if result != "" || rateID != "" {
+	if result != "" || inRate != "" {
 		err = fmt.Errorf("calld(%s) already exists", callerId)
 		record = CallRecord{
 			CallID:     callerId,
@@ -152,9 +114,12 @@ func handleRow(row []string) (record CallRecord, err error) {
 			AnswerTime: answerTime,
 			HangupTime: hangupTime,
 			Duration:   duration,
-			Rate:       rate,
-			RateID:     rateID,
-			Cost:       cost,
+			InRate:     inRate,
+			InRateID:   inRateID,
+			InCost:     inCost,
+			OutRate:    outRate,
+			OutRateID:  outRateID,
+			OutCost:    outCost,
 			Command:    command,
 			Result:     result,
 		}
@@ -229,9 +194,12 @@ func handleRow(row []string) (record CallRecord, err error) {
 		AnswerTime: answerTime,
 		HangupTime: hangupTime,
 		Duration:   duration,
-		Rate:       outbound_rate,
-		RateID:     outbound_rate_id,
-		Cost:       cost,
+		InRate:     inbound_rate,
+		InRateID:   inbound_rate_id,
+		InCost:     inCost,
+		OutRate:    outbound_rate,
+		OutRateID:  outbound_rate_id,
+		OutCost:    outCost,
 		Command:    command,
 		Result:     result,
 	}
@@ -313,9 +281,12 @@ func recordToRow(record CallRecord) []string {
 		record.AnswerTime,
 		record.HangupTime,
 		record.Duration,
-		record.Rate,
-		record.RateID,
-		record.Cost,
+		record.InRate,
+		record.InRateID,
+		record.InCost,
+		record.OutRate,
+		record.OutRateID,
+		record.OutCost,
 		record.Command,
 		record.Result,
 	}

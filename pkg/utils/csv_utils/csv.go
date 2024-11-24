@@ -10,7 +10,7 @@ import (
 
 func SaveDataCsv(csvFilePath string, sessions map[string]*sip.SipSession) {
 	// 写入 CSV 文件的表头
-	header := []string{"Call-ID", "ANI", "DNIS", "Via", "Invite Time", "Ring Time", "Answer Time", "Hangup Time", "Duration (msec)", "Rate", "Rate Id", "Cost", "Command", "Result"}
+	header := []string{"Call-ID", "ANI", "DNIS", "Via", "Invite Time", "Ring Time", "Answer Time", "Hangup Time", "Duration (msec)", "InRate", "InRate Id", "InCost", "OutRate", "OutRate Id", "OutCost", "Command", "Result"}
 
 	// 创建或打开 CSV 文件
 	in_file, err := os.Create("in_" + csvFilePath)
@@ -43,7 +43,7 @@ func SaveDataCsv(csvFilePath string, sessions map[string]*sip.SipSession) {
 	// 写入多个数据行
 	for _, session := range sessions {
 		if session.Status == sip.COMPLETED { //只解析成功的
-			fmt.Println(session.String())
+			//fmt.Println(session.String())
 			record := []string{
 				session.CallID,
 				session.ANI,
@@ -54,6 +54,9 @@ func SaveDataCsv(csvFilePath string, sessions map[string]*sip.SipSession) {
 				fmt.Sprintf("%d", session.AnswerTime),
 				fmt.Sprintf("%d", session.HangUpTime),
 				fmt.Sprintf("%d", session.Duration),
+				fmt.Sprintf("%d", 0),
+				"",
+				fmt.Sprintf("%d", 0),
 				fmt.Sprintf("%d", 0),
 				"",
 				fmt.Sprintf("%d", 0),

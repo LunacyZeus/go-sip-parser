@@ -12,6 +12,16 @@ import (
 
 var manager *sip.SipSessionManager
 
+func LoadPcap(path string) {
+	fileName := filepath.Base(path)
+	ProcessFileOrFolder(path)
+	sessions := manager.Sessions
+
+	saveCsvFileName := fmt.Sprintf("%s.csv", fileName)
+	// 写入数据
+	csv_utils.SaveDataCsv(saveCsvFileName, sessions)
+}
+
 func ProcessFileOrFolder(path string) {
 	info, err := os.Stat(path)
 	if err != nil {
@@ -25,10 +35,15 @@ func ProcessFileOrFolder(path string) {
 	if info.IsDir() {
 		fmt.Printf("Processing folder: %s\n", path)
 		processFolder(path)
+
+		folderPathFileName := strings.ReplaceAll(path, "/", "-")
+		sessions := manager.Sessions
+		saveCsvFileName := fmt.Sprintf("%s.csv", folderPathFileName)
+		// 写入数据
+		csv_utils.SaveDataCsv(saveCsvFileName, sessions)
+
 	} else {
 		fmt.Printf("Processing file: %s\n", path)
-
-		fileName := filepath.Base(path)
 
 		fp, err := sip.LoadSIPTraceFromPcapStream(path)
 		if err != nil {
@@ -38,18 +53,10 @@ func ProcessFileOrFolder(path string) {
 
 		// Search the SIP packets for the filters
 		sip.HandleSipPackets(manager, fp)
-
-		sessions := manager.Sessions
-
-		saveCsvFileName := fmt.Sprintf("%s.csv", fileName)
-		// 写入数据
-		csv_utils.SaveDataCsv(saveCsvFileName, sessions)
 	}
 }
 
 func processFolder(folderPath string) {
-	folderPathFileName := strings.ReplaceAll(folderPath, "/", "-")
-
 	err := filepath.Walk(folderPath, func(path string, info os.FileInfo, err error) error {
 		if err != nil {
 			return err
@@ -74,11 +81,4 @@ func processFolder(folderPath string) {
 		fmt.Printf("Error processing folder: %v\n", err)
 		return
 	}
-
-	sessions := manager.Sessions
-
-	saveCsvFileName := fmt.Sprintf("%s.csv", folderPathFileName)
-	// 写入数据
-	csv_utils.SaveDataCsv(saveCsvFileName, sessions)
-
 }

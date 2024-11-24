@@ -30,14 +30,15 @@ func FilterPcapFileOrFolder(path, callId string) {
 
 		// Search the SIP packets for the filters
 		sip.HandleSipPackets(manager, fp)
-
-		session, exists := manager.GetSession(callId)
-		if !exists {
-			log.Fatal("获取session失败")
-		}
-		for _, msg := range session.Messages {
-			fmt.Println(msg.String())
-		}
-		fmt.Println(session.String())
 	}
+
+	log.Printf("筛选callId->%s", callId)
+	session, exists := manager.GetSession(callId)
+	if !exists {
+		log.Fatal("获取session失败")
+	}
+	for _, msg := range session.Messages {
+		fmt.Println(msg.String())
+	}
+	log.Printf("%d msgs got", len(session.Messages))
 }

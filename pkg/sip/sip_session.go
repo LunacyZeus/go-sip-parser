@@ -17,11 +17,12 @@ type Message struct {
 	CSeq      string
 	ToAddr    string
 	FromAddr  string
+	//Packet    string
 }
 
 // 实现 String() 方法来模拟 Python 的 repr
 func (sip Message) String() string {
-	return fmt.Sprintf(" call_id=%s, method=%s, c_seq=%s start_line=%s", sip.CallID, sip.Method, sip.CSeq, sip.StartLine)
+	return fmt.Sprintf(" call_id=%s, method=%s, c_seq=%s start_line=%s To=%s From=%s", sip.CallID, sip.Method, sip.CSeq, sip.StartLine, sip.ToAddr, sip.FromAddr)
 }
 
 // SipSessionStatus 表示会话状态的枚举类型
@@ -105,6 +106,7 @@ func (s *SipSession) CalcStatus(simMsg *siprocket.SipMsg) (*Message, error) {
 		CSeq:      cSeq,
 		ToAddr:    toAddr,
 		FromAddr:  fromAddr,
+		//Packet:    "",
 	}
 
 	if method == "INVITE" {
@@ -127,6 +129,8 @@ func (s *SipSession) CalcStatus(simMsg *siprocket.SipMsg) (*Message, error) {
 			} else {
 				s.CallBound = false
 			}
+
+			//msg.Packet = string(simMsg.Req.Src)
 
 		}
 	} else if method == "CANCEL" {
