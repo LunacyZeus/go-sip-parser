@@ -102,7 +102,7 @@ func handleRow(row []string) (record CallRecord, err error) {
 	command := row[12]
 	result := row[13]
 
-	if result != "" || inRate != "" {
+	if result != "" || inRateID != "" {
 		err = fmt.Errorf("calld(%s) already exists", callerId)
 		record = CallRecord{
 			CallID:     callerId,
