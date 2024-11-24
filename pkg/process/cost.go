@@ -71,7 +71,7 @@ func GetSipPart(input string) string {
 	return ""
 }
 
-func extractIP(input string) string {
+func ExtractIP(input string) string {
 	// 正则表达式匹配IPv4地址
 	re := regexp.MustCompile(`(\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3})`)
 	// FindString 返回第一个匹配的字符串
@@ -126,7 +126,7 @@ func handleRow(row []string) (record CallRecord, err error) {
 		return
 	}
 
-	callerIP := extractIP(row[3])
+	callerIP := ExtractIP(row[3])
 
 	aniSip := GetSipPart(row[1])
 	dnisSip := GetSipPart(row[2])
