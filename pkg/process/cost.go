@@ -6,6 +6,7 @@ import (
 	"github.com/gocarina/gocsv"
 	"log"
 	"os"
+	"path/filepath"
 	"sip-parser/pkg/sip"
 	"sip-parser/pkg/utils"
 	"sip-parser/pkg/utils/csv_utils"
@@ -196,11 +197,20 @@ func CalculateSipCost(path string) {
 
 		rows[index] = row
 
-		//每操作一次写入一次
-		err = gocsv.MarshalFile(&rows, csvFile) // Use this to save the CSV back to the file
+		fileName := filepath.Base(path)
+		fileName = "res_" + fileName
+		csvWriteFile, err := os.OpenFile(fileName, os.O_RDWR|os.O_CREATE, os.ModePerm)
 		if err != nil {
 			panic(err)
 		}
+
+		//每操作一次写入一次
+		err = gocsv.MarshalFile(&rows, csvWriteFile) // Use this to save the CSV back to the file
+		if err != nil {
+			panic(err)
+		}
+
+		csvWriteFile.Close()
 
 		n += 1
 	}
