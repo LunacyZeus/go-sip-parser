@@ -15,7 +15,12 @@ var manager *sip.SipSessionManager
 func LoadPcap(path string) {
 	fileName := filepath.Base(path)
 	ProcessFileOrFolder(path)
-	sessions := manager.Sessions
+
+	manager.Statistics()
+
+	manager.MatchCall()
+
+	sessions := manager.GetAll()
 
 	saveCsvFileName := fmt.Sprintf("%s.csv", fileName)
 	// 写入数据
@@ -36,11 +41,11 @@ func ProcessFileOrFolder(path string) {
 		fmt.Printf("Processing folder: %s\n", path)
 		processFolder(path)
 
-		folderPathFileName := strings.ReplaceAll(path, "/", "-")
-		sessions := manager.Sessions
-		saveCsvFileName := fmt.Sprintf("%s.csv", folderPathFileName)
+		//folderPathFileName := strings.ReplaceAll(path, "/", "-")
+		//sessions := manager.Sessions
+		//saveCsvFileName := fmt.Sprintf("%s.csv", folderPathFileName)
 		// 写入数据
-		csv_utils.SaveDataCsv(saveCsvFileName, sessions)
+		//csv_utils.SaveDataCsv(saveCsvFileName, sessions)
 
 	} else {
 		fmt.Printf("Processing file: %s\n", path)

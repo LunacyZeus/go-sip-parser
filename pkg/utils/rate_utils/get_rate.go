@@ -14,7 +14,7 @@ func removePlusPrefix(s string) string {
 	return s // 原样返回
 }
 
-func ParseRateFromContent(callerID, ani, dnis, aniSip, dnisSip, content string) (inbound_rate, inbound_rate_id, outbound_rate, outbound_rate_id string) {
+func ParseRateFromContent(callerID, ani, dnis, aniSip, dnisSip, outVia, content string) (inbound_rate, inbound_rate_id, outbound_rate, outbound_rate_id string) {
 	// 将读取的内容转换为字符串
 	//content := string(data)
 
@@ -63,9 +63,9 @@ func ParseRateFromContent(callerID, ani, dnis, aniSip, dnisSip, content string) 
 						outbound_rate = trunk.TrunkRate.Rate
 						outbound_rate_id = trunk.TrunkRate.RateID
 
-						log.Printf("[outbound] CallerID(%s) RateID(%s) Rate(%s) ANI(%s) DNIS(%s) host(%s)\n", callerID, trunk.TrunkRate.RateID, trunk.TrunkRate.Rate, FinalANI, FinalDNIS, hostsStr)
+						log.Printf("[outbound] CallerID(%s) RateID(%s) Rate(%s) REAL(%s/%s) ANI(%s) DNIS(%s) host(%s) outVia(%s)\n", callerID, trunk.TrunkRate.RateID, trunk.TrunkRate.Rate, FinalANI, FinalDNIS, hostsStr, outVia)
 					} else {
-						log.Printf("[outbound] CallerID(%s) RateID(%s) Rate(%s) ANI(%s!=%s) DNIS(%s!=%s) host(%s) not match\n", callerID, trunk.TrunkRate.RateID, trunk.TrunkRate.Rate, dnisSip, removePlusPrefix(FinalANI), aniSip, removePlusPrefix(FinalDNIS), hostsStr)
+						log.Printf("[outbound] CallerID(%s) RateID(%s) Rate(%s) REAL(%s/%s) ANI(%s!=%s) DNIS(%s!=%s) host(%s) outVia(%s) not match\n", callerID, trunk.TrunkRate.RateID, trunk.TrunkRate.Rate, dnisSip, removePlusPrefix(FinalANI), aniSip, removePlusPrefix(FinalDNIS), hostsStr, outVia)
 					}
 
 				}

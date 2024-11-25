@@ -56,7 +56,9 @@ func StartTelnet(params CallSimulationParams) {
 	ani := params.Ani
 	dnis := params.Dnis
 
-	content, err := client.CallSimulation(callerIp, callerPort, ani, dnis)
+	command := fmt.Sprintf("call_simulation %s,%s,%s,%s\r\n", callerIp, callerPort, ani, dnis)
+
+	content, err := client.CallSimulation(command)
 	if err != nil {
 		fmt.Println("CallSimulation", err)
 		return
@@ -66,6 +68,6 @@ func StartTelnet(params CallSimulationParams) {
 
 	writeToFile("call1.xml", content)
 
-	rate_utils.ParseRateFromContent("", "", "", "", "", content)
+	rate_utils.ParseRateFromContent("", "", "", "", "", "", content)
 
 }

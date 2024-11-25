@@ -103,13 +103,13 @@ func (t *TelnetClient) Close() {
 }
 
 // CallSimulation 发送 call_simulation 命令并读取完整响应
-func (t *TelnetClient) CallSimulation(callerIp, callerPort, ani, dnis string) (string, error) {
+func (t *TelnetClient) CallSimulation(command string) (string, error) {
 	if t.conn == nil {
 		return "", fmt.Errorf("cannot establish connection")
 	}
 
 	// 构建命令
-	command := fmt.Sprintf("call_simulation %s,%s,%s,%s\r\n", callerIp, callerPort, ani, dnis)
+	//command := fmt.Sprintf("call_simulation %s,%s,%s,%s\r\n", callerIp, callerPort, ani, dnis)
 
 	// 发送命令
 	_, err := t.conn.Write([]byte(command))

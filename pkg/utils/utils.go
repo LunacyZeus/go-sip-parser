@@ -55,9 +55,16 @@ func IsOutbound(sip string) bool {
 	re := regexp.MustCompile(`@([0-9]+\.[0-9]+\.[0-9]+\.[0-9]+)`)
 	matches := re.FindStringSubmatch(sip)
 
+	//log.Println("matches:", matches)
 	if len(matches) > 1 {
 		// 提取到的 IP 地址
 		ip := matches[1]
+
+		if len(ip) > 0 && ip[0] == '@' {
+			ip = ip[1:]
+		}
+		//fmt.Println(ip)
+
 		// 判断 IP 是否以 "172." 开头，判断是否是呼出
 		if strings.HasPrefix(ip, "172.") {
 			return true

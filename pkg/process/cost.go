@@ -12,23 +12,25 @@ import (
 )
 
 type CallRecord struct {
-	CallID     string
-	ANI        string
-	DNIS       string
-	Via        string
-	InviteTime string
-	RingTime   string
-	AnswerTime string
-	HangupTime string
-	Duration   string // in milliseconds
-	InRate     string
-	InRateID   string
-	InCost     string
-	OutRate    string
-	OutRateID  string
-	OutCost    string
-	Command    string
-	Result     string
+	CallID        string
+	ANI           string
+	DNIS          string
+	Via           string
+	RelatedCallID string
+	OutVia        string
+	InviteTime    string
+	RingTime      string
+	AnswerTime    string
+	HangupTime    string
+	Duration      string // in milliseconds
+	InRate        string
+	InRateID      string
+	InCost        string
+	OutRate       string
+	OutRateID     string
+	OutCost       string
+	Command       string
+	Result        string
 }
 
 var client *telnet.TelnetClient
@@ -85,43 +87,48 @@ func handleRow(row []string) (record CallRecord, err error) {
 	dnis := row[2]
 	via := row[3]
 
+	relatedCallID := row[4]
+	outVia := row[5]
+
 	// Parse the row into CallRecord
-	inviteTime, _ := parseTime(row[4])
-	ringTime, _ := parseTime(row[5])
-	answerTime, _ := parseTime(row[6])
-	hangupTime, _ := parseTime(row[7])
+	inviteTime, _ := parseTime(row[6])
+	ringTime, _ := parseTime(row[7])
+	answerTime, _ := parseTime(row[8])
+	hangupTime, _ := parseTime(row[9])
 
-	duration := row[8]
-	inRate := row[9]
-	inRateID := row[10]
-	inCost := row[11]
-	outRate := row[12]
-	outRateID := row[13]
-	outCost := row[14]
+	duration := row[10]
+	inRate := row[11]
+	inRateID := row[12]
+	inCost := row[12]
+	outRate := row[13]
+	outRateID := row[14]
+	outCost := row[15]
 
-	command := row[12]
-	result := row[13]
+	command := row[16]
+	result := row[17]
 
 	if result != "" || inRateID != "" {
 		err = fmt.Errorf("calld(%s) already exists", callerId)
 		record = CallRecord{
-			CallID:     callerId,
-			ANI:        ani,
-			DNIS:       dnis,
-			Via:        via,
-			InviteTime: inviteTime,
-			RingTime:   ringTime,
-			AnswerTime: answerTime,
-			HangupTime: hangupTime,
-			Duration:   duration,
-			InRate:     inRate,
-			InRateID:   inRateID,
-			InCost:     inCost,
-			OutRate:    outRate,
-			OutRateID:  outRateID,
-			OutCost:    outCost,
-			Command:    command,
-			Result:     result,
+			CallID:        callerId,
+			ANI:           ani,
+			DNIS:          dnis,
+			Via:           via,
+			RelatedCallID: relatedCallID,
+			OutVia:        outVia,
+			InviteTime:    inviteTime,
+			RingTime:      ringTime,
+			AnswerTime:    answerTime,
+			HangupTime:    hangupTime,
+			Duration:      duration,
+			InRate:        inRate,
+			InRateID:      inRateID,
+			InCost:        inCost,
+			OutRate:       outRate,
+			OutRateID:     outRateID,
+			OutCost:       outCost,
+			Command:       command,
+			Result:        result,
 		}
 		return
 	}
@@ -149,10 +156,15 @@ func handleRow(row []string) (record CallRecord, err error) {
 	//log.Println("Login successfully!")
 
 	//fmt.Printf("ani(%s) dnis(%s)\n", row[1], row[2])
-	command = fmt.Sprintf("call_simulation %s,5060,%s,%s", callerIP, aniSip, dnisSip)
+	//command = fmt.Sprintf("call_simulation %s,5060,%s,%s", callerIP, aniSip, dnisSip)
+
+	callerPort := "5060"
+
+	// 构建命令
+	command = fmt.Sprintf("call_simulation %s,%s,%s,%s\r\n", callerIP, callerPort, dnisSip, aniSip)
 	log.Printf("[%s] Exec Command-> %s", callerId, command)
 
-	content, err := client.CallSimulation(callerIP, "5060", dnisSip, aniSip)
+	content, err := client.CallSimulation(command)
 	if err != nil {
 		err = fmt.Errorf("CallSimulation->%v", err)
 		return
@@ -177,7 +189,7 @@ func handleRow(row []string) (record CallRecord, err error) {
 		result = "Ingress Rate Not Found"
 		log.Printf("[%s]->result: %s", callerId, result)
 	} else {
-		inbound_rate, inbound_rate_id, outbound_rate, outbound_rate_id = rate_utils.ParseRateFromContent(callerId, ani, dnis, aniSip, dnisSip, content)
+		inbound_rate, inbound_rate_id, outbound_rate, outbound_rate_id = rate_utils.ParseRateFromContent(callerId, ani, dnis, aniSip, dnisSip, outVia, content)
 	}
 
 	_ = fmt.Sprintf("%s %s", inbound_rate, inbound_rate_id)
@@ -185,23 +197,25 @@ func handleRow(row []string) (record CallRecord, err error) {
 	//fmt.Println(content)
 
 	record = CallRecord{
-		CallID:     callerId,
-		ANI:        ani,
-		DNIS:       dnis,
-		Via:        via,
-		InviteTime: inviteTime,
-		RingTime:   ringTime,
-		AnswerTime: answerTime,
-		HangupTime: hangupTime,
-		Duration:   duration,
-		InRate:     inbound_rate,
-		InRateID:   inbound_rate_id,
-		InCost:     inCost,
-		OutRate:    outbound_rate,
-		OutRateID:  outbound_rate_id,
-		OutCost:    outCost,
-		Command:    command,
-		Result:     result,
+		CallID:        callerId,
+		ANI:           ani,
+		DNIS:          dnis,
+		Via:           via,
+		RelatedCallID: relatedCallID,
+		OutVia:        outVia,
+		InviteTime:    inviteTime,
+		RingTime:      ringTime,
+		AnswerTime:    answerTime,
+		HangupTime:    hangupTime,
+		Duration:      duration,
+		InRate:        inbound_rate,
+		InRateID:      inbound_rate_id,
+		InCost:        inCost,
+		OutRate:       outbound_rate,
+		OutRateID:     outbound_rate_id,
+		OutCost:       outCost,
+		Command:       command,
+		Result:        result,
 	}
 
 	return

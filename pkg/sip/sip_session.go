@@ -1,9 +1,12 @@
 package sip
 
 import (
+	"errors"
 	"fmt"
+	"log"
 	"sip-parser/pkg/siprocket"
 	"sip-parser/pkg/utils"
+	"sort"
 	"strings"
 	"time"
 )
@@ -62,6 +65,8 @@ type SipSession struct {
 	CallID        string     // 唯一标识会话的 Call-ID
 	ANI           string     //ANI to_addr
 	DNIS          string     //DNIS from_addr
+	ANIPhone      string     //ANI Phone
+	DNISPhone     string     //DNIS Phone
 	Via           string     //via 数据
 	CallBound     bool       //呼叫方向 true 呼出 false 呼入
 	Messages      []*Message // 该会话中所有的请求/响应消息
@@ -74,6 +79,8 @@ type SipSession struct {
 	Duration      int64      // 会话持续时长 Milliseconds
 	IsFirstInvite bool
 	IsFirst200    bool
+	RelatedCallID string //关联callid 适用于呼出呼入会话匹配
+	OutVia        string //为OUT CALL准备的 记录OUT会话第一个Invite请求请求的对端IP 用于对端匹配
 
 	Stage  string           //会话阶段
 	Status SipSessionStatus // 会话的状态（如进行中、已结束等）
@@ -119,6 +126,9 @@ func (s *SipSession) CalcStatus(simMsg *siprocket.SipMsg) (*Message, error) {
 			s.ANI = msg.ToAddr
 			s.DNIS = msg.FromAddr
 
+			s.ANIPhone = utils.GetPhonePart(s.ANI)
+			s.DNISPhone = utils.GetPhonePart(s.DNIS)
+
 			if len(simMsg.Via) > 0 {
 				via := simMsg.Via[0]
 				s.Via = string(via.Src)
@@ -126,6 +136,7 @@ func (s *SipSession) CalcStatus(simMsg *siprocket.SipMsg) (*Message, error) {
 
 			if utils.IsOutbound(s.DNIS) {
 				s.CallBound = true
+				//log.Println(callId, "is outbound")
 			} else {
 				s.CallBound = false
 			}
@@ -229,7 +240,9 @@ func NewSipSession(callID string) *SipSession {
 
 // SipSessionManager 用于管理多个 SIP 会话
 type SipSessionManager struct {
-	Sessions map[string]*SipSession // 使用 Call-ID 作为键存储会话
+	Sessions    map[string]*SipSession // 使用 Call-ID 作为键存储会话 呼入会话
+	InSessions  map[string]*SipSession
+	OutSessions map[string]*SipSession
 }
 
 // NewSipSessionManager 创建一个新的 SIP 会话管理器
@@ -248,4 +261,105 @@ func (manager *SipSessionManager) AddSession(session *SipSession) {
 func (manager *SipSessionManager) GetSession(callID string) (*SipSession, bool) {
 	session, exists := manager.Sessions[callID]
 	return session, exists
+}
+
+func (manager *SipSessionManager) Statistics() {
+	log.Printf("%d All sessions", len(manager.Sessions))
+}
+
+func (manager *SipSessionManager) GetAll() map[string]*SipSession {
+	return manager.Sessions
+}
+
+func IsMatch(current *SipSession, match *SipSession) bool {
+	if strings.Contains(match.ANIPhone, current.ANIPhone) || strings.Contains(match.DNISPhone, current.DNISPhone) {
+		return true
+	}
+	return false
+}
+
+func SearchMatchCall(i int, current *SipSession, sessions []*SipSession) (*SipSession, error) {
+	found := false
+
+	// 先检查当前元素后的元素
+	if i < len(sessions)-1 {
+		for j := i + 1; j < len(sessions); j++ {
+			if !sessions[j].CallBound { //不是呼出
+				continue
+			}
+			// 如果后面的元素的 ANIPhone 或 DNISPhone 包含当前元素
+			if IsMatch(current, sessions[j]) {
+				//fmt.Printf("Match found for session %+v in next session %+v\n", current, sessions[j])
+				found = true
+				return sessions[j], nil
+			}
+		}
+	}
+
+	// 再检查当前元素前的元素
+	if !found && i > 0 {
+		for j := i - 1; j >= 0; j-- {
+			if !sessions[j].CallBound { //不是呼出
+				continue
+			}
+			// 如果前面的元素的 ANIPhone 或 DNISPhone 包含当前元素
+			if IsMatch(current, sessions[j]) {
+				//fmt.Printf("Match found for session %+v in previous session %+v\n", current, sessions[j])
+				found = true
+				return sessions[j], nil
+			}
+		}
+	}
+
+	// 如果没有找到匹配
+	if !found {
+		//fmt.Printf("No match found for session %+v\n", current)
+	}
+	return nil, errors.New("not match")
+
+}
+
+// 匹配call会话
+func (manager *SipSessionManager) MatchCall() {
+
+	sortedSessions := manager.Sort() //获取排序的列表
+
+	for i, session := range sortedSessions {
+		if session.CallBound { //呼出
+
+		} else { //呼入
+
+			match, err := SearchMatchCall(i, session, sortedSessions)
+			if err != nil {
+				//log.Printf("No match found for session %+v\n", session)
+				continue
+			}
+
+			//log.Printf("matched %s", match.CallID)
+			session.RelatedCallID = match.CallID
+			session.OutVia = match.Via
+			manager.Sessions[session.CallID] = session
+
+			match.RelatedCallID = session.CallID
+			manager.Sessions[match.CallID] = match
+
+		}
+	}
+}
+
+func (manager *SipSessionManager) Sort() []*SipSession {
+	// 将 map 转换为可排序的切片
+	var sortedSessions []*SipSession
+	for _, session := range manager.Sessions {
+		if session.Status != COMPLETED { //只解析成功的
+			continue
+		}
+		sortedSessions = append(sortedSessions, session)
+	}
+
+	// 1. 按 InviteTime 排序
+	sort.Slice(sortedSessions, func(i, j int) bool {
+		return sortedSessions[i].InviteTime < sortedSessions[j].InviteTime
+	})
+	return sortedSessions
 }

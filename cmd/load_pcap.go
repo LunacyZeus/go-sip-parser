@@ -13,7 +13,7 @@ var loadCmd = &cobra.Command{
 	Short: "Loads Pcap files or folders",
 	Long:  "Loads a Pcap file or processes all .pcap files in a folder.",
 	Run: func(cmd *cobra.Command, args []string) {
-		process.ProcessFileOrFolder(loadFilePath)
+		process.LoadPcap(loadFilePath)
 	},
 }
 
