@@ -146,7 +146,7 @@ func handleRow(row *csv_utils.PcapCsv) (err error) {
 				inTrunkId = output.InTrunkId
 				outTrunkId = output.OutTrunkId
 
-				log.Printf("[outbound] CallerID(%s) ANI(%s) DNIS(%s) host(%s) outVia(%s) inRate(%s) inRateId(%s) outRate(%s) outRateId(%s)", callerId, aniSip, dnisSip, outVia, inbound_rate, inbound_rate_id, outbound_rate, outbound_rate_id)
+				log.Printf("[outbound] CallerID(%s) ANI(%s) DNIS(%s) outVia(%s) inRate(%s) inRateId(%s) outRate(%s) outRateId(%s)", callerId, aniSip, dnisSip, outVia, inbound_rate, inbound_rate_id, outbound_rate, outbound_rate_id)
 
 			}
 		}
