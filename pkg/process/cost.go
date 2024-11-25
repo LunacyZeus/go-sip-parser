@@ -133,7 +133,7 @@ func handleRow(row *csv_utils.PcapCsv) (err error) {
 		} else {
 			//inbound_rate, inbound_rate_id, outbound_rate, outbound_rate_id, inTrunkId, outTrunkId = rate_utils.ParseRateFromContent(callerId, ani, dnis, aniSip, dnisSip, outVia, content)
 			if !output.MatchRate(aniSip, dnisSip, outVia) { //未找到
-				log.Printf("[outbound] CallerID(%s) ANI(%s) DNIS(%s) outVia(%s) not found", callerId, aniSip, dnisSip, outVia)
+				log.Printf("[call] CallerID(%s) ANI(%s) DNIS(%s) outVia(%s) not found out_bound", callerId, aniSip, dnisSip, outVia)
 				result, err = convertor.ToJson(output)
 				if err != nil {
 					result = fmt.Sprintf("json err->%v", err)
@@ -146,7 +146,7 @@ func handleRow(row *csv_utils.PcapCsv) (err error) {
 				inTrunkId = output.InTrunkId
 				outTrunkId = output.OutTrunkId
 
-				log.Printf("[outbound] CallerID(%s) ANI(%s) DNIS(%s) outVia(%s) inRate(%s) inRateId(%s) outRate(%s) outRateId(%s)", callerId, aniSip, dnisSip, outVia, inbound_rate, inbound_rate_id, outbound_rate, outbound_rate_id)
+				log.Printf("[call] CallerID(%s) ANI(%s) DNIS(%s) outVia(%s) inRate(%s) inRateId(%s) outRate(%s) outRateId(%s)", callerId, aniSip, dnisSip, outVia, inbound_rate, inbound_rate_id, outbound_rate, outbound_rate_id)
 
 			}
 		}
