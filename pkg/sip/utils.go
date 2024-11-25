@@ -34,10 +34,21 @@ func parsePacket(packet gopacket.Packet, timeStamp time.Time) (sipPacket *siproc
 }
 
 func GetSipPart(input string) string {
+	if strings.Contains(input, "%") {
+		input = strings.ReplaceAll(input, "%", "#")
+	}
 	// 去除 <sip: 和 @ 后面的内容
 	if strings.Contains(input, "<sip:") {
 		// 截取 <sip: 后的部分，去除后面的 @ 和 IP
 		start := strings.Index(input, "<sip:") + len("<sip:")
+		end := strings.Index(input[start:], "@")
+		if end != -1 {
+			// 打印号码部分
+			return input[start : start+end]
+		}
+	} else if strings.Contains(input, "sip:") {
+		// 截取 <sip: 后的部分，去除后面的 @ 和 IP
+		start := strings.Index(input, "sip:") + len("sip:")
 		end := strings.Index(input[start:], "@")
 		if end != -1 {
 			// 打印号码部分
