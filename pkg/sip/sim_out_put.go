@@ -37,13 +37,14 @@ func removePlusPrefix(s string) string {
 
 func (o *SimOutput) MatchRate(aniSip, dnisSip, outVia string) bool {
 	for _, route := range o.Routes {
-		if dnisSip == removePlusPrefix(route.FinalANI) && (aniSip == removePlusPrefix(route.FinalDNIS)) {
+		viaIP := utils.ExtractIP(outVia)
+
+		if strings.Contains(dnisSip, removePlusPrefix(route.FinalANI)) && strings.Contains(aniSip, removePlusPrefix(route.FinalDNIS)) && strings.Contains(route.Hosts, viaIP) {
 			o.OutBoundRate = route.Rate
 			o.OutBoundRateId = route.RateId
 			o.OutTrunkId = route.TrunkId
 			return true
 		} else {
-			viaIP := utils.ExtractIP(outVia)
 			if strings.Contains(route.Hosts, viaIP) {
 				o.OutBoundRate = route.Rate
 				o.OutBoundRateId = route.RateId
