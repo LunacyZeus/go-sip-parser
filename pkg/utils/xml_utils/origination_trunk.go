@@ -4,43 +4,43 @@ import (
 	"encoding/xml"
 	"fmt"
 	"log"
-	"strings"
 )
 
-// 定义结构体与 XML 标签对应
-type OriginationTrunkRate struct {
-	Code          string `xml:"Code"`
-	Country       string `xml:"Country"`
-	CodeName      string `xml:"Code-Name"`
-	RateID        string `xml:"Rate-ID"`
-	Rate          string `xml:"Rate"`
-	RateType      string `xml:"Rate-Type"`
-	DnisType      string `xml:"Dnis-Type"`
-	JurType       string `xml:"Jur-Type"`
-	RateEffective string `xml:"Rate-Effective"`
+// OriginationTrunk 用于映射 XML 中的 <Origination-Trunk> 元素
+type OriginationTrunk struct {
+	XMLName           xml.Name `xml:"Origination-Trunk"`
+	CAP               string   `xml:"CAP"`
+	CPS               string   `xml:"CPS"`
+	CarrierName       string   `xml:"Carrier-Name"`
+	TrunkID           string   `xml:"Trunk-ID"`
+	TrunkName         string   `xml:"Trunk-Name"`
+	RouteType         string   `xml:"Route-Type"`
+	MediaType         string   `xml:"Media-Type"`
+	ProfitMargin      string   `xml:"Profit-Margin"`
+	ProfitType        string   `xml:"Profit-Type"`
+	SHAKEN            SHAKEN   `xml:"SHAKEN"`
+	StaticRouteName   string   `xml:"Static-Route-Name"`
+	DynamicRouteName  string   `xml:"Dynamic-Route-Name"`
+	RateTableName     string   `xml:"Rate-Table-Name"`
+	RouteStrategyName string   `xml:"Route-Strategy-Name"`
 }
 
-func sanitizeXML(input string) (string, error) {
-	// 将未转义的 & 替换为 &amp;
-	return strings.ReplaceAll(input, "&", "&amp;"), nil
-}
-
-func ParseOriginationTrunkRate(data string) OriginationTrunkRate {
+func ParseOriginationTrunk(data string) OriginationTrunk {
 	// 输入的 XML 数据
 	// 创建结构体实例
-	var rate OriginationTrunkRate
+	var rate OriginationTrunk
 
 	buff, err := sanitizeXML(data)
 	if err != nil {
 		fmt.Println(buff)
-		log.Fatalf("[OriginationTrunkRate] XML sanitizeXML error: %v", err)
+		log.Fatalf("[OriginationTrunk] XML sanitizeXML error: %v", err)
 	}
 
 	// 解析 XML 数据
 	err = xml.Unmarshal([]byte(buff), &rate)
 	if err != nil {
 		fmt.Println(buff)
-		log.Fatalf("[OriginationTrunkRate] XML Unmarshal error: %v", err)
+		log.Fatalf("[OriginationTrunk] XML Unmarshal error: %v", err)
 	}
 
 	// 打印解析结果

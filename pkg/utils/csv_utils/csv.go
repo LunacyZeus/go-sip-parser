@@ -3,12 +3,13 @@ package csv_utils
 import (
 	"encoding/csv"
 	"fmt"
+	"github.com/gocarina/gocsv"
 	"log"
 	"os"
 	"sip-parser/pkg/sip"
 )
 
-func SaveDataCsv(csvFilePath string, sessions map[string]*sip.SipSession) {
+func SaveDataCsv1(csvFilePath string, sessions map[string]*sip.SipSession) {
 	// 写入 CSV 文件的表头
 	header := []string{"Call-ID", "ANI", "DNIS", "Via", "RelatedCallId", "OutVia", "Invite Time", "Ring Time", "Answer Time", "Hangup Time", "Duration (msec)", "InRate", "InRate Id", "InCost", "OutRate", "OutRate Id", "OutCost", "Command", "Result"}
 
@@ -79,4 +80,71 @@ func SaveDataCsv(csvFilePath string, sessions map[string]*sip.SipSession) {
 	}
 
 	fmt.Printf("CSV file-(%s) created successfully", csvFilePath)
+}
+
+func SaveDataCsv(csvFilePath string, sessions map[string]*sip.SipSession) {
+	inFileName := "in_" + csvFilePath
+	outFileName := "out_" + csvFilePath
+
+	inFile, err := os.OpenFile(inFileName, os.O_RDWR|os.O_CREATE, os.ModePerm)
+	if err != nil {
+		panic(err)
+	}
+	defer inFile.Close()
+
+	outFile, err := os.OpenFile(outFileName, os.O_RDWR|os.O_CREATE, os.ModePerm)
+	if err != nil {
+		panic(err)
+	}
+	defer outFile.Close()
+
+	inCalls := []*PcapCsv{}
+	outCalls := []*PcapCsv{}
+
+	for _, session := range sessions {
+		if session.Status != sip.COMPLETED {
+			continue
+		}
+		if session.CallBound {
+			outCalls = append(outCalls, &PcapCsv{
+				CallId:        session.CallID,
+				ANI:           session.ANI,
+				DNIS:          session.DNIS,
+				Via:           session.Via,
+				RelatedCallId: session.RelatedCallID,
+				OutVia:        session.OutVia,
+				InviteTime:    fmt.Sprintf("%d", session.InviteTime),
+				RingTime:      fmt.Sprintf("%d", session.RingTime),
+				AnswerTime:    fmt.Sprintf("%d", session.AnswerTime),
+				HangupTime:    fmt.Sprintf("%d", session.HangUpTime),
+				Duration:      fmt.Sprintf("%d", session.Duration),
+			})
+		} else {
+			inCalls = append(inCalls, &PcapCsv{
+				CallId:        session.CallID,
+				ANI:           session.ANI,
+				DNIS:          session.DNIS,
+				Via:           session.Via,
+				RelatedCallId: session.RelatedCallID,
+				OutVia:        session.OutVia,
+				InviteTime:    fmt.Sprintf("%d", session.InviteTime),
+				RingTime:      fmt.Sprintf("%d", session.RingTime),
+				AnswerTime:    fmt.Sprintf("%d", session.AnswerTime),
+				HangupTime:    fmt.Sprintf("%d", session.HangUpTime),
+				Duration:      fmt.Sprintf("%d", session.Duration),
+			})
+		}
+	}
+
+	err = gocsv.MarshalFile(&outCalls, outFile) // Use this to save the CSV back to the file
+	if err != nil {
+		panic(err)
+	}
+
+	err = gocsv.MarshalFile(&inCalls, inFile) // Use this to save the CSV back to the file
+	if err != nil {
+		panic(err)
+	}
+
+	fmt.Printf("CSV file->%s and %s created successfully", inFileName, outFileName)
 }
