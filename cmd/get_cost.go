@@ -14,7 +14,7 @@ var getCostCmd = &cobra.Command{
 	Short: "Calculates cost for file processing",
 	Long:  "Calculates the cost of processing a  csv file with sip data",
 	Run: func(cmd *cobra.Command, args []string) {
-		process.NewCalculateSipCost(costFilePath)
+		process.CalculateSipCost(costFilePath)
 		//process.CalculateSipCostTest(costFilePath)
 	},
 }
