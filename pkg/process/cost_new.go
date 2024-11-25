@@ -1,122 +1,153 @@
 package process
 
-/*
-func HandleRowTest(row []string) (record CallRecord, err error) {
-	callerId := row[0]
-	ani := row[1]
-	dnis := row[2]
-	via := row[3]
+import (
+	"github.com/gocarina/gocsv"
+	"log"
+	"os"
+	"path/filepath"
+	"sip-parser/pkg/utils/csv_utils"
+	"sip-parser/pkg/utils/telnet"
+	"sync"
+)
 
-	// Parse the row into CallRecord
-	inviteTime, _ := parseTime(row[4])
-	ringTime, _ := parseTime(row[5])
-	answerTime, _ := parseTime(row[6])
-	hangupTime, _ := parseTime(row[7])
-
-	duration := row[8]
-	rate := row[9]
-	rateID := row[10]
-	cost := row[11]
-	command := row[12]
-	result := row[13]
-
-	if result != "" || rate != "" || rateID != "" || cost != "" {
-		err = fmt.Errorf("calld(%s) already exists", callerId)
-		record = CallRecord{
-			CallID:     callerId,
-			ANI:        ani,
-			DNIS:       dnis,
-			Via:        via,
-			InviteTime: inviteTime,
-			RingTime:   ringTime,
-			AnswerTime: answerTime,
-			HangupTime: hangupTime,
-			Duration:   duration,
-			Rate:       rate,
-			RateID:     rateID,
-			Cost:       cost,
-			Command:    command,
-			Result:     result,
-		}
-		return
-	}
-
-	cost = "12345"
-
-	record = CallRecord{
-		CallID:     callerId,
-		ANI:        ani,
-		DNIS:       dnis,
-		Via:        via,
-		InviteTime: inviteTime,
-		RingTime:   ringTime,
-		AnswerTime: answerTime,
-		HangupTime: hangupTime,
-		Duration:   duration,
-		Rate:       rate,
-		RateID:     rateID,
-		Cost:       cost,
-		Command:    command,
-		Result:     result,
-	}
-	return
+// BatchProcessor 用于管理批次任务的并发处理
+type BatchProcessor struct {
+	// 最大并发数
+	concurrencyLimit int
+	// 每批次处理的数量
+	batchSize int
+	// 等待所有任务完成的同步机制
+	wg sync.WaitGroup
+	// 用于获取处理结果的通道
+	resultChan chan int
+	// 控制并发的信号量
+	sema chan struct{}
 }
 
-func CalculateSipCostTest(path string) {
-	file, err := os.Open(path)
-	if err != nil {
-		fmt.Println("Error opening file:", err)
-		return
-	}
-	defer file.Close()
-
-	reader := csv.NewReader(file)
-	reader.Comma = ',' // Default delimiter is comma; adjust if needed
-
-	// 读取所有行（包括头部）
-	rows, err := reader.ReadAll()
-	if err != nil {
-		fmt.Println("Error reading CSV:", err)
-		return
-	}
-
-	if len(rows) == 0 {
-		fmt.Println("CSV file is empty.")
-		return
-	}
-
-	// 克隆 rows 为 new_rows
-	newRows := make([][]string, len(rows))
-	copy(newRows, rows)
-
-	// 提取标题行
-	headers := rows[0]
-	fmt.Println("Headers:", headers)
-
-	// 初始化存储修改后的记录的切片
-	var updatedRecords [][]string
-	updatedRecords = append(updatedRecords, headers) // 保留标题行
-
-	// 实时处理每一行
-	for i, row := range rows[1:] { // 跳过标题行
-		record, err := HandleRowTest(row)
-		if err != nil {
-			log.Println("Skip row:", err)
-			continue
-		}
-
-		// 将修改后的数据记录转回字符串切片格式
-		//fmt.Println(record)
-
-		// 修改后的记录写入 new_rows
-		newRows[i+1] = recordToRow(record)
-
-		// 实时写入修改后的数据到文件
-		err = updateCsv(path, newRows)
-		if err != nil {
-			fmt.Println("Error writing CSV:", err)
-			return
-		}
+// NewBatchProcessor 返回一个 BatchProcessor 实例
+func NewBatchProcessor(concurrencyLimit, batchSize int) *BatchProcessor {
+	return &BatchProcessor{
+		concurrencyLimit: concurrencyLimit,
+		batchSize:        batchSize,
+		resultChan:       make(chan int),
+		sema:             make(chan struct{}, concurrencyLimit),
 	}
 }
-*/
+
+// ProcessBatch 处理一批任务
+func (bp *BatchProcessor) ProcessBatch(batch []*csv_utils.PcapCsv, startIdx int) {
+	// 启动并发任务
+	// 启动并发任务
+	for idx, pcap := range batch {
+		// 计算实际的元素索引
+		actualIdx := startIdx + idx
+		bp.wg.Add(1)
+		bp.sema <- struct{}{} // 限制并发
+		go bp.processRow(pcap, actualIdx)
+	}
+}
+
+// processPcapCsv 处理单个任务
+func (bp *BatchProcessor) processRow(pcap *csv_utils.PcapCsv, idx int) {
+	defer bp.wg.Done()
+
+	// 模拟处理：5秒后输出 CallId
+	//time.Sleep(5 * time.Second)
+
+	err := handleRow(pcap)
+	if err != nil {
+		log.Println("Skip row:", err)
+		idx = -1 //设置为失败
+	}
+
+	bp.resultChan <- idx
+
+	// 释放信号量
+	<-bp.sema
+}
+
+// Wait 等待所有任务完成并关闭结果通道
+func (bp *BatchProcessor) Wait() {
+	// 等待所有的 goroutine 完成
+	bp.wg.Wait()
+
+	// 关闭结果通道，避免其他 goroutine 写入
+	close(bp.resultChan)
+}
+
+// 输出所有处理的结果
+func (bp *BatchProcessor) OutputResults() []int {
+	results := []int{}
+	for result := range bp.resultChan {
+		results = append(results, result)
+	}
+	return results
+}
+
+func NewCalculateSipCost(path string) {
+	// 创建客户端实例
+	client = telnet.NewTelnetClient("127.0.0.1", "4320")
+
+	csvFile, err := os.OpenFile(path, os.O_RDWR|os.O_CREATE, os.ModePerm)
+	if err != nil {
+		panic(err)
+	}
+	defer csvFile.Close()
+
+	rows := []*csv_utils.PcapCsv{}
+
+	if err := gocsv.UnmarshalFile(csvFile, &rows); err != nil { // Load clients from file
+		panic(err)
+	}
+
+	all_count := len(rows)
+
+	// 创建一个 BatchProcessor 实例，设置并发限制为 3，批次大小为 10
+	bp := NewBatchProcessor(3, 10)
+
+	// 按批次处理数据
+	for i := 0; i < len(rows); i += bp.batchSize {
+		end := i + bp.batchSize
+		if end > len(rows) {
+			end = len(rows)
+		}
+		batch := rows[i:end]
+
+		// 处理当前批次 传入起始索引
+		bp.ProcessBatch(batch, i)
+
+		// 等待当前批次的 goroutine 完成并输出结果
+		bp.Wait()
+
+		results := bp.OutputResults()
+		for _, index := range results {
+			if index == -1 {
+				log.Println("Skip row:", index)
+			} else {
+				log.Println("handle->", index, rows[index])
+			}
+		}
+
+		log.Printf("processing->%d/%d", i, all_count)
+
+		fileName := filepath.Base(path)
+		fileName = "res_" + fileName
+
+		csvWriteFile, err := os.OpenFile(fileName, os.O_RDWR|os.O_CREATE, os.ModePerm)
+		if err != nil {
+			panic(err)
+		}
+
+		//每操作一次写入一次
+		err = gocsv.MarshalFile(&rows, csvWriteFile) // Use this to save the CSV back to the file
+		if err != nil {
+			panic(err)
+		}
+
+		csvWriteFile.Close()
+
+		// 重新初始化 resultChan 为下一个批次清空
+		bp.resultChan = make(chan int)
+	}
+
+}
