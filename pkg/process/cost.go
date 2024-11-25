@@ -153,7 +153,7 @@ func handleRow(row *csv_utils.PcapCsv) (err error) {
 
 	}
 
-	_ = fmt.Sprintf("%s %s", inbound_rate, inbound_rate_id)
+	//_ = fmt.Sprintf("%s %s", inbound_rate, inbound_rate_id)
 
 	row.Command = command
 	row.Result = result
