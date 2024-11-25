@@ -3,6 +3,7 @@ package rate_utils
 import (
 	"fmt"
 	"log"
+	"sip-parser/pkg/utils"
 	"sip-parser/pkg/utils/xml_utils"
 	"strings"
 )
@@ -46,6 +47,8 @@ func ParseRateFromContent(callerID, ani, dnis, aniSip, dnisSip, outVia, content 
 			terminationRoute := xml_utils.ParseTrunkData(raw_data)
 			//fmt.Println(terminationRoute.TerminationTrunk)
 			if len(terminationRoute.TerminationTrunk) > 0 {
+				notMatchMsgs := []string{}
+				isFound := false
 				for _, trunk := range terminationRoute.TerminationTrunk {
 					hosts := []string{}
 					for _, host := range trunk.TerminationHost {
@@ -62,12 +65,27 @@ func ParseRateFromContent(callerID, ani, dnis, aniSip, dnisSip, outVia, content 
 					if dnisSip == removePlusPrefix(FinalANI) && (aniSip == removePlusPrefix(FinalDNIS)) {
 						outbound_rate = trunk.TrunkRate.Rate
 						outbound_rate_id = trunk.TrunkRate.RateID
-
 						log.Printf("[outbound] CallerID(%s) RateID(%s) Rate(%s) ANI(%s) DNIS(%s) host(%s) outVia(%s)\n", callerID, trunk.TrunkRate.RateID, trunk.TrunkRate.Rate, FinalANI, FinalDNIS, hostsStr, outVia)
+						isFound = true
+						break
 					} else {
-						log.Printf("[outbound] CallerID(%s) RateID(%s) Rate(%s) ANI(%s!=%s) DNIS(%s!=%s) host(%s) outVia(%s) not match\n", callerID, trunk.TrunkRate.RateID, trunk.TrunkRate.Rate, dnisSip, removePlusPrefix(FinalANI), aniSip, removePlusPrefix(FinalDNIS), hostsStr, outVia)
+						viaIP := utils.ExtractIP(outVia)
+						if strings.Contains(hostsStr, viaIP) {
+							outbound_rate = trunk.TrunkRate.Rate
+							outbound_rate_id = trunk.TrunkRate.RateID
+							log.Printf("[outbound] CallerID(%s) RateID(%s) Rate(%s) ANI(%s) DNIS(%s) host(%s) outVia(%s)\n", callerID, trunk.TrunkRate.RateID, trunk.TrunkRate.Rate, FinalANI, FinalDNIS, hostsStr, outVia)
+							isFound = true
+							break
+						}
+						msg := fmt.Sprintf("[outbound] CallerID(%s) RateID(%s) Rate(%s) ANI(%s!=%s) DNIS(%s!=%s) host(%s) outVia(%s) not match\n", callerID, trunk.TrunkRate.RateID, trunk.TrunkRate.Rate, dnisSip, removePlusPrefix(FinalANI), aniSip, removePlusPrefix(FinalDNIS), hostsStr, outVia)
+						notMatchMsgs = append(notMatchMsgs, msg)
 					}
+				}
 
+				if !isFound { //没搜索到
+					for _, msg := range notMatchMsgs {
+						log.Println(msg)
+					}
 				}
 			}
 		}

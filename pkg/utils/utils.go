@@ -73,3 +73,15 @@ func IsOutbound(sip string) bool {
 	// 如果没有匹配到或者 IP 不是以 "172." 开头，则返回 false，表示是呼入
 	return false
 }
+
+// ExtractIP 从字符串中提取第一个 IPv4 地址
+func ExtractIP(input string) string {
+	// 定义正则表达式，用于匹配 IPv4 地址
+	regex := `\b(?:\d{1,3}\.){3}\d{1,3}\b`
+
+	// 编译正则表达式
+	re := regexp.MustCompile(regex)
+
+	// 查找匹配的内容
+	return re.FindString(input)
+}
