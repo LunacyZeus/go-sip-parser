@@ -199,6 +199,7 @@ func CalculateSipCost(path string) {
 
 		fileName := filepath.Base(path)
 		fileName = "res_" + fileName
+
 		csvWriteFile, err := os.OpenFile(fileName, os.O_RDWR|os.O_CREATE, os.ModePerm)
 		if err != nil {
 			panic(err)
