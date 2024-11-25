@@ -133,7 +133,7 @@ func handleRow(row *csv_utils.PcapCsv) (err error) {
 		} else {
 			//inbound_rate, inbound_rate_id, outbound_rate, outbound_rate_id, inTrunkId, outTrunkId = rate_utils.ParseRateFromContent(callerId, ani, dnis, aniSip, dnisSip, outVia, content)
 			if !output.MatchRate(aniSip, dnisSip, outVia) { //未找到
-				log.Printf("[outbound] CallerID(%s) ANI(%s) DNIS(%s) host(%s) outVia(%s) not found", callerId, aniSip, dnisSip, outVia)
+				log.Printf("[outbound] CallerID(%s) ANI(%s) DNIS(%s) outVia(%s) not found", callerId, aniSip, dnisSip, outVia)
 				result, err = convertor.ToJson(output)
 				if err != nil {
 					result = fmt.Sprintf("json err->%v", err)
