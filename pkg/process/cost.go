@@ -36,9 +36,10 @@ type CallRecord struct {
 	Result        string
 }
 
-var client *telnet.TelnetClient
-
 func handleRow(row *csv_utils.PcapCsv) (err error) {
+	// 创建客户端实例
+	client := telnet.NewTelnetClient("127.0.0.1", "4320")
+
 	callerId := row.CallId
 	//ani := row.ANI
 	//dnis := row.DNIS
@@ -169,9 +170,6 @@ func handleRow(row *csv_utils.PcapCsv) (err error) {
 }
 
 func CalculateSipCost(path string) {
-	// 创建客户端实例
-	client = telnet.NewTelnetClient("127.0.0.1", "4320")
-
 	csvFile, err := os.OpenFile(path, os.O_RDWR|os.O_CREATE, os.ModePerm)
 	if err != nil {
 		panic(err)
