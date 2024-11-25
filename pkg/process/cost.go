@@ -290,6 +290,8 @@ func recordToRow(record CallRecord) []string {
 		record.ANI,
 		record.DNIS,
 		record.Via,
+		record.RelatedCallID,
+		record.OutVia,
 		record.InviteTime,
 		record.RingTime,
 		record.AnswerTime,
