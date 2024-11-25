@@ -6,7 +6,6 @@ import (
 	"os"
 	"path/filepath"
 	"sip-parser/pkg/utils/csv_utils"
-	"sip-parser/pkg/utils/telnet"
 	"sync"
 )
 
@@ -29,7 +28,7 @@ func NewBatchProcessor(concurrencyLimit, batchSize int) *BatchProcessor {
 	return &BatchProcessor{
 		concurrencyLimit: concurrencyLimit,
 		batchSize:        batchSize,
-		resultChan:       make(chan int),
+		resultChan:       make(chan int, 5),
 		sema:             make(chan struct{}, concurrencyLimit),
 	}
 }
@@ -86,7 +85,7 @@ func (bp *BatchProcessor) OutputResults() []int {
 
 func NewCalculateSipCost(path string) {
 	// 创建客户端实例
-	client = telnet.NewTelnetClient("127.0.0.1", "4320")
+	//client := telnet.NewTelnetClient("127.0.0.1", "4320")
 
 	csvFile, err := os.OpenFile(path, os.O_RDWR|os.O_CREATE, os.ModePerm)
 	if err != nil {
@@ -103,7 +102,7 @@ func NewCalculateSipCost(path string) {
 	all_count := len(rows)
 
 	// 创建一个 BatchProcessor 实例，设置并发限制为 3，批次大小为 10
-	bp := NewBatchProcessor(3, 10)
+	bp := NewBatchProcessor(5, 5)
 
 	// 按批次处理数据
 	for i := 0; i < len(rows); i += bp.batchSize {
@@ -147,7 +146,7 @@ func NewCalculateSipCost(path string) {
 		csvWriteFile.Close()
 
 		// 重新初始化 resultChan 为下一个批次清空
-		bp.resultChan = make(chan int)
+		bp.resultChan = make(chan int, 5)
 	}
 
 }
