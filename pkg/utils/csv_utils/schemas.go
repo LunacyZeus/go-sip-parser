@@ -24,6 +24,8 @@ type PcapCsv struct { // Our example struct, you can use "-" to ignore a field
 	OutRate       string `csv:"OutRate"`
 	OutRateID     string `csv:"OutRate Id"`
 	OutCost       string `csv:"OutCost"`
+	SrcIP         string `csv:"SrcIP"`
+	DestIP        string `csv:"DestIP"`
 	Command       string `csv:"Command"`
 	Result        string `csv:"Result"`
 	//NotUsedString string  `csv:"-"`

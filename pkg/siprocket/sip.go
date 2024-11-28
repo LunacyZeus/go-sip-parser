@@ -11,6 +11,8 @@ var sip_type = 0
 var keep_src = true
 
 type SipMsg struct {
+	SrcIP     string
+	DestIP    string
 	Req       sipReq
 	From      sipFrom
 	To        sipTo

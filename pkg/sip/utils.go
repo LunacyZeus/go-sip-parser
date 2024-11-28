@@ -9,7 +9,7 @@ import (
 	"time"
 )
 
-func parsePacket(packet gopacket.Packet, timeStamp time.Time) (sipPacket *siprocket.SipMsg, err error) {
+func parsePacket(packet gopacket.Packet, timeStamp time.Time) (sipPacket *siprocket.SipMsg, srcIP string, destIP string, err error) {
 	err = errors.New("no sip msg")
 	for _, layer := range packet.Layers() {
 		switch layer.LayerType() {
@@ -17,11 +17,18 @@ func parsePacket(packet gopacket.Packet, timeStamp time.Time) (sipPacket *siproc
 			//parseEthernetLayer(layer)
 		case layers.LayerTypeIPv4:
 			//parseIPV4Layer(layer)
+			// 解析 IP 层
+			ip, _ := layer.(*layers.IPv4)
+			srcIP = ip.SrcIP.String()
+			destIP = ip.DstIP.String()
+			//fmt.Println(srcIP, destIP)
+
 		case layers.LayerTypeTCP:
 			//parseTcpLayer(layer)
 		case layers.LayerTypeUDP:
 			err = nil
 			udp, _ := layer.(*layers.UDP)
+
 			sipPacket = siprocket.StreamParse(udp.Payload, timeStamp)
 			//log.Println(string(sipPacket.Req.Src))
 		default:

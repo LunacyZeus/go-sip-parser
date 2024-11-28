@@ -28,6 +28,7 @@ func LoadPcap(path string) {
 }
 
 func ProcessFileOrFolder(path string) {
+	log.Printf("Parsing pcap->%s", path)
 	info, err := os.Stat(path)
 	if err != nil {
 		fmt.Printf("Error accessing path: %v\n", err)

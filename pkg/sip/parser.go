@@ -146,7 +146,10 @@ func LoadSIPTraceFromPcapStream(file string) ([]*siprocket.SipMsg, error) {
 	// 遍历文件中的所有包
 	for packet := range packetSource.Packets() {
 		// 处理每个包，这里简单地打印出来
-		pkt, err := parsePacket(packet, packet.Metadata().Timestamp)
+		pkt, srcIP, destIP, err := parsePacket(packet, packet.Metadata().Timestamp)
+		pkt.SrcIP = srcIP
+		pkt.DestIP = destIP
+
 		if err != nil {
 			continue
 		} else {

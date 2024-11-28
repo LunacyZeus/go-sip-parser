@@ -133,6 +133,12 @@ func handleRow(row *csv_utils.PcapCsv) (err error) {
 			result = "Cannot Parse XMl"
 			log.Printf("[%s]->result: %s", callerId, result)
 		} else {
+			if output.InBoundRate != "" {
+				inbound_rate = output.InBoundRate
+			}
+			if output.InBoundRateId != "" {
+				inbound_rate_id = output.InBoundRateId
+			}
 			//inbound_rate, inbound_rate_id, outbound_rate, outbound_rate_id, inTrunkId, outTrunkId = rate_utils.ParseRateFromContent(callerId, ani, dnis, aniSip, dnisSip, outVia, content)
 			if !output.MatchRate(aniSip, dnisSip, outVia) { //未找到
 				log.Printf("[call] CallerID(%s) ANI(%s) DNIS(%s) outVia(%s) not found out_bound", callerId, aniSip, dnisSip, outVia)

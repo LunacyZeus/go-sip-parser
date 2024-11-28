@@ -113,11 +113,13 @@ func SaveDataCsv(csvFilePath string, sessions map[string]*sip.SipSession) {
 				Via:           session.Via,
 				RelatedCallId: session.RelatedCallID,
 				OutVia:        session.OutVia,
-				InviteTime:    fmt.Sprintf("%d", session.InviteTime),
-				RingTime:      fmt.Sprintf("%d", session.RingTime),
-				AnswerTime:    fmt.Sprintf("%d", session.AnswerTime),
-				HangupTime:    fmt.Sprintf("%d", session.HangUpTime),
+				InviteTime:    convertTimeStamp(session.InviteTime),
+				RingTime:      convertTimeStamp(session.RingTime),
+				AnswerTime:    convertTimeStamp(session.AnswerTime),
+				HangupTime:    convertTimeStamp(session.HangUpTime),
 				Duration:      fmt.Sprintf("%d", session.Duration),
+				SrcIP:         session.SrcIP,
+				DestIP:        session.DestIP,
 			})
 		} else {
 			inCalls = append(inCalls, &PcapCsv{
@@ -127,11 +129,13 @@ func SaveDataCsv(csvFilePath string, sessions map[string]*sip.SipSession) {
 				Via:           session.Via,
 				RelatedCallId: session.RelatedCallID,
 				OutVia:        session.OutVia,
-				InviteTime:    fmt.Sprintf("%d", session.InviteTime),
-				RingTime:      fmt.Sprintf("%d", session.RingTime),
-				AnswerTime:    fmt.Sprintf("%d", session.AnswerTime),
-				HangupTime:    fmt.Sprintf("%d", session.HangUpTime),
+				InviteTime:    convertTimeStamp(session.InviteTime),
+				RingTime:      convertTimeStamp(session.RingTime),
+				AnswerTime:    convertTimeStamp(session.AnswerTime),
+				HangupTime:    convertTimeStamp(session.HangUpTime),
 				Duration:      fmt.Sprintf("%d", session.Duration),
+				SrcIP:         session.SrcIP,
+				DestIP:        session.DestIP,
 			})
 		}
 	}

@@ -81,6 +81,8 @@ type SipSession struct {
 	IsFirst200    bool
 	RelatedCallID string //关联callid 适用于呼出呼入会话匹配
 	OutVia        string //为OUT CALL准备的 记录OUT会话第一个Invite请求请求的对端IP 用于对端匹配
+	SrcIP         string //源ip
+	DestIP        string //目标ip
 
 	Stage  string           //会话阶段
 	Status SipSessionStatus // 会话的状态（如进行中、已结束等）
@@ -128,6 +130,9 @@ func (s *SipSession) CalcStatus(simMsg *siprocket.SipMsg) (*Message, error) {
 
 			s.ANIPhone = utils.GetPhonePart(s.ANI)
 			s.DNISPhone = utils.GetPhonePart(s.DNIS)
+
+			s.SrcIP = simMsg.SrcIP
+			s.DestIP = simMsg.DestIP
 
 			if len(simMsg.Via) > 0 {
 				via := simMsg.Via[0]
