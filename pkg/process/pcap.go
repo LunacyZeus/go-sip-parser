@@ -13,18 +13,7 @@ import (
 var manager *sip.SipSessionManager
 
 func LoadPcap(path string) {
-	fileName := filepath.Base(path)
 	ProcessFileOrFolder(path)
-
-	manager.Statistics()
-
-	manager.MatchCall()
-
-	sessions := manager.GetAll()
-
-	saveCsvFileName := fmt.Sprintf("%s.csv", fileName)
-	// 写入数据
-	csv_utils.SaveDataCsv(saveCsvFileName, sessions)
 }
 
 func ProcessFileOrFolder(path string) {
@@ -63,6 +52,10 @@ func ProcessFileOrFolder(path string) {
 }
 
 func processFolder(folderPath string) {
+	all_count := 0
+	n := 0
+	fileName := filepath.Base(folderPath)
+
 	err := filepath.Walk(folderPath, func(path string, info os.FileInfo, err error) error {
 		if err != nil {
 			return err
@@ -80,6 +73,23 @@ func processFolder(folderPath string) {
 
 			// Search the SIP packets for the filters
 			sip.HandleSipPackets(manager, fp)
+
+			manager.Statistics()
+			manager.MatchCall()
+			sessions := manager.GetAndDeleteAllCompleteCall()
+			saveCsvFileName := fmt.Sprintf("%s.csv", fileName)
+
+			all_count += len(sessions)
+
+			if n == 1 { //第一次 写入文件
+				// 全新写入数据
+				csv_utils.SaveDataCsv(saveCsvFileName, sessions)
+			} else {
+				// 追加写入数据
+				csv_utils.AppendDataCsv(saveCsvFileName, sessions)
+			}
+
+			n += 1
 		}
 		return nil
 	})
@@ -87,4 +97,6 @@ func processFolder(folderPath string) {
 		fmt.Printf("Error processing folder: %v\n", err)
 		return
 	}
+
+	fmt.Printf("%d CSV data wirte successfully\n", all_count)
 }

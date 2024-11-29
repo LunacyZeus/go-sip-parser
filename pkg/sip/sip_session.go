@@ -88,6 +88,12 @@ type SipSession struct {
 	Status SipSessionStatus // 会话的状态（如进行中、已结束等）
 }
 
+func (s SipSession) AllMsg() {
+	for _, msg := range s.Messages {
+		fmt.Println(msg.String())
+	}
+}
+
 func (s SipSession) String() string {
 	return fmt.Sprintf(" call_id=%s, length=%d, dur=%d stage=%s status=%s invite=%d dur=%d", s.CallID, len(s.Messages), s.Duration, s.Stage, s.Status, s.InviteTime, s.Duration)
 }
@@ -274,6 +280,25 @@ func (manager *SipSessionManager) Statistics() {
 
 func (manager *SipSessionManager) GetAll() map[string]*SipSession {
 	return manager.Sessions
+}
+
+func (manager *SipSessionManager) GetAndDeleteAllCompleteCall() map[string]*SipSession {
+	new_sessions := map[string]*SipSession{}
+	for key, session := range manager.Sessions {
+		if session.Status == REJECTED || session.Status == CANCELLED || session.Status == UNKNOWN { //删除被取消的
+			delete(manager.Sessions, key) //删除被取消的 被拒绝的
+		}
+
+		if session.Status != COMPLETED {
+			continue
+		}
+
+		new_sessions[key] = session
+
+		delete(manager.Sessions, key) //删除完成的会话
+	}
+
+	return new_sessions
 }
 
 func IsMatch(current *SipSession, match *SipSession) bool {
