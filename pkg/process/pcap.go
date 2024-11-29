@@ -76,6 +76,7 @@ func processFolder(folderPath string) {
 
 			manager.Statistics()
 			manager.MatchCall()
+			log.Printf("pcap file(%s) get csv to restore", path)
 			sessions := manager.GetAndDeleteAllCompleteCall(manager.LatestPktTimestamp.UnixMilli())
 
 			saveCsvFileName := fmt.Sprintf("%s.csv", fileName)
