@@ -72,9 +72,13 @@ func processFolder(folderPath string) {
 			log.Printf("pcap file(%s) loaded", path)
 
 			// Search the SIP packets for the filters
+			log.Printf("pcap file(%s) handle packets", path)
 			sip.HandleSipPackets(manager, fp)
 
+			log.Printf("pcap file(%s) Statistics", path)
 			manager.Statistics()
+			log.Printf("pcap file(%s) MatchCall", path)
+
 			manager.MatchCall()
 			log.Printf("pcap file(%s) get csv to restore", path)
 			sessions := manager.GetAndDeleteAllCompleteCall(manager.LatestPktTimestamp.UnixMilli())
