@@ -136,7 +136,8 @@ func StreamParse(v []byte, timeStamp time.Time) (output *SipMsg) {
 
 	lines := bytes.Split(v, []byte("\r\n"))
 
-	for i, line := range lines {
+	for i, _ := range lines {
+		line := lines[i]
 		//fmt.Println(i, string(line))
 		line = bytes.TrimSpace(line)
 		if i == 0 {

@@ -159,3 +159,57 @@ func LoadSIPTraceFromPcapStream(file string) ([]*siprocket.SipMsg, error) {
 	}
 	return results, nil
 }
+
+func LoadSIPTraceFromPcapStreamWithManager(manager *SipSessionManager, file string) error {
+	// 打开PCAP文件，而不是设备
+	handle, err := pcap.OpenOffline(file)
+	// 如果打开文件时发生错误，记录错误并终止程序
+	if err != nil {
+		log.Fatal(err)
+	}
+	// 确保在函数结束时关闭文件句柄
+	defer handle.Close()
+
+	//var results []*siprocket.SipMsg
+
+	// 设置 BPF 过滤器，过滤 IP 包和 UDP 包
+	//err = handle.SetBPFFilter("ip or udp")
+	//if err != nil {
+	//	log.Fatal(err)
+	//}
+
+	// 创建一个新的包源，用于从文件中读取包
+	packetSource := gopacket.NewPacketSource(handle, handle.LinkType())
+	// 遍历文件中的所有包
+	for packet := range packetSource.Packets() {
+		// 处理每个包，这里简单地打印出来
+		pkt, srcIP, destIP, err := parsePacket(packet, packet.Metadata().Timestamp)
+		pkt.SrcIP = srcIP
+		pkt.DestIP = destIP
+
+		if err != nil {
+			continue
+		} else {
+			//results = append(results, pkt)
+			callID := string(pkt.CallId.Value)
+
+			// 如果 Call-ID 存在，则处理该会话
+			if callID != "" {
+				//fmt.Println(callID)
+				// 查找会话，如果不存在则创建新会话
+				session, exists := manager.GetSession(callID)
+				if !exists {
+					// 创建新的 SIP 会话
+					session = NewSipSession(callID)
+					manager.AddSession(session)
+				}
+
+				// 添加消息到会话
+				session.AddMessage(pkt)
+				manager.LatestPktTimestamp = pkt.Timestamp
+			}
+		}
+	}
+	//return results, nil
+	return nil
+}

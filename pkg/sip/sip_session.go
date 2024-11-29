@@ -366,7 +366,6 @@ func (manager *SipSessionManager) MatchCall() {
 		if session.CallBound { //呼出
 
 		} else { //呼入
-
 			match, err := SearchMatchCall(i, session, sortedSessions)
 			if err != nil {
 				//log.Printf("No match found for session %+v\n", session)

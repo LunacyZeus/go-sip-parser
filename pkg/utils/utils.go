@@ -23,7 +23,7 @@ func cleanLine(line string) string {
 }
 
 // 获取请求行
-func GetRequestLine(line string) (string, string) {
+func OldGetRequestLine(line string) (string, string) {
 	// 清理行中的非打印字符
 	cleanedLine := cleanLine(line)
 
@@ -42,6 +42,43 @@ func GetRequestLine(line string) (string, string) {
 		tmp := strings.SplitN(cleanedLine, "SIP/2.0 ", 2)
 		if len(tmp) > 1 {
 			return "", "SIP/2.0 " + tmp[1]
+		}
+	}
+
+	// 如果没有匹配到任何请求行或响应行，则返回空字符串
+	return "", ""
+}
+
+// 获取请求行
+func GetRequestLine(line string) (string, string) {
+	// 清理行中的非打印字符
+	cleanedLine := cleanLine(line)
+
+	// 创建一个 StringBuilder 实例
+	var builder strings.Builder
+
+	// 遍历请求方法列表，检查是否包含有效的请求方法
+	for _, method := range sipRequestMethods {
+		if strings.Contains(cleanedLine, method) {
+			builder.Reset()             // Reset builder to clear any previous content
+			builder.WriteString(method) // Write the method
+			builder.WriteString(" ")    // Add a space
+			tmp := strings.SplitN(cleanedLine, method+" ", 2)
+			if len(tmp) > 1 {
+				builder.WriteString(tmp[1]) // Write the rest of the line after the method
+				return method, builder.String()
+			}
+		}
+	}
+
+	// 如果包含 SIP/2.0 响应行，提取响应部分
+	if strings.Contains(cleanedLine, "SIP/2.0 ") {
+		builder.Reset()                 // Reset builder to clear any previous content
+		builder.WriteString("SIP/2.0 ") // Add the SIP version
+		tmp := strings.SplitN(cleanedLine, "SIP/2.0 ", 2)
+		if len(tmp) > 1 {
+			builder.WriteString(tmp[1]) // Write the rest of the line after "SIP/2.0"
+			return "", builder.String()
 		}
 	}
 

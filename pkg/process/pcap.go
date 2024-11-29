@@ -8,12 +8,22 @@ import (
 	"sip-parser/pkg/sip"
 	"sip-parser/pkg/utils/csv_utils"
 	"strings"
+	"time"
 )
 
 var manager *sip.SipSessionManager
 
 func LoadPcap(path string) {
+	//f, _ := os.OpenFile("cpu.pprof", os.O_CREATE|os.O_RDWR, 0644)
+	//defer f.Close()
+	//pprof.StartCPUProfile(f)
+	//defer pprof.StopCPUProfile()
+
+	startT := time.Now() //计算当前时间
 	ProcessFileOrFolder(path)
+	tc := time.Since(startT) //计算耗时
+	fmt.Printf("time cost = %v\n", tc)
+
 }
 
 func ProcessFileOrFolder(path string) {
@@ -64,16 +74,26 @@ func processFolder(folderPath string) {
 			log.Printf("Found and parsing pcap file: %s\n", path)
 			//fileName := filepath.Base(path)
 
-			fp, err := sip.LoadSIPTraceFromPcapStream(path)
+			log.Printf("pcap file(%s) handle pcap", path)
+			err := sip.LoadSIPTraceFromPcapStreamWithManager(manager, path)
 			if err != nil {
 				log.Printf("cannot parsing file: %s err:%v", path, err)
 				return nil
 			}
 			log.Printf("pcap file(%s) loaded", path)
 
+			//fp, err := sip.LoadSIPTraceFromPcapStream(path)
+			//if err != nil {
+			//	log.Panic(err)
+			//}
+			//log.Printf("pcap file(%s) loaded", path)
+
 			// Search the SIP packets for the filters
-			log.Printf("pcap file(%s) handle packets", path)
-			sip.HandleSipPackets(manager, fp)
+			//sip.HandleSipPackets(manager, fp)
+
+			// Search the SIP packets for the filters
+			//log.Printf("pcap file(%s) handle packets", path)
+			//sip.HandleSipPackets(manager, fp)
 
 			log.Printf("pcap file(%s) Statistics", path)
 			manager.Statistics()
