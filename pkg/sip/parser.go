@@ -105,6 +105,7 @@ func HandleSipPackets(manager *SipSessionManager, sipPackets []*siprocket.SipMsg
 
 			// 添加消息到会话
 			session.AddMessage(sipp)
+			manager.LatestPktTimestamp = sipp.Timestamp
 		}
 	}
 

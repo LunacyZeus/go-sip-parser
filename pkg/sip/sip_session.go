@@ -251,9 +251,10 @@ func NewSipSession(callID string) *SipSession {
 
 // SipSessionManager 用于管理多个 SIP 会话
 type SipSessionManager struct {
-	Sessions    map[string]*SipSession // 使用 Call-ID 作为键存储会话 呼入会话
-	InSessions  map[string]*SipSession
-	OutSessions map[string]*SipSession
+	Sessions           map[string]*SipSession // 使用 Call-ID 作为键存储会话 呼入会话
+	InSessions         map[string]*SipSession
+	OutSessions        map[string]*SipSession
+	LatestPktTimestamp time.Time
 }
 
 // NewSipSessionManager 创建一个新的 SIP 会话管理器
@@ -282,11 +283,18 @@ func (manager *SipSessionManager) GetAll() map[string]*SipSession {
 	return manager.Sessions
 }
 
-func (manager *SipSessionManager) GetAndDeleteAllCompleteCall() map[string]*SipSession {
+func (manager *SipSessionManager) GetAndDeleteAllCompleteCall(latestPktTimestamp int64) map[string]*SipSession {
 	new_sessions := map[string]*SipSession{}
 	for key, session := range manager.Sessions {
 		if session.Status == REJECTED || session.Status == CANCELLED || session.Status == UNKNOWN { //删除被取消的
 			delete(manager.Sessions, key) //删除被取消的 被拒绝的
+		}
+
+		if session.Status == CALLSETUP {
+			if (latestPktTimestamp - session.InviteTime) > 50000 {
+				delete(manager.Sessions, key) //删除完成的会话
+			}
+			continue
 		}
 
 		if session.Status != COMPLETED {

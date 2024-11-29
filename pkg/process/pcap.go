@@ -76,7 +76,8 @@ func processFolder(folderPath string) {
 
 			manager.Statistics()
 			manager.MatchCall()
-			sessions := manager.GetAndDeleteAllCompleteCall()
+			sessions := manager.GetAndDeleteAllCompleteCall(manager.LatestPktTimestamp.UnixMilli())
+
 			saveCsvFileName := fmt.Sprintf("%s.csv", fileName)
 
 			all_count += len(sessions)
