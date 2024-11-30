@@ -153,6 +153,9 @@ func handleRow(pool pool.Pool, row *csv_utils.PcapCsv) (err error) {
 			continue
 		}
 		pool.Close(client) //关闭进程
+		if client.IsAvailable {
+			defer pool.Put(client)
+		}
 		break
 	}
 
