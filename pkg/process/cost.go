@@ -6,12 +6,12 @@ import (
 	"github.com/gocarina/gocsv"
 	"log"
 	"os"
-	"path/filepath"
 	"sip-parser/pkg/sip"
 	"sip-parser/pkg/utils"
 	"sip-parser/pkg/utils/csv_utils"
 	"sip-parser/pkg/utils/telnet"
 	"strings"
+	"sync"
 )
 
 type CallRecord struct {
@@ -36,9 +36,10 @@ type CallRecord struct {
 	Result        string
 }
 
-func handleRow(row *csv_utils.PcapCsv) (err error) {
+func handleRow(pool *telnet.TelnetClientPool, row *csv_utils.PcapCsv) (err error) {
 	// 创建客户端实例
-	client := telnet.NewTelnetClient("127.0.0.1", "4320")
+	//client := telnet.NewTelnetClient("127.0.0.1", "4320")
+	// 获取一个客户端实例
 
 	callerId := row.CallId
 	//via := row.Via
@@ -65,6 +66,26 @@ func handleRow(row *csv_utils.PcapCsv) (err error) {
 	command := row.Command
 	result := row.Result
 
+	client, err := pool.Get("127.0.0.1", "4320")
+	if err != nil {
+		log.Println(err)
+		return
+	}
+	defer pool.Put(client)
+
+	if !client.IsAuthentication {
+		// 发送登录命令
+		err = client.Login()
+		if err != nil {
+			log.Println(err)
+			return
+		}
+
+		log.Println(callerId, "Successfully logged in!")
+	} else {
+		log.Println(callerId, "no need login")
+	}
+
 	if result != "" || inRateID != "" {
 		err = fmt.Errorf("calld(%s) already exists", callerId)
 		return
@@ -83,19 +104,23 @@ func handleRow(row *csv_utils.PcapCsv) (err error) {
 	dnisSip := sip.GetSipPart(row.DNIS)
 
 	// 建立连接
-	err = client.Connect()
-	if err != nil {
-		log.Println(err)
-		return
-	}
-	defer client.Close()
+	/*
+			err = client.Connect()
+			if err != nil {
+				log.Println(err)
+				return
+			}
+			defer client.Close()
 
-	// 发送登录命令
-	err = client.Login()
-	if err != nil {
-		err = fmt.Errorf("login->%v", err)
-		return
-	}
+
+
+		// 发送登录命令
+		err = client.Login()
+		if err != nil {
+			err = fmt.Errorf("login->%v", err)
+			return
+		}
+	*/
 
 	//log.Println("Login successfully!")
 
@@ -196,6 +221,11 @@ func handleRow(row *csv_utils.PcapCsv) (err error) {
 }
 
 func CalculateSipCost(path string) {
+	connCount := 10
+	// 创建连接池实例
+	pool := telnet.NewTelnetClientPool(10)
+	log.Printf("The telnet pool created with %d conns", connCount)
+
 	csvFile, err := os.OpenFile(path, os.O_RDWR|os.O_CREATE, os.ModePerm)
 	if err != nil {
 		panic(err)
@@ -211,32 +241,54 @@ func CalculateSipCost(path string) {
 	n := 1
 	all_count := len(rows)
 
+	// 使用 WaitGroup 来等待所有 goroutine 完成
+	var wg sync.WaitGroup
+
+	// 用 channel 控制最大并发数（限制为3个线程）
+	sem := make(chan struct{}, 3) // 创建一个缓冲区大小为3的 channel
+
 	for index, row := range rows {
-		err = handleRow(row)
-		if err != nil {
-			log.Println("Skip row:", err)
-			continue
-		}
-		log.Printf("processing->%d/%d", n, all_count)
+		wg.Add(1)         // 增加等待计数
+		sem <- struct{}{} // 获取一个信号量，限制并发数量
 
-		rows[index] = row
+		go func(index int, pool *telnet.TelnetClientPool, row *csv_utils.PcapCsv) {
+			defer wg.Done() // 完成时调用 Done
 
-		fileName := filepath.Base(path)
-		fileName = "res_" + fileName
+			err = handleRow(pool, row)
+			if err != nil {
+				log.Println("Skip row:", err)
+				return
+			}
+			log.Printf("processing->%d/%d", n, all_count)
 
-		csvWriteFile, err := os.OpenFile(fileName, os.O_RDWR|os.O_CREATE, os.ModePerm)
-		if err != nil {
-			panic(err)
-		}
+			rows[index] = row
 
-		//每操作一次写入一次
-		err = gocsv.MarshalFile(&rows, csvWriteFile) // Use this to save the CSV back to the file
-		if err != nil {
-			panic(err)
-		}
+			n += 1
 
-		csvWriteFile.Close()
+			<-sem // 释放信号量
+		}(index, pool, row) // 启动每个 goroutine
 
-		n += 1
+		//log.Printf("processing->%d/%d", n, all_count)
+
+		//rows[index] = row
+
+		/*
+			fileName := filepath.Base(path)
+			fileName = "res_" + fileName
+
+			csvWriteFile, err := os.OpenFile(fileName, os.O_RDWR|os.O_CREATE, os.ModePerm)
+			if err != nil {
+				panic(err)
+			}
+
+			//每操作一次写入一次
+			err = gocsv.MarshalFile(&rows, csvWriteFile) // Use this to save the CSV back to the file
+			if err != nil {
+				panic(err)
+			}
+
+			csvWriteFile.Close()
+
+		*/
 	}
 }
