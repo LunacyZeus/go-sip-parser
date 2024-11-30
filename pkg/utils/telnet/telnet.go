@@ -164,9 +164,9 @@ func (t *TelnetClient) CallSimulation(command string) (string, error) {
 		if strings.Contains(line, "<Call Simulation Test progress>Done</Call Simulation Test progress>") {
 			break
 		}
-		//if strings.Contains(line, "</Origination-State>") {
-		//	break
-		//}
+		if strings.Contains(line, "</Origination-State>") {
+			break
+		}
 
 	}
 
