@@ -68,25 +68,6 @@ func handleRow(pool *telnet.TelnetClientPool, row *csv_utils.PcapCsv) (err error
 	command := row.Command
 	result := row.Result
 
-	client, err := pool.Get("127.0.0.1", "4320")
-	if err != nil {
-		log.Println(err)
-		return
-	}
-
-	if !client.IsAuthentication {
-		// 发送登录命令
-		err = client.Login()
-		if err != nil {
-			log.Println(err)
-			return
-		}
-
-		log.Printf("[%s] Successfully logged in!", client.UUID)
-	} else {
-		log.Printf("[%s] no need login", client.UUID)
-	}
-
 	if result != "" || inRateID != "" {
 		err = fmt.Errorf("calld(%s) already exists", callerId)
 		return
@@ -134,13 +115,38 @@ func handleRow(pool *telnet.TelnetClientPool, row *csv_utils.PcapCsv) (err error
 	command = fmt.Sprintf("call_simulation %s,%s,%s,%s\r\n", callerIP, callerPort, dnisSip, aniSip)
 	log.Printf("[%s] Exec Command-> %s", callerId, command)
 
-	content, err := client.CallSimulation(command)
-	if err != nil {
-		err = fmt.Errorf("CallSimulation->%v", err)
-		return
+	var content string
+	for {
+		client, err := pool.Get("127.0.0.1", "4320")
+		defer pool.Put(client)
+
+		if err != nil {
+			log.Println(err)
+			return
+		}
+
+		if !client.IsAuthentication {
+			// 发送登录命令
+			err = client.Login()
+			if err != nil {
+				log.Println(err)
+				return
+			}
+
+			log.Printf("[%s] Successfully logged in!", client.UUID)
+		} else {
+			log.Printf("[%s] no need login", client.UUID)
+		}
+		content, err = client.CallSimulation(command)
+		if err != nil {
+			err = fmt.Errorf("CallSimulation->%v", err)
+			client.Close() //关闭
+			continue
+		}
+		break
 	}
 
-	_ = client.LoginOut()
+	//_ = client.LoginOut()
 
 	//
 	inbound_rate := ""
@@ -217,8 +223,6 @@ func handleRow(pool *telnet.TelnetClientPool, row *csv_utils.PcapCsv) (err error
 	row.OutRateID = outbound_rate_id
 	row.InTrunkId = inTrunkId
 	row.OutTrunkId = outTrunkId
-
-	defer pool.Put(client)
 
 	return
 }

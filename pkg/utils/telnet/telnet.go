@@ -15,6 +15,7 @@ type TelnetClient struct {
 	IP               string
 	Port             string
 	IsAuthentication bool
+	IsAvailable      bool
 	conn             net.Conn
 }
 
@@ -25,6 +26,7 @@ func NewTelnetClient(ip string, port string) *TelnetClient {
 		IP:               ip,
 		Port:             port,
 		IsAuthentication: false,
+		IsAvailable:      false,
 	}
 }
 
@@ -36,6 +38,7 @@ func (t *TelnetClient) Connect() error {
 		return fmt.Errorf("failed to connect: %v", err)
 	}
 	t.conn = conn
+	t.IsAvailable = true
 	return nil
 }
 
@@ -94,11 +97,13 @@ func (t *TelnetClient) LoginOut() error {
 	// 收到响应后设置认证状态为true
 	//t.IsAuthentication = true
 	//fmt.Printf("LoginOut Resp: %s\n", string(buffer[:n]))
+	t.IsAvailable = false
 	return nil
 }
 
 // Close 关闭连接
 func (t *TelnetClient) Close() {
+	t.IsAvailable = false
 	if t.conn != nil {
 		t.conn.Close()
 	}

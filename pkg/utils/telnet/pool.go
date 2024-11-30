@@ -50,6 +50,10 @@ func (p *TelnetClientPool) Put(client *TelnetClient) {
 	p.mu.Lock()
 	defer p.mu.Unlock()
 
+	if !client.IsAvailable {
+		return
+	}
+
 	if len(p.clients) < p.maxClients {
 		p.clients = append(p.clients, client)
 	}
