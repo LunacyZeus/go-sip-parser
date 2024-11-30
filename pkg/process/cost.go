@@ -166,6 +166,7 @@ func handleRow(pool pool.Pool, row *csv_utils.PcapCsv) (err error) {
 	lrn := ""
 
 	result = ""
+
 	//
 	if strings.Contains(content, "No Ingress Resource Found") {
 		result = "No Ingress Resource Found"
@@ -217,6 +218,10 @@ func handleRow(pool pool.Pool, row *csv_utils.PcapCsv) (err error) {
 			}
 		}
 
+	}
+
+	if lrn == "" && inbound_rate == "" {
+		log.Printf("cannnot get rate data, the content length is %d", len(content))
 	}
 
 	//_ = fmt.Sprintf("%s %s", inbound_rate, inbound_rate_id)
