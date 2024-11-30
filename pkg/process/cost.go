@@ -229,7 +229,7 @@ func handleRow(pool *telnet.TelnetClientPool, row *csv_utils.PcapCsv) (err error
 }
 
 func CalculateSipCost(path string) {
-	connCount := 10
+	connCount := 20
 	// 创建连接池实例
 	pool := telnet.NewTelnetClientPool(connCount + 5)
 	log.Printf("The telnet pool created with %d conns", connCount)
