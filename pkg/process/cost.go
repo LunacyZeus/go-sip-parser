@@ -132,7 +132,8 @@ func handleRow(pool pool.Pool, row *csv_utils.PcapCsv) (err error) {
 		defer pool.Put(client)
 
 		if err != nil {
-			log.Println(err)
+			log.Printf("put conn err->%v")
+			pool.Close(client) //关闭进程
 			return
 		}
 
@@ -140,18 +141,17 @@ func handleRow(pool pool.Pool, row *csv_utils.PcapCsv) (err error) {
 			// 发送登录命令
 			err = client.Login()
 			if err != nil {
-				log.Println(err)
+				log.Printf("login fail->%v", err)
+				pool.Close(client) //关闭进程
 				return
 			}
-
-			log.Printf("[%s] Successfully logged in!", client.UUID)
-		} else {
-			log.Printf("[%s] no need login", client.UUID)
 		}
+
 		content, err = client.CallSimulation(command)
 		if err != nil {
 			err = fmt.Errorf("CallSimulation->%v", err)
-			client.Close() //关闭
+			pool.Close(client) //关闭进程
+			//client.Close() //关闭
 			continue
 		}
 		break
@@ -272,9 +272,9 @@ func CalculateSipCost(path string) {
 
 	//创建一个连接池： 初始化5，最大空闲连接是20，最大并发连接30
 	poolConfig := &pool.Config{
-		InitialCap: 10, //资源池初始连接数
-		MaxIdle:    20, //最大空闲连接数
-		MaxCap:     30, //最大并发连接数
+		InitialCap: 10,             //资源池初始连接数
+		MaxIdle:    connCount,      //最大空闲连接数
+		MaxCap:     connCount + 10, //最大并发连接数
 		Factory:    factory,
 		Close:      closeConn,
 		//Ping:       ping,
