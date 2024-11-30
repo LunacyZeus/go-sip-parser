@@ -1,7 +1,6 @@
 package tests
 
 import (
-	"fmt"
 	"sip-parser/pkg/utils/telnet"
 	"sync"
 	"testing"
@@ -42,7 +41,7 @@ func TestTelentParallelTasks(t *testing.T) {
 			// 发送登录命令
 			err = client.Login()
 			if err != nil {
-				err = fmt.Errorf("login->%v", err)
+				t.Errorf("login->%v", err)
 				return
 			}
 
