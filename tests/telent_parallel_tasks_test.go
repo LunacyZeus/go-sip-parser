@@ -26,7 +26,7 @@ func TestTelentParallelTasks(t *testing.T) {
 		go func(taskID int) {
 			defer wg.Done()
 
-			t.Logf("Task %d started", command)
+			t.Logf("Task %s started", command)
 			// 创建客户端实例
 			client := telnet.NewTelnetClient("192.168.1.1", "23")
 
@@ -40,7 +40,7 @@ func TestTelentParallelTasks(t *testing.T) {
 
 			content, err := client.CallSimulation(command)
 			if err != nil {
-				t.Errorf("CallSimulation", err)
+				t.Errorf("CallSimulation->%v", err)
 				return
 			}
 			t.Log(command, content)
