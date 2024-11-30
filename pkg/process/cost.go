@@ -166,6 +166,7 @@ func handleRow(pool pool.Pool, row *csv_utils.PcapCsv) (err error) {
 	lrn := ""
 
 	result = ""
+	isParseErr := false
 
 	//
 	if strings.Contains(content, "No Ingress Resource Found") {
@@ -187,7 +188,8 @@ func handleRow(pool pool.Pool, row *csv_utils.PcapCsv) (err error) {
 		if err != nil {
 			result = "Cannot Parse XMl"
 			log.Printf("[%s]->result: %s", callerId, result)
-			return nil
+			isParseErr = true
+			//return nil
 		} else {
 			if output.InBoundRate != "" {
 				inbound_rate = output.InBoundRate
@@ -221,7 +223,7 @@ func handleRow(pool pool.Pool, row *csv_utils.PcapCsv) (err error) {
 
 	}
 
-	if lrn == "" && inbound_rate == "" {
+	if lrn == "" && inbound_rate == "" && !isParseErr {
 		log.Printf("cannnot get rate data, the content length is %d", len(content))
 	}
 
