@@ -178,6 +178,7 @@ func handleRow(row *csv_utils.PcapCsv) (err error) {
 	row.Result = result
 	row.LRN = lrn
 	row.InRate = inbound_rate
+
 	row.InRateID = inbound_rate_id
 	row.OutRate = outbound_rate
 	row.OutRateID = outbound_rate_id
