@@ -125,7 +125,7 @@ func handleRow(pool pool.Pool, row *csv_utils.PcapCsv) (err error) {
 		client = conn.(*telnet.TelnetClient)
 		if err != nil {
 			log.Println(err)
-			return
+			continue
 		}
 		//client, err = pool.Get("127.0.0.1", "4320")
 		defer pool.Put(client)
@@ -133,7 +133,7 @@ func handleRow(pool pool.Pool, row *csv_utils.PcapCsv) (err error) {
 		if err != nil {
 			log.Printf("put conn err->%v")
 			pool.Close(client) //关闭进程
-			return
+			continue
 		}
 
 		if !client.IsAuthentication {
@@ -142,7 +142,7 @@ func handleRow(pool pool.Pool, row *csv_utils.PcapCsv) (err error) {
 			if err != nil {
 				log.Printf("login fail->%v", err)
 				pool.Close(client) //关闭进程
-				return
+				continue
 			}
 		}
 
@@ -187,6 +187,7 @@ func handleRow(pool pool.Pool, row *csv_utils.PcapCsv) (err error) {
 		if err != nil {
 			result = "Cannot Parse XMl"
 			log.Printf("[%s]->result: %s", callerId, result)
+			return nil
 		} else {
 			if output.InBoundRate != "" {
 				inbound_rate = output.InBoundRate
