@@ -116,8 +116,9 @@ func handleRow(pool *telnet.TelnetClientPool, row *csv_utils.PcapCsv) (err error
 	log.Printf("[%s] Exec Command-> %s", callerId, command)
 
 	var content string
+	var client *telnet.TelnetClient
 	for {
-		client, err := pool.Get("127.0.0.1", "4320")
+		client, err = pool.Get("127.0.0.1", "4320")
 		defer pool.Put(client)
 
 		if err != nil {
