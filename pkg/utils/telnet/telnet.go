@@ -102,11 +102,12 @@ func (t *TelnetClient) LoginOut() error {
 }
 
 // Close 关闭连接
-func (t *TelnetClient) Close() {
+func (t *TelnetClient) Close() (err error) {
 	t.IsAvailable = false
 	if t.conn != nil {
-		t.conn.Close()
+		err = t.conn.Close()
 	}
+	return
 }
 
 // CallSimulation 发送 call_simulation 命令并读取完整响应

@@ -11,9 +11,11 @@ import (
 	"sip-parser/pkg/sip"
 	"sip-parser/pkg/utils"
 	"sip-parser/pkg/utils/csv_utils"
+	"sip-parser/pkg/utils/pool"
 	"sip-parser/pkg/utils/telnet"
 	"strings"
 	"sync"
+	"time"
 )
 
 type CallRecord struct {
@@ -38,7 +40,7 @@ type CallRecord struct {
 	Result        string
 }
 
-func handleRow(pool *telnet.TelnetClientPool, row *csv_utils.PcapCsv) (err error) {
+func handleRow(pool pool.Pool, row *csv_utils.PcapCsv) (err error) {
 	// 创建客户端实例
 	//client := telnet.NewTelnetClient("127.0.0.1", "4320")
 	// 获取一个客户端实例
@@ -115,10 +117,18 @@ func handleRow(pool *telnet.TelnetClientPool, row *csv_utils.PcapCsv) (err error
 	command = fmt.Sprintf("call_simulation %s,%s,%s,%s\r\n", callerIP, callerPort, dnisSip, aniSip)
 	log.Printf("[%s] Exec Command-> %s", callerId, command)
 
+	var conn interface{}
 	var content string
 	var client *telnet.TelnetClient
 	for {
-		client, err = pool.Get("127.0.0.1", "4320")
+		//从连接池中取得一个连接
+		conn, err = pool.Get()
+		client = conn.(*telnet.TelnetClient)
+		if err != nil {
+			log.Println(err)
+			return
+		}
+		//client, err = pool.Get("127.0.0.1", "4320")
 		defer pool.Put(client)
 
 		if err != nil {
@@ -231,7 +241,49 @@ func handleRow(pool *telnet.TelnetClientPool, row *csv_utils.PcapCsv) (err error
 func CalculateSipCost(path string) {
 	connCount := 20
 	// 创建连接池实例
-	pool := telnet.NewTelnetClientPool(connCount + 5)
+	//pool := telnet.NewTelnetClientPool(connCount + 5)
+
+	//factory 创建连接的方法
+	factory := func() (interface{}, error) {
+		//创建新的连接
+		client := telnet.NewTelnetClient("127.0.0.1", "4320")
+		err := client.Connect()
+		if err != nil {
+			return nil, fmt.Errorf("failed to create new telnet client: %v", err)
+		}
+		if !client.IsAuthentication {
+			// 发送登录命令
+			err = client.Login()
+			if err != nil {
+				return nil, fmt.Errorf("failed to login: %v", err)
+			}
+			log.Printf("[%s] Successfully logged in!", client.UUID)
+		} else {
+			log.Printf("[%s] no need login", client.UUID)
+		}
+
+		return client, nil
+	}
+	//close 关闭连接的方法
+	closeConn := func(v interface{}) error { return v.(*telnet.TelnetClient).Close() }
+
+	//创建一个连接池： 初始化5，最大空闲连接是20，最大并发连接30
+	poolConfig := &pool.Config{
+		InitialCap: connCount, //资源池初始连接数
+		MaxIdle:    5,         //最大空闲连接数
+		MaxCap:     connCount, //最大并发连接数
+		Factory:    factory,
+		Close:      closeConn,
+		//Ping:       ping,
+		//连接最大空闲时间，超过该时间的连接 将会关闭，可避免空闲时连接EOF，自动失效的问题
+		IdleTimeout: 25 * time.Second,
+	}
+
+	connPool, err := pool.NewChannelPool(poolConfig)
+	if err != nil {
+		panic(err)
+	}
+
 	log.Printf("The telnet pool created with %d conns", connCount)
 
 	csvFile, err := os.OpenFile(path, os.O_RDWR|os.O_CREATE, os.ModePerm)
@@ -261,7 +313,7 @@ func CalculateSipCost(path string) {
 		wg.Add(1)         // 增加等待计数
 		sem <- struct{}{} // 获取一个信号量，限制并发数量
 
-		go func(index int, pool *telnet.TelnetClientPool, row *csv_utils.PcapCsv) {
+		go func(index int, pool pool.Pool, row *csv_utils.PcapCsv) {
 			defer wg.Done() // 完成时调用 Done
 
 			err = handleRow(pool, row)
@@ -276,7 +328,7 @@ func CalculateSipCost(path string) {
 			n.Add(1)
 
 			<-sem // 释放信号量
-		}(index, pool, row) // 启动每个 goroutine
+		}(index, connPool, row) // 启动每个 goroutine
 
 		if n.Val()%10 == 0 {
 			log.Printf("saving data->%d/%d", n.Val(), all_count)
