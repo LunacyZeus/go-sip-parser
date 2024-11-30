@@ -52,4 +52,5 @@ func TestTelentParallelTasks(t *testing.T) {
 	go HandleClient("1", pool, "call_simulation 88.151.128.89,5060,12156094684,7462#12156924598\r\n")
 	go HandleClient("2", pool, "call_simulation 88.151.132.30,5060,12196002708,5482#+12196882815\r\n")
 	HandleClient("3", pool, "call_simulation 87.237.87.28,5060,+16026988601,7193#16023154842\r\n")
+	select {}
 }
