@@ -6,18 +6,18 @@ import (
 	"testing"
 )
 
-func HandleClient(tag string, pool *telnet.TelnetClientPool) {
+func HandleClient(tag string, pool *telnet.TelnetClientPool, command string) {
 	// 获取一个客户端实例
-	client1, err := pool.Get("127.0.0.1", "4320")
+	client, err := pool.Get("127.0.0.1", "4320")
 	if err != nil {
 		fmt.Println(err)
 		return
 	}
-	defer pool.Put(client1)
+	defer pool.Put(client)
 
-	if !client1.IsAuthentication {
+	if !client.IsAuthentication {
 		// 发送登录命令
-		err = client1.Login()
+		err = client.Login()
 		if err != nil {
 			fmt.Println(err)
 			return
@@ -27,6 +27,13 @@ func HandleClient(tag string, pool *telnet.TelnetClientPool) {
 	} else {
 		fmt.Println(tag, "no need login")
 	}
+
+	content, err := client.CallSimulation(command)
+	if err != nil {
+		err = fmt.Errorf("CallSimulation->%v", err)
+		return
+	}
+	fmt.Println(tag, command, len(content))
 
 }
 
@@ -42,7 +49,7 @@ func TestTelentParallelTasks(t *testing.T) {
 
 	// 创建连接池实例
 	pool := telnet.NewTelnetClientPool(10)
-	HandleClient("1", pool)
-	HandleClient("2", pool)
-	HandleClient("3", pool)
+	go HandleClient("1", pool, "call_simulation 88.151.128.89,5060,12156094684,7462#12156924598\r\n")
+	go HandleClient("2", pool, "call_simulation 88.151.132.30,5060,12196002708,5482#+12196882815\r\n")
+	HandleClient("3", pool, "call_simulation 87.237.87.28,5060,+16026988601,7193#16023154842\r\n")
 }
