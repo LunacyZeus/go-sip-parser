@@ -271,7 +271,7 @@ func CalculateSipCost(path string, costThreads int) {
 			if err != nil {
 				return nil, fmt.Errorf("failed to login: %v", err)
 			}
-			log.Printf("[%s] Successfully logged in!", client.UUID)
+			//log.Printf("[%s] Successfully logged in!", client.UUID)
 		} else {
 			log.Printf("[%s] no need login", client.UUID)
 		}
