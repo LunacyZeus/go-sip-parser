@@ -80,9 +80,9 @@ func handleRow(pool *telnet.TelnetClientPool, row *csv_utils.PcapCsv) (err error
 			return
 		}
 
-		log.Printf("[%s] Successfully logged in!", client.Hash)
+		log.Printf("[%s] Successfully logged in!", client.UUID)
 	} else {
-		log.Printf("[%s] no need login", client.Hash)
+		log.Printf("[%s] no need login", client.UUID)
 	}
 
 	if result != "" || inRateID != "" {
