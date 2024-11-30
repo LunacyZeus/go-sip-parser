@@ -270,9 +270,15 @@ func CalculateSipCost(path string, costThreads int) {
 	//ping 检测连接的方法
 	//ping := func(v interface{}) error { return v.(*telnet.TelnetClient).Ping() }
 
+	log.Printf("The telnet pool created with %d conns", costThreads)
+	initialCap := 5
+	if initialCap >= costThreads {
+		initialCap = costThreads
+	}
+
 	//创建一个连接池： 初始化5，最大空闲连接是20，最大并发连接30
 	poolConfig := &pool.Config{
-		InitialCap: 10,               //资源池初始连接数
+		InitialCap: initialCap,       //资源池初始连接数
 		MaxIdle:    costThreads,      //最大空闲连接数
 		MaxCap:     costThreads + 10, //最大并发连接数
 		Factory:    factory,
@@ -286,8 +292,6 @@ func CalculateSipCost(path string, costThreads int) {
 	if err != nil {
 		panic(err)
 	}
-
-	log.Printf("The telnet pool created with %d conns", costThreads)
 
 	csvFile, err := os.OpenFile(path, os.O_RDWR|os.O_CREATE, os.ModePerm)
 	if err != nil {
