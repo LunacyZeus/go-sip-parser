@@ -186,6 +186,10 @@ func handleRow(pool pool.Pool, row *csv_utils.PcapCsv) (err error) {
 		result = "YouMail Spam DB block"
 		log.Printf("[%s]->result: %s", callerId, result)
 		isParseErr = true
+	} else if strings.Contains(content, "No Routing Plan Route") {
+		result = "No Routing Plan Route"
+		log.Printf("[%s]->result: %s", callerId, result)
+		isParseErr = true
 	} else {
 		log.Printf("[%s] Exec Command-> %s", callerId, command)
 
