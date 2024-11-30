@@ -267,6 +267,9 @@ func CalculateSipCost(path string) {
 	//close 关闭连接的方法
 	closeConn := func(v interface{}) error { return v.(*telnet.TelnetClient).Close() }
 
+	//ping 检测连接的方法
+	ping := func(v interface{}) error { return v.(*telnet.TelnetClient).Ping() }
+
 	//创建一个连接池： 初始化5，最大空闲连接是20，最大并发连接30
 	poolConfig := &pool.Config{
 		InitialCap: connCount, //资源池初始连接数
@@ -274,7 +277,7 @@ func CalculateSipCost(path string) {
 		MaxCap:     connCount, //最大并发连接数
 		Factory:    factory,
 		Close:      closeConn,
-		//Ping:       ping,
+		Ping:       ping,
 		//连接最大空闲时间，超过该时间的连接 将会关闭，可避免空闲时连接EOF，自动失效的问题
 		IdleTimeout: 25 * time.Second,
 	}
