@@ -224,7 +224,7 @@ func handleRow(pool pool.Pool, row *csv_utils.PcapCsv) (err error) {
 	}
 
 	if lrn == "" && inbound_rate == "" && !isParseErr {
-		log.Printf("cannnot get rate data, the content length is %d", len(content))
+		log.Printf("[call] CallerID(%s) cannnot get rate data, the content length is %d\n----\n%s", callerId, len(content), content)
 	}
 
 	//_ = fmt.Sprintf("%s %s", inbound_rate, inbound_rate_id)
