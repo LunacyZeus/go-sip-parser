@@ -4,8 +4,10 @@ import (
 	"fmt"
 	"github.com/duke-git/lancet/v2/convertor"
 	"github.com/gocarina/gocsv"
+	"github.com/gogf/gf/v2/container/gtype"
 	"log"
 	"os"
+	"path/filepath"
 	"sip-parser/pkg/sip"
 	"sip-parser/pkg/utils"
 	"sip-parser/pkg/utils/csv_utils"
@@ -239,7 +241,9 @@ func CalculateSipCost(path string) {
 		panic(err)
 	}
 
-	n := 1
+	// 创建一个Int型的并发安全基本类型对象
+	n := gtype.NewInt(1)
+
 	all_count := len(rows)
 
 	// 使用 WaitGroup 来等待所有 goroutine 完成
@@ -264,10 +268,31 @@ func CalculateSipCost(path string) {
 
 			rows[index] = row
 
-			n += 1
+			n.Add(1)
 
 			<-sem // 释放信号量
 		}(index, pool, row) // 启动每个 goroutine
+
+		if n.Val()%10 == 0 {
+			log.Printf("saving data->%d/%d", n, all_count)
+			fileName := filepath.Base(path)
+			fileName = "res_" + fileName
+
+			csvWriteFile, err := os.OpenFile(fileName, os.O_RDWR|os.O_CREATE, os.ModePerm)
+			if err != nil {
+				panic(err)
+			}
+
+			//每操作一次写入一次
+			err = gocsv.MarshalFile(&rows, csvWriteFile) // Use this to save the CSV back to the file
+			if err != nil {
+				panic(err)
+			}
+
+			csvWriteFile.Close()
+
+			panic("test")
+		}
 
 		//log.Printf("processing->%d/%d", n, all_count)
 
