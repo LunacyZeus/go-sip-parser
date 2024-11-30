@@ -238,8 +238,8 @@ func handleRow(pool pool.Pool, row *csv_utils.PcapCsv) (err error) {
 	return
 }
 
-func CalculateSipCost(path string) {
-	connCount := 20
+func CalculateSipCost(path string, costThreads int) {
+	//connCount := 20
 	// 创建连接池实例
 	//pool := telnet.NewTelnetClientPool(connCount + 5)
 
@@ -272,9 +272,9 @@ func CalculateSipCost(path string) {
 
 	//创建一个连接池： 初始化5，最大空闲连接是20，最大并发连接30
 	poolConfig := &pool.Config{
-		InitialCap: 10,             //资源池初始连接数
-		MaxIdle:    connCount,      //最大空闲连接数
-		MaxCap:     connCount + 10, //最大并发连接数
+		InitialCap: 10,               //资源池初始连接数
+		MaxIdle:    costThreads,      //最大空闲连接数
+		MaxCap:     costThreads + 10, //最大并发连接数
 		Factory:    factory,
 		Close:      closeConn,
 		//Ping:       ping,
@@ -287,7 +287,7 @@ func CalculateSipCost(path string) {
 		panic(err)
 	}
 
-	log.Printf("The telnet pool created with %d conns", connCount)
+	log.Printf("The telnet pool created with %d conns", costThreads)
 
 	csvFile, err := os.OpenFile(path, os.O_RDWR|os.O_CREATE, os.ModePerm)
 	if err != nil {
@@ -310,7 +310,7 @@ func CalculateSipCost(path string) {
 	var wg sync.WaitGroup
 
 	// 用 channel 控制最大并发数（限制为3个线程）
-	sem := make(chan struct{}, connCount) // 创建一个缓冲区大小为3的 channel
+	sem := make(chan struct{}, costThreads) // 创建一个缓冲区大小为3的 channel
 
 	for index, row := range rows {
 		wg.Add(1)         // 增加等待计数
