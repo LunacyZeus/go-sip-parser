@@ -226,7 +226,7 @@ func handleRow(pool *telnet.TelnetClientPool, row *csv_utils.PcapCsv) (err error
 func CalculateSipCost(path string) {
 	connCount := 10
 	// 创建连接池实例
-	pool := telnet.NewTelnetClientPool(10)
+	pool := telnet.NewTelnetClientPool(connCount + 5)
 	log.Printf("The telnet pool created with %d conns", connCount)
 
 	csvFile, err := os.OpenFile(path, os.O_RDWR|os.O_CREATE, os.ModePerm)
@@ -250,7 +250,7 @@ func CalculateSipCost(path string) {
 	var wg sync.WaitGroup
 
 	// 用 channel 控制最大并发数（限制为3个线程）
-	sem := make(chan struct{}, 5) // 创建一个缓冲区大小为3的 channel
+	sem := make(chan struct{}, connCount) // 创建一个缓冲区大小为3的 channel
 
 	for index, row := range rows {
 		wg.Add(1)         // 增加等待计数
@@ -264,7 +264,7 @@ func CalculateSipCost(path string) {
 				log.Println("Skip row:", err)
 				return
 			}
-			log.Printf("processing->%d/%d", n, all_count)
+			log.Printf("processing->%d/%d", n.Val(), all_count)
 
 			rows[index] = row
 
@@ -274,7 +274,7 @@ func CalculateSipCost(path string) {
 		}(index, pool, row) // 启动每个 goroutine
 
 		if n.Val()%10 == 0 {
-			log.Printf("saving data->%d/%d", n, all_count)
+			log.Printf("saving data->%d/%d", n.Val(), all_count)
 			fileName := filepath.Base(path)
 			fileName = "res_" + fileName
 
