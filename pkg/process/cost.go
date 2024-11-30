@@ -116,6 +116,7 @@ func handleRow(row *csv_utils.PcapCsv) (err error) {
 	inbound_rate_id := ""
 	outbound_rate := ""
 	outbound_rate_id := ""
+	lrn := ""
 
 	result = ""
 	//
@@ -157,6 +158,7 @@ func handleRow(row *csv_utils.PcapCsv) (err error) {
 				outbound_rate_id = output.OutBoundRateId
 				inTrunkId = output.InTrunkId
 				outTrunkId = output.OutTrunkId
+				lrn = output.LRN
 
 				log.Printf("[call] CallerID(%s) ANI(%s) DNIS(%s) outVia(%s) inRate(%s) inRateId(%s) outRate(%s) outRateId(%s)", callerId, aniSip, dnisSip, outVia, inbound_rate, inbound_rate_id, outbound_rate, outbound_rate_id)
 
@@ -169,6 +171,7 @@ func handleRow(row *csv_utils.PcapCsv) (err error) {
 
 	row.Command = command
 	row.Result = result
+	row.LRN = lrn
 	row.InRate = inbound_rate
 	row.InRateID = inbound_rate_id
 	row.OutRate = outbound_rate

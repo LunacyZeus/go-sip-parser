@@ -25,6 +25,7 @@ type SimOutput struct {
 	InBoundRateId  string
 	OutBoundRate   string
 	OutBoundRateId string
+	LRN            string
 	Routes         []TerminationRoute
 }
 
@@ -74,6 +75,14 @@ func ParseCallSimulationOutput(xmlContent string) (output *SimOutput, err error)
 			//fmt.Printf("%s->%s", originationTrunkKey, raw_data)
 			originationTrunk := xml_utils.ParseOriginationTrunk(raw_data)
 			output.InTrunkId = originationTrunk.TrunkID
+		}
+
+		originationLRNActionAfterKey := "Origination-LRN-Action-DNIS-After"
+		if data, exists := nodes[originationLRNActionAfterKey]; exists {
+			raw_data := fmt.Sprintf("<Origination-LRN-Action-DNIS-After>\n%s\n</Origination-LRN-Action-DNIS-After>", data)
+			//fmt.Printf("%s->%s", originationTrunkKey, raw_data)
+			originationLRNActionAfter := xml_utils.ParseOriginationLRNActionDNISAfter(raw_data)
+			output.LRN = originationLRNActionAfter.DNIS
 		}
 
 		originationTrunkRateKey := "Origination-Trunk-Rate"

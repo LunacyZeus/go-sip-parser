@@ -17,4 +17,11 @@ func TestParseAniDnis(t *testing.T) {
 	aniSip = sip.GetSipPart(ani)
 	dnisSip = sip.GetSipPart(dnis)
 	t.Logf("%s->%s %s->%s", ani, aniSip, dnis, dnisSip)
+
+	ani = "sip:7193#16023154842@192.168.99.74;user=phone"
+	dnis = "\"+12602762470\" <sip:+12602762470@207.223.71.229>;tag=gK082c9c8f"
+	aniSip = sip.GetSipPart(ani)
+	dnisSip = sip.GetSipPart(dnis)
+	t.Logf("%s->%s %s->%s", ani, aniSip, dnis, dnisSip)
+
 }

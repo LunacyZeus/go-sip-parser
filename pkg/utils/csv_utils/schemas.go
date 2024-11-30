@@ -8,6 +8,7 @@ type PcapCsv struct { // Our example struct, you can use "-" to ignore a field
 	CallId        string `csv:"Call-ID"`
 	ANI           string `csv:"ANI"`
 	DNIS          string `csv:"DNIS"`
+	LRN           string `csv:"LRN"`
 	Via           string `csv:"Via"`
 	RelatedCallId string `csv:"RelatedCallId"`
 	OutVia        string `csv:"OutVia"`
