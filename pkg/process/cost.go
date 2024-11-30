@@ -122,6 +122,9 @@ func handleRow(pool pool.Pool, row *csv_utils.PcapCsv) (err error) {
 	for {
 		//从连接池中取得一个连接
 		conn, err = pool.Get()
+		if conn == nil {
+			continue
+		}
 		client = conn.(*telnet.TelnetClient)
 		if err != nil {
 			log.Println(err)
