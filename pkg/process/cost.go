@@ -115,7 +115,6 @@ func handleRow(pool pool.Pool, row *csv_utils.PcapCsv) (err error) {
 
 	// 构建命令
 	command = fmt.Sprintf("call_simulation %s,%s,%s,%s\r\n", callerIP, callerPort, dnisSip, aniSip)
-	log.Printf("[%s] Exec Command-> %s", callerId, command)
 
 	var conn interface{}
 	var content string
@@ -181,6 +180,8 @@ func handleRow(pool pool.Pool, row *csv_utils.PcapCsv) (err error) {
 		result = "YouMail Spam DB block"
 		log.Printf("[%s]->result: %s", callerId, result)
 	} else {
+		log.Printf("[%s] Exec Command-> %s", callerId, command)
+
 		output, err := sip.ParseCallSimulationOutput(content)
 		if err != nil {
 			result = "Cannot Parse XMl"
