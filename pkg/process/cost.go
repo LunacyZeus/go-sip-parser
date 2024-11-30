@@ -291,7 +291,7 @@ func CalculateSipCost(path string) {
 
 			csvWriteFile.Close()
 
-			panic("test")
+			//panic("test")
 		}
 
 		//log.Printf("processing->%d/%d", n, all_count)
