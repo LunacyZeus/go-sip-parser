@@ -41,8 +41,6 @@ func handleRow(row *csv_utils.PcapCsv) (err error) {
 	client := telnet.NewTelnetClient("127.0.0.1", "4320")
 
 	callerId := row.CallId
-	//ani := row.ANI
-	//dnis := row.DNIS
 	//via := row.Via
 
 	//relatedCallID := row.RelatedCallId
@@ -144,6 +142,9 @@ func handleRow(row *csv_utils.PcapCsv) (err error) {
 			if output.InBoundRateId != "" {
 				inbound_rate_id = output.InBoundRateId
 			}
+			if output.LRN != "" {
+				lrn = output.LRN
+			}
 			//inbound_rate, inbound_rate_id, outbound_rate, outbound_rate_id, inTrunkId, outTrunkId = rate_utils.ParseRateFromContent(callerId, ani, dnis, aniSip, dnisSip, outVia, content)
 			if !output.MatchRate(aniSip, dnisSip, outVia) { //未找到
 				log.Printf("[call] CallerID(%s) ANI(%s) DNIS(%s) outVia(%s) not found out_bound", callerId, aniSip, dnisSip, outVia)
@@ -168,6 +169,10 @@ func handleRow(row *csv_utils.PcapCsv) (err error) {
 	}
 
 	//_ = fmt.Sprintf("%s %s", inbound_rate, inbound_rate_id)
+	ani := row.ANI
+	dnis := row.DNIS
+	row.ANI = sip.GetSipPart(ani)
+	row.DNIS = sip.GetSipPart(dnis)
 
 	row.Command = command
 	row.Result = result
