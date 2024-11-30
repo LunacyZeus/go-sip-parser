@@ -24,4 +24,10 @@ func TestParseAniDnis(t *testing.T) {
 	dnisSip = sip.GetSipPart(dnis)
 	t.Logf("%s->%s %s->%s", ani, aniSip, dnis, dnisSip)
 
+	ani = "7193#16023154842"
+	dnis = "16026988601"
+	aniSip = sip.GetSipPart(ani)
+	dnisSip = sip.GetSipPart(dnis)
+	t.Logf("%s->%s %s->%s", ani, aniSip, dnis, dnisSip)
+
 }
