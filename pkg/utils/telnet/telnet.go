@@ -11,6 +11,7 @@ import (
 
 // TelnetClient 定义telnet客户端结构体
 type TelnetClient struct {
+	Hash             string
 	IP               string
 	Port             string
 	IsAuthentication bool
@@ -19,7 +20,15 @@ type TelnetClient struct {
 
 // NewTelnetClient 创建新的telnet客户端
 func NewTelnetClient(ip string, port string) *TelnetClient {
+	// 获取当前时间
+	currentTime := time.Now()
+	// 获取 Unix 时间戳 (秒)
+	timestamp := currentTime.Unix()
+	// 将时间戳转换为字符串
+	timestampStr := fmt.Sprintf("%d", timestamp)
+
 	return &TelnetClient{
+		Hash:             timestampStr,
 		IP:               ip,
 		Port:             port,
 		IsAuthentication: false,
