@@ -1,6 +1,7 @@
 package tests
 
 import (
+	"fmt"
 	"sip-parser/pkg/utils/telnet"
 	"sync"
 	"testing"
@@ -28,7 +29,7 @@ func TestTelentParallelTasks(t *testing.T) {
 
 			t.Logf("Task %s started", command)
 			// 创建客户端实例
-			client := telnet.NewTelnetClient("192.168.1.1", "23")
+			client := telnet.NewTelnetClient("127.0.0.1", "4320")
 
 			// 建立连接
 			err := client.Connect()
@@ -37,6 +38,13 @@ func TestTelentParallelTasks(t *testing.T) {
 				return
 			}
 			defer client.Close()
+
+			// 发送登录命令
+			err = client.Login()
+			if err != nil {
+				err = fmt.Errorf("login->%v", err)
+				return
+			}
 
 			content, err := client.CallSimulation(command)
 			if err != nil {
