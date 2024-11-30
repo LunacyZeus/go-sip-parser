@@ -1,13 +1,33 @@
 package tests
 
 import (
+	"fmt"
 	"sip-parser/pkg/utils/telnet"
-	"sync"
 	"testing"
 )
 
+func HandleClient(tag string, pool *telnet.TelnetClientPool) {
+	// 获取一个客户端实例
+	client1, err := pool.Get("127.0.0.1", "4320")
+	if err != nil {
+		fmt.Println(err)
+		return
+	}
+	defer pool.Put(client1)
+
+	// 发送登录命令
+	err = client1.Login()
+	if err != nil {
+		fmt.Println(err)
+		return
+	}
+
+	fmt.Println(tag, "Successfully logged in!")
+
+}
+
 func TestTelentParallelTasks(t *testing.T) {
-	commands := []string{
+	_ = []string{
 		"call_simulation 88.151.128.89,5060,12156094684,7462#12156924598\r\n",
 		"call_simulation 88.151.132.30,5060,12196002708,5482#+12196882815\r\n",
 		"call_simulation 87.237.87.28,5060,+16026988601,7193#16023154842\r\n",
@@ -15,48 +35,10 @@ func TestTelentParallelTasks(t *testing.T) {
 		//"call_simulation 208.93.43.242,5060,+16232453808,17183389338",
 		//"call_simulation 64.125.111.164,5060,+12154008100,1111#12152520985",
 	}
-	// 创建一个 WaitGroup 来等待所有的 Goroutine 完成
-	var wg sync.WaitGroup
 
-	// 启动多个 Goroutine 进行并行任务
-	for i := 0; i < len(commands); i++ {
-		command := commands[i]
-		wg.Add(1)
-
-		go func(taskID int) {
-			defer wg.Done()
-
-			t.Logf("Task %s started", command)
-			// 创建客户端实例
-			client := telnet.NewTelnetClient("127.0.0.1", "4320")
-
-			// 建立连接
-			err := client.Connect()
-			if err != nil {
-				t.Errorf("%v", err)
-				return
-			}
-			defer client.Close()
-
-			// 发送登录命令
-			err = client.Login()
-			if err != nil {
-				t.Errorf("login->%v", err)
-				return
-			}
-
-			content, err := client.CallSimulation(command)
-			if err != nil {
-				t.Errorf("CallSimulation->%v", err)
-				return
-			}
-			t.Log(command, content)
-
-			_ = client.LoginOut()
-
-		}(i)
-	}
-
-	// 等待所有的 goroutine 完成
-	wg.Wait()
+	// 创建连接池实例
+	pool := telnet.NewTelnetClientPool(10)
+	HandleClient("1", pool)
+	HandleClient("2", pool)
+	HandleClient("3", pool)
 }

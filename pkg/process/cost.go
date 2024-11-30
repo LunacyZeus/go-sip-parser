@@ -70,7 +70,14 @@ func handleRow(row *csv_utils.PcapCsv) (err error) {
 		return
 	}
 
-	callerIP := utils.ExtractIP(row.Via)
+	var callerIP string
+
+	if row.Via == "" && row.SrcIP != "" {
+		callerIP = utils.ExtractIP(row.SrcIP)
+
+	} else {
+		callerIP = utils.ExtractIP(row.Via)
+	}
 
 	aniSip := sip.GetSipPart(row.ANI)
 	dnisSip := sip.GetSipPart(row.DNIS)
@@ -161,7 +168,7 @@ func handleRow(row *csv_utils.PcapCsv) (err error) {
 				outTrunkId = output.OutTrunkId
 				lrn = output.LRN
 
-				log.Printf("[call] CallerID(%s) ANI(%s) DNIS(%s) outVia(%s) inRate(%s) inRateId(%s) outRate(%s) outRateId(%s)", callerId, aniSip, dnisSip, outVia, inbound_rate, inbound_rate_id, outbound_rate, outbound_rate_id)
+				log.Printf("[call] CallerID(%s) ANI(%s) DNIS(%s) LRN(%s) outVia(%s) inRate(%s) inRateId(%s) outRate(%s) outRateId(%s)", callerId, aniSip, dnisSip, lrn, outVia, inbound_rate, inbound_rate_id, outbound_rate, outbound_rate_id)
 
 			}
 		}
