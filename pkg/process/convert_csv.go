@@ -23,7 +23,7 @@ func ConvertCsv(path string) {
 	}
 
 	n := 1
-	all_count := len(rows)
+	//all_count := len(rows)
 
 	for index, _ := range rows {
 		row := rows[index]
@@ -32,26 +32,25 @@ func ConvertCsv(path string) {
 			log.Println("Skip row:", err)
 			continue
 		}
-		log.Printf("processing->%d/%d", n, all_count)
+		//log.Printf("processing->%d/%d", n, all_count)
 
 		new_rows = append(new_rows, new_row)
-
-		fileName := filepath.Base(path)
-		fileName = "converted_" + fileName
-
-		csvWriteFile, err := os.OpenFile(fileName, os.O_RDWR|os.O_CREATE, os.ModePerm)
-		if err != nil {
-			panic(err)
-		}
-
-		//每操作一次写入一次
-		err = gocsv.MarshalFile(&new_rows, csvWriteFile) // Use this to save the CSV back to the file
-		if err != nil {
-			panic(err)
-		}
-
-		csvWriteFile.Close()
-
 		n += 1
 	}
+
+	fileName := filepath.Base(path)
+	fileName = "converted_" + fileName
+
+	csvWriteFile, err := os.OpenFile(fileName, os.O_RDWR|os.O_CREATE, os.ModePerm)
+	if err != nil {
+		panic(err)
+	}
+
+	//每操作一次写入一次
+	err = gocsv.MarshalFile(&new_rows, csvWriteFile) // Use this to save the CSV back to the file
+	if err != nil {
+		panic(err)
+	}
+
+	csvWriteFile.Close()
 }

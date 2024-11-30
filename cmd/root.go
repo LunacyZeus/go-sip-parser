@@ -22,6 +22,8 @@ func init() {
 	rootCmd.AddCommand(getCostCmd)
 	rootCmd.AddCommand(telnetCmd)
 	rootCmd.AddCommand(filterCmd)
+	rootCmd.AddCommand(convertCsvCmd)
+
 	rootCmd.AddCommand(testCmd)
 
 }
