@@ -13,16 +13,20 @@ func HandleClient(tag string, pool *telnet.TelnetClientPool) {
 		fmt.Println(err)
 		return
 	}
-	//defer pool.Put(client1)
+	defer pool.Put(client1)
 
-	// 发送登录命令
-	err = client1.Login()
-	if err != nil {
-		fmt.Println(err)
-		return
+	if !client1.IsAuthentication {
+		// 发送登录命令
+		err = client1.Login()
+		if err != nil {
+			fmt.Println(err)
+			return
+		}
+
+		fmt.Println(tag, "Successfully logged in!")
+	} else {
+		fmt.Println(tag, "no need login")
 	}
-
-	fmt.Println(tag, "Successfully logged in!")
 
 }
 

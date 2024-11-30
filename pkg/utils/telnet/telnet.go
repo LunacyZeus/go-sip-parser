@@ -61,7 +61,7 @@ func (t *TelnetClient) Login() error {
 	}
 
 	// 收到响应后设置认证状态为true
-	//t.IsAuthentication = true
+	t.IsAuthentication = true
 	log.Printf("Login Resp: %s\n", string(buffer[:n]))
 	return nil
 }
