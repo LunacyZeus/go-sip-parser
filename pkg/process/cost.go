@@ -71,7 +71,6 @@ func handleRow(pool *telnet.TelnetClientPool, row *csv_utils.PcapCsv) (err error
 		log.Println(err)
 		return
 	}
-	defer pool.Put(client)
 
 	if !client.IsAuthentication {
 		// 发送登录命令
@@ -216,6 +215,8 @@ func handleRow(pool *telnet.TelnetClientPool, row *csv_utils.PcapCsv) (err error
 	row.OutRateID = outbound_rate_id
 	row.InTrunkId = inTrunkId
 	row.OutTrunkId = outTrunkId
+
+	defer pool.Put(client)
 
 	return
 }
