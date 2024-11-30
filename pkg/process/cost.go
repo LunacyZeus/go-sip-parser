@@ -128,7 +128,6 @@ func handleRow(pool pool.Pool, row *csv_utils.PcapCsv) (err error) {
 			continue
 		}
 		//client, err = pool.Get("127.0.0.1", "4320")
-		defer pool.Put(client)
 
 		if err != nil {
 			log.Printf("put conn err->%v")
