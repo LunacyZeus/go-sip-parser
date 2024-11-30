@@ -40,6 +40,17 @@ func parsePacket(packet gopacket.Packet, timeStamp time.Time) (sipPacket *siproc
 	return
 }
 
+func ParsePart(part string) string {
+	if strings.Contains(part, ";") {
+		tmp := strings.Split(part, ";")
+		return tmp[0]
+	}
+	if len(part) == 10 && part[0] != '1' {
+		return "1" + part
+	}
+	return part
+}
+
 func GetSipPart(input string) string {
 	if strings.Contains(input, "%") {
 		input = strings.ReplaceAll(input, "%", "#")
@@ -51,7 +62,7 @@ func GetSipPart(input string) string {
 		end := strings.Index(input[start:], "@")
 		if end != -1 {
 			// 打印号码部分
-			return input[start : start+end]
+			return ParsePart(input[start : start+end])
 		}
 	} else if strings.Contains(input, "sip:") {
 		// 截取 <sip: 后的部分，去除后面的 @ 和 IP
@@ -59,13 +70,13 @@ func GetSipPart(input string) string {
 		end := strings.Index(input[start:], "@")
 		if end != -1 {
 			// 打印号码部分
-			return input[start : start+end]
+			return ParsePart(input[start : start+end])
 		}
 	} else {
 		// 如果不是 <sip: 格式，按 @ 分割并打印号码部分
 		parts := strings.Split(input, "@")
 		if len(parts) > 0 {
-			return parts[0] // 打印号码部分
+			return ParsePart(parts[0]) // 打印号码部分
 		}
 	}
 	return ""

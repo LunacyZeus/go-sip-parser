@@ -118,6 +118,7 @@ func handleRow(row *csv_utils.PcapCsv) (err error) {
 	outbound_rate_id := ""
 
 	result = ""
+	//
 	if strings.Contains(content, "No Ingress Resource Found") {
 		result = "No Ingress Resource Found"
 		log.Printf("[%s]->result: %s", callerId, result)
@@ -126,6 +127,9 @@ func handleRow(row *csv_utils.PcapCsv) (err error) {
 		log.Printf("[%s]->result: %s", callerId, result)
 	} else if strings.Contains(content, "Ingress Rate Not Found") {
 		result = "Ingress Rate Not Found"
+		log.Printf("[%s]->result: %s", callerId, result)
+	} else if strings.Contains(content, "YouMail Spam DB block") {
+		result = "YouMail Spam DB block"
 		log.Printf("[%s]->result: %s", callerId, result)
 	} else {
 		output, err := sip.ParseCallSimulationOutput(content)

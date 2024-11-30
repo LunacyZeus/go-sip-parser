@@ -1,0 +1,63 @@
+<Origination-Ignored-Trunk>
+</Origination-Ignored-Trunk>
+<Origination-Trunk>
+<CAP>0</CAP>
+<CPS>0</CPS>
+<Carrier-Name>Call 48_Client</Carrier-Name>
+<Trunk-ID>197</Trunk-ID>
+<Trunk-Name></Trunk-Name>
+<Route-Type>Unknow</Route-Type>
+<Media-Type>Transcoding Media</Media-Type>
+<Profit-Margin>0.000000</Profit-Margin>
+<Profit-Type></Profit-Type>
+<SHAKEN>
+    <Vfy-policy>Disabled</Vfy-policy>
+    <Sign-policy>Disabled</Sign-policy>
+    <ANI-Pool></ANI-Pool>
+    <Allow-resign>False</Allow-resign>
+</SHAKEN>
+<Static-Route-Name></Static-Route-Name>
+<Dynamic-Route-Name></Dynamic-Route-Name>
+
+<Rate-Table-Name>IB_Skyetel US Convo</Rate-Table-Name>
+<Route-Strategy-Name>US LD Convo 60 plus Skytel</Route-Strategy-Name>
+</Origination-Trunk>
+<Origination-SRC-ANI>+16202052727</Origination-SRC-ANI>
+<Origination-SRC-DNIS>14065651945</Origination-SRC-DNIS>
+<Origination-Route-DNIS>14065651945</Origination-Route-DNIS>
+<Origination-Digit-Mapped-ANI>
+<ANI></ANI>
+</Origination-Digit-Mapped-ANI>
+<Origination-Digit-Mapped-DNIS>
+<DNIS></DNIS>
+</Origination-Digit-Mapped-DNIS>
+<Origination-Translation-ANI>
+<ANI></ANI>
+<LERG></LERG>
+<DNO></DNO>
+<DNO>none</DNO>
+<YOUMAIL>
+    <SPAM_SCORE>0.800000</SPAM_SCORE>
+    <SPAM_SCORE_STR>ALMOST_CERTAINLY</SPAM_SCORE_STR>
+    <FRAUD_PROB>0.000000</FRAUD_PROB>
+    <TCPA_PROB>0.000000</TCPA_PROB>
+</YOUMAIL>
+</Origination-Translation-ANI>
+<Origination-Translation-DNIS>
+<DNIS></DNIS>
+<LERG></LERG>
+<DNC></DNC>
+</Origination-Translation-DNIS>
+<Origination-LRN-Action-DNIS-Before>
+<DNIS></DNIS>
+</Origination-LRN-Action-DNIS-Before>
+<Origination-Respond-LRN-DNIS></Origination-Respond-LRN-DNIS>
+<Origination-LRN-Action-DNIS-After>
+<DNIS></DNIS>
+<LERG></LERG>
+<DNC></DNC>
+</Origination-LRN-Action-DNIS-After>
+<Global-Route-State>
+<Origination-State>YouMail Spam DB block</Origination-State>
+</Global-Route-State>
+<Call Simulation Test progress>Done</Call Simulation Test progress>

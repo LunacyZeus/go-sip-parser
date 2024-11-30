@@ -1,0 +1,333 @@
+<Origination-Ignored-Trunk>
+    <Trunk-ID>33</Trunk-ID>
+    <Trunk-Name>382 - US Convo</Trunk-Name>
+    <Cause>Resource prefix not found</Cause>
+</Origination-Ignored-Trunk>
+<Origination-Trunk>
+<CAP>0</CAP>
+<CPS>0</CPS>
+<Carrier-Name>382 Communications</Carrier-Name>
+<Trunk-ID>34</Trunk-ID>
+<Trunk-Name>382 - US SD</Trunk-Name>
+<Route-Type>First static routing, then dynamic routing</Route-Type>
+<Media-Type>Bypass Media</Media-Type>
+<Profit-Margin>0.000000</Profit-Margin>
+<Profit-Type>By Percentage</Profit-Type>
+<SHAKEN>
+    <Vfy-policy>Block if invalid</Vfy-policy>
+    <Sign-policy>Disabled</Sign-policy>
+    <ANI-Pool></ANI-Pool>
+    <Allow-resign>False</Allow-resign>
+</SHAKEN>
+<Static-Route-Name>Premium Dialer</Static-Route-Name>
+<Dynamic-Route-Name>Premium Dialer</Dynamic-Route-Name>
+<Rate-Table-Name>IB_382 US SD</Rate-Table-Name>
+<Route-Strategy-Name>Premium Dialer</Route-Strategy-Name>
+</Origination-Trunk>
+<Origination-SRC-ANI>+14806022643</Origination-SRC-ANI>
+<Origination-SRC-DNIS>2222#14802271266</Origination-SRC-DNIS>
+<Origination-Route-DNIS>14802271266</Origination-Route-DNIS>
+<Origination-Digit-Mapped-ANI>
+<ANI>+14806022643</ANI>
+</Origination-Digit-Mapped-ANI>
+<Origination-Digit-Mapped-DNIS>
+<DNIS>14802271266</DNIS>
+</Origination-Digit-Mapped-DNIS>
+<Origination-Translation-ANI>
+<ANI>+14806022643</ANI>
+<LERG>
+    <NPA>480</NPA>
+    <NXX>602</NXX>
+    <Block>2</Block>
+    <Country>US</Country>
+    <State>AZ</State>
+    <LATA>666</LATA>
+    <Type>CLEC</Type>
+    <Rate_center>PHOENIX</Rate_center>
+    <OCN>630E</OCN>
+    <Company>ONVOY LLC - AZ</Company>
+</LERG>
+<DNO>none</DNO>
+<DNO>
+    <LAST_ON>2023-10-13 15:03:12</LAST_ON>
+    <SUBJECT>9</SUBJECT>
+</DNO>
+<YOUMAIL></YOUMAIL>
+</Origination-Translation-ANI>
+<Origination-Translation-DNIS>
+<DNIS>14802271266</DNIS>
+<LERG>
+    <NPA>480</NPA>
+    <NXX>227</NXX>
+    <Block>1</Block>
+    <Country>US</Country>
+    <State>AZ</State>
+    <LATA>666</LATA>
+    <Type>PCS</Type>
+    <Rate_center>PHOENIX</Rate_center>
+    <OCN>6529</OCN>
+    <Company>T-MOBILE USA INC.</Company>
+</LERG>
+<DNC>True</DNC>
+</Origination-Translation-DNIS>
+<Origination-LRN-Action-DNIS-Before>
+<DNIS>14802271266</DNIS>
+</Origination-LRN-Action-DNIS-Before>
+<Origination-Respond-LRN-DNIS>14803700078</Origination-Respond-LRN-DNIS>
+<Origination-LRN-Action-DNIS-After>
+<DNIS>14803700078</DNIS>
+<LERG>
+    <NPA>480</NPA>
+    <NXX>370</NXX>
+    <Block>0</Block>
+    <Country>US</Country>
+    <State>AZ</State>
+    <LATA>666</LATA>
+    <Type>PCS</Type>
+    <Rate_center>PHOENIX</Rate_center>
+    <OCN>6529</OCN>
+    <Company>T-MOBILE USA INC.</Company>
+</LERG>
+<DNC>False</DNC>
+</Origination-LRN-Action-DNIS-After>
+<Origination-Trunk-Rate>
+<Code>1480370</Code>
+<Country>USA</Country>
+<Code-Name>T-MOBILE USA </Code-Name>
+<Rate-ID>159309705</Rate-ID>
+<Rate>0.002510</Rate>
+<Rate-Type>Intrastate</Rate-Type>
+<Dnis-Type>LRN</Dnis-Type>
+<Jur-Type>US JD</Jur-Type>
+<Rate-Effective>2024-10-28 00:00:00+GMT</Rate-Effective>
+</Origination-Trunk-Rate>
+<Termination-Route>
+<Static-Route-Name>Premium Dialer</Static-Route-Name>
+<Static-Prefix></Static-Prefix>
+<Route-Strategy>Dynamic LCR</Route-Strategy>
+<Termination-Trunk>
+    <Carrier-Name>ActionVox</Carrier-Name>
+    <Trunk-ID>389</Trunk-ID>
+    <Trunk-Name>Action_Vox - Dialer</Trunk-Name>
+    <Rate-Table-Name>OB_Action_Vox_Dialer</Rate-Table-Name>
+    <CPS>0</CPS>
+    <CAP>0</CAP>
+    <Bill-After-Action>True</Bill-After-Action>
+    <Strategy>Top Down</Strategy>
+    <SHAKEN>
+        <Vfy-policy>Block if invalid</Vfy-policy>
+    </SHAKEN>
+    <Final-ANI>
+        <ANI>+14806022643</ANI>
+        <Real>+14806022643</Real>
+        <DNO>none</DNO>
+        <DNO>
+            <LAST_ON>2023-10-13 15:03:12</LAST_ON>
+            <SUBJECT>9</SUBJECT>
+        </DNO>
+    </Final-ANI>
+    <Final-DNIS>
+        <Actions>
+            <Action>Add Prefix</Action>
+            <Digit>0676#</Digit>
+        </Actions>
+        <DNIS>0676#14802271266</DNIS>
+        <Real>14802271266</Real>
+        <DNC>True</DNC>
+    </Final-DNIS>
+    <ASR>0.000000</ASR>
+    <ACD>0.000000</ACD>
+    <Trunk-Rate>
+        <Code>1480370</Code>
+        <Country>USA</Country>
+        <Code-Name>T-MOBILE USA </Code-Name>
+        <Rate-ID>162867942</Rate-ID>
+        <Rate>0.001764</Rate>
+        <Rate-Type>Intrastate</Rate-Type>
+        <Dnis-Type>LRN</Dnis-Type>
+        <Jur-Type>US JD</Jur-Type>
+        <Rate-Effective>2024-10-28 00:00:00+GMT</Rate-Effective>
+    </Trunk-Rate>
+    <Termination-Host>
+        <CPS>0</CPS>
+        <CAP>0</CAP>
+        <Port>5060</Port>
+        <Host-IP>140.82.11.56</Host-IP>
+    </Termination-Host>
+    <Termination-Signature>
+    </Termination-Signature>
+    <P-Headers>
+    </P-Headers>
+</Termination-Trunk>
+<Termination-Trunk>
+    <Carrier-Name>Secure Voice</Carrier-Name>
+    <Trunk-ID>111</Trunk-ID>
+    <Trunk-Name>Secure Voice - Special SONOC</Trunk-Name>
+    <Rate-Table-Name>OB_Secure Voice Special Convo_2558</Rate-Table-Name>
+    <CPS>0</CPS>
+    <CAP>0</CAP>
+    <Bill-After-Action>True</Bill-After-Action>
+    <Strategy>Round Robin</Strategy>
+    <SHAKEN>
+        <Vfy-policy>Block if invalid</Vfy-policy>
+    </SHAKEN>
+    <Final-ANI>
+        <ANI>+14806022643</ANI>
+        <Real>+14806022643</Real>
+        <DNO>none</DNO>
+        <DNO>
+            <LAST_ON>2023-10-13 15:03:12</LAST_ON>
+            <SUBJECT>9</SUBJECT>
+        </DNO>
+    </Final-ANI>
+    <Final-DNIS>
+        <Actions>
+            <Action>Add Prefix</Action>
+            <Digit>2558</Digit>
+        </Actions>
+        <DNIS>255814802271266</DNIS>
+        <Real>14802271266</Real>
+        <DNC>True</DNC>
+    </Final-DNIS>
+    <ASR>0.000000</ASR>
+    <ACD>0.000000</ACD>
+    <Trunk-Rate>
+        <Code>1480370</Code>
+        <Country>USA</Country>
+        <Code-Name>T-MOBILE USA </Code-Name>
+        <Rate-ID>171570111</Rate-ID>
+        <Rate>0.001800</Rate>
+        <Rate-Type>Intrastate</Rate-Type>
+        <Dnis-Type>LRN</Dnis-Type>
+        <Jur-Type>US JD</Jur-Type>
+        <Rate-Effective>2024-10-28 00:00:00+GMT</Rate-Effective>
+    </Trunk-Rate>
+    <Termination-Host>
+        <CPS>0</CPS>
+        <CAP>0</CAP>
+        <Port>5060</Port>
+        <Host-IP>87.237.87.30</Host-IP>
+    </Termination-Host>
+    <Termination-Host>
+        <CPS>0</CPS>
+        <CAP>0</CAP>
+        <Port>5060</Port>
+        <Host-IP>87.237.87.31</Host-IP>
+    </Termination-Host>
+    <Termination-Host>
+        <CPS>0</CPS>
+        <CAP>0</CAP>
+        <Port>5060</Port>
+        <Host-IP>87.237.87.32</Host-IP>
+    </Termination-Host>
+    <Termination-Signature>
+    </Termination-Signature>
+    <P-Headers>
+    </P-Headers>
+</Termination-Trunk>
+</Termination-Route>
+<Global-Route-State>
+<Origination-State>Normal</Origination-State>
+<Termination-Route>
+    <State>Normal</State>
+    <Route-Types>DNIS Static Routing</Route-Types>
+</Termination-Route>
+<Termination-Trunk>
+    <Trunk-ID>406</Trunk-ID>
+    <Trunk-Name>Allure Telecom - US SD</Trunk-Name>
+    <Cause>Trunk Disabled</Cause>
+</Termination-Trunk>
+<Termination-Trunk>
+    <Trunk-ID>402</Trunk-ID>
+    <Trunk-Name>All Access - US SD</Trunk-Name>
+    <Cause>No Profitable Trunk</Cause>
+    <Rate>0.005722</Rate>
+</Termination-Trunk>
+<Termination-Route>
+    <State>Normal</State>
+    <Route-Types>DNIS Dynamic Routing</Route-Types>
+</Termination-Route>
+<Termination-Trunk>
+    <Trunk-ID>420</Trunk-ID>
+    <Trunk-Name>Nuso - Silver All SD</Trunk-Name>
+    <Cause>No Profitable Trunk</Cause>
+    <Rate>0.004950</Rate>
+</Termination-Trunk>
+<Termination-Trunk>
+    <Trunk-ID>389</Trunk-ID>
+    <Trunk-Name>Action_Vox - Dialer</Trunk-Name>
+    <Cause>Normal</Cause>
+</Termination-Trunk>
+<Termination-Trunk>
+    <Trunk-ID>40</Trunk-ID>
+    <Trunk-Name>Teleinx - Low SDP</Trunk-Name>
+    <Cause>Block All Resouce</Cause>
+</Termination-Trunk>
+<Termination-Trunk>
+    <Trunk-ID>9</Trunk-ID>
+    <Trunk-Name>IP Link - Coretel</Trunk-Name>
+    <Cause>Rate Not Found</Cause>
+</Termination-Trunk>
+<Termination-Trunk>
+    <Trunk-ID>429</Trunk-ID>
+    <Trunk-Name>IP Transfer - US SD</Trunk-Name>
+    <Cause>No Profitable Trunk</Cause>
+    <Rate>0.006200</Rate>
+</Termination-Trunk>
+<Termination-Trunk>
+    <Trunk-ID>46</Trunk-ID>
+    <Trunk-Name>Touchtone - HS Dialer</Trunk-Name>
+    <Cause>Block All Resouce</Cause>
+</Termination-Trunk>
+<Termination-Trunk>
+    <Trunk-ID>80</Trunk-ID>
+    <Trunk-Name>Connexum  - Prem SD</Trunk-Name>
+    <Cause>No Profitable Trunk</Cause>
+    <Rate>0.003475</Rate>
+</Termination-Trunk>
+<Termination-Trunk>
+    <Trunk-ID>111</Trunk-ID>
+    <Trunk-Name>Secure Voice - Special SONOC</Trunk-Name>
+    <Cause>Normal</Cause>
+</Termination-Trunk>
+<Termination-Trunk>
+    <Trunk-ID>402</Trunk-ID>
+    <Trunk-Name>All Access - US SD</Trunk-Name>
+    <Cause>No Profitable Trunk</Cause>
+    <Rate>0.005722</Rate>
+</Termination-Trunk>
+<Termination-Trunk>
+    <Trunk-ID>18</Trunk-ID>
+    <Trunk-Name>Voyce - Dialer Platinum</Trunk-Name>
+    <Cause>No Profitable Trunk</Cause>
+    <Rate>0.003000</Rate>
+</Termination-Trunk>
+<Termination-Trunk>
+    <Trunk-ID>412</Trunk-ID>
+    <Trunk-Name>VoIP Innovations - US SD</Trunk-Name>
+    <Cause>No Profitable Trunk</Cause>
+    <Rate>0.008667</Rate>
+</Termination-Trunk>
+<Termination-Trunk>
+    <Trunk-ID>58</Trunk-ID>
+    <Trunk-Name>Dawz - Dialer low SD</Trunk-Name>
+    <Cause>Block All Resouce</Cause>
+</Termination-Trunk>
+<Termination-Trunk>
+    <Trunk-ID>27</Trunk-ID>
+    <Trunk-Name>Netvoice - DIDs</Trunk-Name>
+    <Cause>Block All Resouce</Cause>
+</Termination-Trunk>
+<Termination-Trunk>
+    <Trunk-ID>97</Trunk-ID>
+    <Trunk-Name>QwalityTel 2 Prem</Trunk-Name>
+    <Cause>Egress DNIS DNC block</Cause>
+</Termination-Trunk>
+<Termination-Trunk>
+    <Trunk-ID>456</Trunk-ID>
+    <Trunk-Name>CCS - US SD</Trunk-Name>
+    <Cause>No Profitable Trunk</Cause>
+    <Rate>0.002942</Rate>
+</Termination-Trunk>
+</Global-Route-State>
+<Call Simulation Test progress>Done</Call Simulation Test progress>
