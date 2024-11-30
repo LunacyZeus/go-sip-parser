@@ -152,7 +152,7 @@ func (t *TelnetClient) CallSimulation(command string) (string, error) {
 	}
 
 	// 读取完整响应
-	reader := bufio.NewReader(t.conn)
+	reader := bufio.NewReaderSize(t.conn, 8192)
 	var response strings.Builder
 	for {
 		line, err := reader.ReadString('\n')
