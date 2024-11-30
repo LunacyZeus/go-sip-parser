@@ -246,7 +246,7 @@ func CalculateSipCost(path string) {
 	var wg sync.WaitGroup
 
 	// 用 channel 控制最大并发数（限制为3个线程）
-	sem := make(chan struct{}, 3) // 创建一个缓冲区大小为3的 channel
+	sem := make(chan struct{}, 5) // 创建一个缓冲区大小为3的 channel
 
 	for index, row := range rows {
 		wg.Add(1)         // 增加等待计数
