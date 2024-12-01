@@ -413,6 +413,8 @@ func CalculateSipCost(path string, costThreads int) {
 
 			csvWriteFile.Close()
 
+			is_need_write = false
+
 			//panic("test")
 		}
 
