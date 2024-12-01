@@ -23,6 +23,7 @@ func init() {
 	rootCmd.AddCommand(telnetCmd)
 	rootCmd.AddCommand(filterCmd)
 	rootCmd.AddCommand(convertCsvCmd)
+	rootCmd.AddCommand(reverseCsvCmd)
 
 	rootCmd.AddCommand(testCmd)
 

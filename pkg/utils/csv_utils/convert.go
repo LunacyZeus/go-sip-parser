@@ -10,8 +10,8 @@ func ConvertRow(row *PcapCsv) (new_row *CostPcapCsv, err error) {
 
 	new_row = &CostPcapCsv{
 		CallId:        row.CallId,
-		ANI:           row.ANI,
-		DNIS:          row.DNIS,
+		ANI:           row.DNIS,
+		DNIS:          row.ANI,
 		LRN:           row.LRN,
 		RelatedCallId: row.RelatedCallId,
 		InviteTime:    row.InviteTime,
@@ -32,5 +32,19 @@ func ConvertRow(row *PcapCsv) (new_row *CostPcapCsv, err error) {
 		//Command:       row.Command,
 		//Result:        row.Result,
 	}
+	return
+}
+
+func ReverseRow(row *PcapCsv) (new_row *PcapCsv, err error) {
+	//row.ANI = sip.GetSipPart(row.ANI)
+	//row.DNIS = sip.GetSipPart(row.DNIS)
+
+	ANI := row.DNIS
+	DNIS := row.ANI
+
+	new_row = row
+	new_row.ANI = ANI
+	new_row.DNIS = DNIS
+
 	return
 }
