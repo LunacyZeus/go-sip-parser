@@ -17,7 +17,7 @@ func parsePacket(packet gopacket.Packet, timeStamp time.Time) (sipPacket *siproc
 			//parseEthernetLayer(layer)
 		case layers.LayerTypeIPv4:
 			//parseIPV4Layer(layer)
-			// 解析 IP 层
+			// Parse IP Layer
 			ip, _ := layer.(*layers.IPv4)
 			srcIP = ip.SrcIP.String()
 			destIP = ip.DstIP.String()

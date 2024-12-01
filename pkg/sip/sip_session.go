@@ -131,8 +131,8 @@ func (s *SipSession) CalcStatus(simMsg *siprocket.SipMsg) (*Message, error) {
 			s.Stage = "INVITE"                       //INVITE阶段
 			s.IsFirstInvite = false
 
-			s.ANI = msg.ToAddr
-			s.DNIS = msg.FromAddr
+			s.ANI = msg.FromAddr
+			s.DNIS = msg.ToAddr
 
 			s.ANIPhone = utils.GetPhonePart(s.ANI)
 			s.DNISPhone = utils.GetPhonePart(s.DNIS)

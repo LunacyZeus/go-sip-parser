@@ -111,7 +111,7 @@ func handleRow(pool pool.Pool, row *csv_utils.PcapCsv) (err error) {
 	callerPort := "5060"
 
 	// 构建命令
-	command = fmt.Sprintf("call_simulation %s,%s,%s,%s\r\n", callerIP, callerPort, dnisSip, aniSip)
+	command = fmt.Sprintf("call_simulation %s,%s,%s,%s\r\n", callerIP, callerPort, aniSip, dnisSip)
 
 	var conn interface{}
 	var content string
