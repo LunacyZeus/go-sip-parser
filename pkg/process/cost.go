@@ -370,13 +370,12 @@ func CalculateSipCost(path string, costThreads int) {
 					log.Printf("processing->%d/%d", n.Val(), all_count)
 
 					rows[index] = row
+					n.Add(1)
 				} else {
 					log.Printf("[%s] Result length(%d) has err, skip", row.CallId, len(row.Result))
 				}
 
 			}
-
-			n.Add(1)
 
 			<-sem // 释放信号量
 		}(index, connPool, row) // 启动每个 goroutine
