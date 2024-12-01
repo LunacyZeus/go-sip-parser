@@ -1,10 +1,12 @@
 package process
 
 import (
+	"encoding/csv"
 	"fmt"
 	"github.com/duke-git/lancet/v2/convertor"
 	"github.com/gocarina/gocsv"
 	"github.com/gogf/gf/v2/container/gtype"
+	"io"
 	"log"
 	"os"
 	"path/filepath"
@@ -323,6 +325,14 @@ func CalculateSipCost(path string, costThreads int) {
 	defer csvFile.Close()
 
 	rows := []*csv_utils.PcapCsv{}
+
+	gocsv.SetCSVReader(func(in io.Reader) gocsv.CSVReader {
+		r := csv.NewReader(in)
+		//r.LazyQuotes = true
+		//r.Comma = '.'
+		r.FieldsPerRecord = -1
+		return r // Allows use dot as delimiter and use quotes in CSV
+	})
 
 	if err := gocsv.UnmarshalFile(csvFile, &rows); err != nil { // Load clients from file
 		panic(err)
