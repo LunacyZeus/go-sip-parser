@@ -361,7 +361,7 @@ func CalculateSipCost(path string, costThreads int) {
 				log.Printf("[%s] InTrunkId(%s) not empty, skip", row.CallId, row.InTrunkId)
 
 			} else {
-				if row.Result == "" && row.InRate != "" {
+				if row.Result == "" {
 					err = handleRow(pool, row)
 					if err != nil {
 						log.Println("Skip row:", err)
@@ -372,7 +372,19 @@ func CalculateSipCost(path string, costThreads int) {
 					rows[index] = row
 					n.Add(1)
 				} else {
-					log.Printf("[%s] Result length(%d) has err, skip", row.CallId, len(row.Result))
+					if row.InRate != "" {
+						err = handleRow(pool, row)
+						if err != nil {
+							log.Println("Skip row:", err)
+							return
+						}
+						log.Printf("processing->%d/%d", n.Val(), all_count)
+
+						rows[index] = row
+						n.Add(1)
+					} else {
+						log.Printf("[%s] Result length(%d) has err, skip", row.CallId, len(row.Result))
+					}
 				}
 
 			}
