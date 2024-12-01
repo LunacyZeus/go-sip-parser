@@ -61,7 +61,7 @@ func handleRow(pool pool.Pool, row *csv_utils.PcapCsv) (err error) {
 
 	//duration := row.Duration
 	//inRate := row.InRate
-	inRateID := row.InRateID
+	//inRateID := row.InRateID
 	//inCost := row.InCost
 	//outRate := row.OutRate
 	//outRateID := row.OutRateID
@@ -71,11 +71,6 @@ func handleRow(pool pool.Pool, row *csv_utils.PcapCsv) (err error) {
 
 	command := row.Command
 	result := row.Result
-
-	if result != "" || inRateID != "" {
-		err = fmt.Errorf("calld(%s) already exists", callerId)
-		return
-	}
 
 	var callerIP string
 
