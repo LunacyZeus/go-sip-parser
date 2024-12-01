@@ -380,7 +380,7 @@ func CalculateSipCost(path string, costThreads int) {
 			<-sem // 释放信号量
 		}(index, connPool, row) // 启动每个 goroutine
 
-		if n.Val()%200 == 0 {
+		if n.Val()%300 == 0 {
 			log.Printf("saving data->%d/%d", n.Val(), all_count)
 			fileName := filepath.Base(path)
 			fileName = "res_" + fileName
