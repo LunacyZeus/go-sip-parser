@@ -371,7 +371,7 @@ func CalculateSipCost(path string, costThreads int) {
 
 					rows[index] = row
 				} else {
-					log.Printf("[%s] Result(%s) has err, skip", row.CallId, row.Result)
+					log.Printf("[%s] Result length(%d) has err, skip", row.CallId, len(row.Result))
 				}
 
 			}
