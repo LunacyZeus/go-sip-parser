@@ -346,14 +346,25 @@ func CalculateSipCost(path string, costThreads int) {
 		go func(index int, pool pool.Pool, row *csv_utils.PcapCsv) {
 			defer wg.Done() // 完成时调用 Done
 
-			err = handleRow(pool, row)
-			if err != nil {
-				log.Println("Skip row:", err)
-				return
-			}
-			log.Printf("processing->%d/%d", n.Val(), all_count)
+			if row.InTrunkId != "" {
+				//InTrunkId不为空 不处理
+				log.Printf("[%s] InTrunkId(%s) not empty, skip", row.CallId, row.InTrunkId)
 
-			rows[index] = row
+			} else {
+				if row.Result == "" {
+					err = handleRow(pool, row)
+					if err != nil {
+						log.Println("Skip row:", err)
+						return
+					}
+					log.Printf("processing->%d/%d", n.Val(), all_count)
+
+					rows[index] = row
+				} else {
+					log.Printf("[%s] Result(%s) has err, skip", row.CallId, row.Result)
+				}
+
+			}
 
 			n.Add(1)
 
