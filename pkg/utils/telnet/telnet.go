@@ -136,6 +136,15 @@ func (t *TelnetClient) Close() (err error) {
 	return
 }
 
+func (t *TelnetClient) CloseLogout() (err error) {
+	t.IsAvailable = false
+	if t.conn != nil {
+		t.LoginOut()
+		err = t.conn.Close()
+	}
+	return
+}
+
 // CallSimulation 发送 call_simulation 命令并读取完整响应
 func (t *TelnetClient) CallSimulation(command string) (string, error) {
 	if t.conn == nil {

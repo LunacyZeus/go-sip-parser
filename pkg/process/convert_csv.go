@@ -1,7 +1,9 @@
 package process
 
 import (
+	"encoding/csv"
 	"github.com/gocarina/gocsv"
+	"io"
 	"log"
 	"os"
 	"path/filepath"
@@ -17,6 +19,14 @@ func ConvertCsv(path string) {
 
 	rows := []*csv_utils.PcapCsv{}
 	new_rows := []*csv_utils.CostPcapCsv{}
+
+	gocsv.SetCSVReader(func(in io.Reader) gocsv.CSVReader {
+		r := csv.NewReader(in)
+		//r.LazyQuotes = true
+		//r.Comma = '.'
+		r.FieldsPerRecord = -1
+		return r // Allows use dot as delimiter and use quotes in CSV
+	})
 
 	if err := gocsv.UnmarshalFile(csvFile, &rows); err != nil { // Load clients from file
 		panic(err)

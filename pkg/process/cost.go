@@ -288,7 +288,7 @@ func CalculateSipCost(path string, costThreads int) {
 		return client, nil
 	}
 	//close 关闭连接的方法
-	closeConn := func(v interface{}) error { return v.(*telnet.TelnetClient).Close() }
+	closeConn := func(v interface{}) error { return v.(*telnet.TelnetClient).CloseLogout() }
 
 	//ping 检测连接的方法
 	//ping := func(v interface{}) error { return v.(*telnet.TelnetClient).Ping() }
