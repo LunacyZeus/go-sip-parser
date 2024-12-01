@@ -347,12 +347,16 @@ func CalculateSipCost(path string, costThreads int) {
 	// 用 channel 控制最大并发数（限制为3个线程）
 	sem := make(chan struct{}, costThreads) // 创建一个缓冲区大小为3的 channel
 
+	is_need_write := false
+
 	for index, row := range rows {
 		wg.Add(1)         // 增加等待计数
 		sem <- struct{}{} // 获取一个信号量，限制并发数量
 
 		go func(index int, pool pool.Pool, row *csv_utils.PcapCsv) {
 			defer wg.Done() // 完成时调用 Done
+
+			defer n.Add(1)
 
 			if row.InTrunkId != "" && row.InRate != "" && row.InRateID != "" {
 				//InTrunkId不为空 不处理
@@ -368,7 +372,8 @@ func CalculateSipCost(path string, costThreads int) {
 					log.Printf("processing->%d/%d", n.Val(), all_count)
 
 					rows[index] = row
-					n.Add(1)
+					//n.Add(1)
+					is_need_write = true
 				} else {
 					if row.InRate != "" {
 						err = handleRow(pool, row)
@@ -379,18 +384,18 @@ func CalculateSipCost(path string, costThreads int) {
 						log.Printf("processing->%d/%d", n.Val(), all_count)
 
 						rows[index] = row
-						n.Add(1)
+						//n.Add(1)
+						is_need_write = true
 					} else {
 						log.Printf("[%s] Result length(%d) has err, skip", row.CallId, len(row.Result))
 					}
 				}
-
 			}
 
 			<-sem // 释放信号量
 		}(index, connPool, row) // 启动每个 goroutine
 
-		if n.Val()%300 == 0 {
+		if n.Val()%300 == 0 && is_need_write {
 			log.Printf("saving data->%d/%d", n.Val(), all_count)
 			fileName := filepath.Base(path)
 			fileName = "res_" + fileName
