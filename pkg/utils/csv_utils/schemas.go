@@ -55,7 +55,7 @@ type CostPcapCsv struct { // Our example struct, you can use "-" to ignore a fie
 	OutCost    string `csv:"OutCost"`
 	SrcIP      string `csv:"SrcIP"`
 	DestIP     string `csv:"DestIP"`
-	Command    string `csv:"Command"`
-	Result     string `csv:"Result"`
+	//Command    string `csv:"Command"`
+	//Result     string `csv:"Result"`
 	//NotUsedString string  `csv:"-"`
 }

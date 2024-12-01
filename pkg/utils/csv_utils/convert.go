@@ -29,8 +29,8 @@ func ConvertRow(row *PcapCsv) (new_row *CostPcapCsv, err error) {
 		OutCost:       row.OutCost,
 		SrcIP:         row.SrcIP,
 		DestIP:        row.DestIP,
-		Command:       row.Command,
-		Result:        row.Result,
+		//Command:       row.Command,
+		//Result:        row.Result,
 	}
 	return
 }
