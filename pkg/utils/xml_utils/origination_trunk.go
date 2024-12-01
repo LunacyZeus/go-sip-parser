@@ -8,21 +8,21 @@ import (
 
 // OriginationTrunk 用于映射 XML 中的 <Origination-Trunk> 元素
 type OriginationTrunk struct {
-	XMLName           xml.Name `xml:"Origination-Trunk"`
-	CAP               string   `xml:"CAP"`
-	CPS               string   `xml:"CPS"`
-	CarrierName       string   `xml:"Carrier-Name"`
-	TrunkID           string   `xml:"Trunk-ID"`
-	TrunkName         string   `xml:"Trunk-Name"`
-	RouteType         string   `xml:"Route-Type"`
-	MediaType         string   `xml:"Media-Type"`
-	ProfitMargin      string   `xml:"Profit-Margin"`
-	ProfitType        string   `xml:"Profit-Type"`
-	SHAKEN            SHAKEN   `xml:"SHAKEN"`
-	StaticRouteName   string   `xml:"Static-Route-Name"`
-	DynamicRouteName  string   `xml:"Dynamic-Route-Name"`
-	RateTableName     string   `xml:"Rate-Table-Name"`
-	RouteStrategyName string   `xml:"Route-Strategy-Name"`
+	XMLName xml.Name `xml:"Origination-Trunk"`
+	//CAP               string   `xml:"CAP"`
+	//CPS               string   `xml:"CPS"`
+	//CarrierName       string   `xml:"Carrier-Name"`
+	TrunkID   string `xml:"Trunk-ID"`
+	TrunkName string `xml:"Trunk-Name"`
+	//RouteType         string   `xml:"Route-Type"`
+	//MediaType         string   `xml:"Media-Type"`
+	//ProfitMargin      string   `xml:"Profit-Margin"`
+	//ProfitType        string   `xml:"Profit-Type"`
+	//SHAKEN            SHAKEN   `xml:"SHAKEN"`
+	//StaticRouteName   string   `xml:"Static-Route-Name"`
+	//DynamicRouteName  string   `xml:"Dynamic-Route-Name"`
+	//RateTableName     string   `xml:"Rate-Table-Name"`
+	//RouteStrategyName string   `xml:"Route-Strategy-Name"`
 }
 
 func ParseOriginationTrunk(data string) OriginationTrunk {
