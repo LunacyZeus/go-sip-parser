@@ -354,7 +354,7 @@ func CalculateSipCost(path string, costThreads int) {
 		go func(index int, pool pool.Pool, row *csv_utils.PcapCsv) {
 			defer wg.Done() // 完成时调用 Done
 
-			if row.InTrunkId != "" {
+			if row.InTrunkId != "" && row.InRate != "" && row.InRateID != "" {
 				//InTrunkId不为空 不处理
 				log.Printf("[%s] InTrunkId(%s) not empty, skip", row.CallId, row.InTrunkId)
 
