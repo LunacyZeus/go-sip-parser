@@ -9,8 +9,8 @@ import (
 type OriginationLRNActionDNISAfter struct {
 	XMLName xml.Name `xml:"Origination-LRN-Action-DNIS-After"`
 	DNIS    string   `xml:"DNIS"`
-	LERG    string   `xml:"LERG"`
-	DNC     string   `xml:"DNC"`
+	//LERG    string   `xml:"LERG"`
+	//DNC     string   `xml:"DNC"`
 }
 
 func ParseOriginationLRNActionDNISAfter(data string) OriginationLRNActionDNISAfter {
