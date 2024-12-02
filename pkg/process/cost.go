@@ -359,6 +359,7 @@ func CalculateSipCost(path string, costThreads int) {
 			defer n.Add(1)
 
 			if strings.Contains(row.ANI, "%23") || strings.Contains(row.DNIS, "%23") {
+				log.Printf("%s/%s contain %23", row.ANI, row.DNIS)
 				err = handleRow(pool, row)
 				if err != nil {
 					log.Println("Skip row:", err)
