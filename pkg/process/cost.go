@@ -174,23 +174,23 @@ func handleRow(pool pool.Pool, row *csv_utils.PcapCsv) (err error) {
 	//
 	if strings.Contains(content, "No Ingress Resource Found") {
 		result = "No Ingress Resource Found"
-		log.Printf("[%s]->result: %s", callerId, result)
+		log.Printf("[%s]->command(%s) result: %s", callerId, command, result)
 		isParseErr = true
 	} else if strings.Contains(content, "Unauthorized IP Address") {
 		result = "Unauthorized IP Address"
-		log.Printf("[%s]->result: %s", callerId, result)
+		log.Printf("[%s]->command(%s) result: %s", callerId, command, result)
 		isParseErr = true
 	} else if strings.Contains(content, "Ingress Rate Not Found") {
 		result = "Ingress Rate Not Found"
-		log.Printf("[%s]->result: %s", callerId, result)
+		log.Printf("[%s]->command(%s) result: %s", callerId, command, result)
 		isParseErr = true
 	} else if strings.Contains(content, "YouMail Spam DB block") {
 		result = "YouMail Spam DB block"
-		log.Printf("[%s]->result: %s", callerId, result)
+		log.Printf("[%s]->command(%s) result: %s", callerId, command, result)
 		isParseErr = true
 	} else if strings.Contains(content, "No Routing Plan Route") {
 		result = "No Routing Plan Route"
-		log.Printf("[%s]->result: %s", callerId, result)
+		log.Printf("[%s]->command(%s) result: %s", callerId, command, result)
 		isParseErr = true
 	} else {
 		log.Printf("[%s] Exec Command-> %s", callerId, command)
