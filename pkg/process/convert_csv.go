@@ -8,6 +8,7 @@ import (
 	"os"
 	"path/filepath"
 	"sip-parser/pkg/utils/csv_utils"
+	"strings"
 )
 
 func ConvertCsv(path string) {
@@ -37,6 +38,11 @@ func ConvertCsv(path string) {
 
 	for index, _ := range rows {
 		row := rows[index]
+
+		if strings.Contains(row.ANI, "%23") || strings.Contains(row.DNIS, "%23") {
+			log.Printf("%s/%s contain %23", row.ANI, row.DNIS)
+			//panic("123")
+		}
 		new_row, err := csv_utils.ConvertRow(row)
 		if err != nil {
 			log.Println("Skip row:", err)
