@@ -53,8 +53,14 @@ func ParsePart(part string) string {
 
 func GetSipPart(input string) string {
 	if strings.Contains(input, "%") {
-		input = strings.ReplaceAll(input, "%", "#")
+		if strings.Contains(input, "%") {
+			input = strings.ReplaceAll(input, "%23", "#")
+		} else {
+			input = strings.ReplaceAll(input, "%", "#")
+		}
+
 	}
+
 	// 去除 <sip: 和 @ 后面的内容
 	if strings.Contains(input, "<sip:") {
 		// 截取 <sip: 后的部分，去除后面的 @ 和 IP
