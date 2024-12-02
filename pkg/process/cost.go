@@ -358,6 +358,22 @@ func CalculateSipCost(path string, costThreads int) {
 
 			defer n.Add(1)
 
+			if strings.Contains(row.ANI, "%23") || strings.Contains(row.DNIS, "%23") {
+				err = handleRow(pool, row)
+				if err != nil {
+					log.Println("Skip row:", err)
+					<-sem // 释放信号量
+					return
+				}
+				log.Printf("processing->%d/%d", n.Val(), all_count)
+
+				rows[index] = row
+				//n.Add(1)
+				is_need_write = true
+				<-sem // 释放信号量
+				return
+			}
+
 			if row.InTrunkId != "" && row.InRate != "" && row.InRateID != "" {
 				//InTrunkId不为空 不处理
 				log.Printf("[%s] InTrunkId(%s) not empty, skip", row.CallId, row.InTrunkId)
@@ -367,6 +383,7 @@ func CalculateSipCost(path string, costThreads int) {
 					err = handleRow(pool, row)
 					if err != nil {
 						log.Println("Skip row:", err)
+						<-sem // 释放信号量
 						return
 					}
 					log.Printf("processing->%d/%d", n.Val(), all_count)
@@ -379,6 +396,7 @@ func CalculateSipCost(path string, costThreads int) {
 						err = handleRow(pool, row)
 						if err != nil {
 							log.Println("Skip row:", err)
+							<-sem // 释放信号量
 							return
 						}
 						log.Printf("processing->%d/%d", n.Val(), all_count)
