@@ -1,0 +1,6 @@
+type PcapCsv struct { // Our example struct, you can use "-" to ignore a field
+	CallId        string `csv:"Call-ID"`
+}
+这里有个[]PcapCsv列表 你需要遍历多线程处理这个
+假设多线程函数功能为5秒后输出CallId
+怎么实现控制线程遍历并获取结果

@@ -301,9 +301,9 @@ func CalculateSipCost(path string, costThreads int) {
 
 	//创建一个连接池： 初始化5，最大空闲连接是20，最大并发连接30
 	poolConfig := &pool.Config{
-		InitialCap: initialCap,       //资源池初始连接数
-		MaxIdle:    costThreads,      //最大空闲连接数
-		MaxCap:     costThreads + 10, //最大并发连接数
+		InitialCap: initialCap,      //资源池初始连接数
+		MaxIdle:    costThreads,     //最大空闲连接数
+		MaxCap:     costThreads + 3, //最大并发连接数
 		Factory:    factory,
 		Close:      closeConn,
 		//Ping:       ping,
