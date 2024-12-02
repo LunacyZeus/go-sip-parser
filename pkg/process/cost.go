@@ -359,7 +359,7 @@ func CalculateSipCost(path string, costThreads int) {
 			defer n.Add(1)
 
 			if strings.Contains(row.ANI, "%23") || strings.Contains(row.DNIS, "%23") {
-				log.Printf("%s/%s contain %23", row.ANI, row.DNIS)
+				log.Printf("[%s] %s/%s contain # char", row.CallId, row.ANI, row.DNIS)
 				//panic("11")
 				err = handleRow(pool, row)
 				if err != nil {
