@@ -10,8 +10,8 @@ func ConvertRow(row *PcapCsv) (new_row *CostPcapCsv, err error) {
 
 	new_row = &CostPcapCsv{
 		CallId:        row.CallId,
-		ANI:           row.DNIS,
-		DNIS:          row.ANI,
+		ANI:           row.ANI,
+		DNIS:          row.DNIS,
 		LRN:           row.LRN,
 		RelatedCallId: row.RelatedCallId,
 		InviteTime:    row.InviteTime,
