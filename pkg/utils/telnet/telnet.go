@@ -139,7 +139,7 @@ func (t *TelnetClient) Close() (err error) {
 func (t *TelnetClient) CloseLogout() (err error) {
 	t.IsAvailable = false
 	if t.conn != nil {
-		t.LoginOut()
+		//t.LoginOut()
 		err = t.conn.Close()
 	}
 	return
