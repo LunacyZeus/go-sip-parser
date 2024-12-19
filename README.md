@@ -1,34 +1,44 @@
-Usage: call_simulation caller_ip,caller_port,ani,dnis,[test_shaken],[signature]
+sip-parser is a tool for extract SIP calls message flows from PCAP file.
 
-wget -O go_sip_parser https://raw.githubusercontent.com/LunacyZeus/go-sip-parser/refs/heads/main/go_sip_parser_amd64_linux
+**How to build**  
+make sure your server have go environment  
+if you dont have this, please see this tutorial  
+https://linuxize.com/post/how-to-install-go-on-centos-7/  
+go version is **go1.23.4**
+
+git clone http://stash.denovolab.com/scm/~zeusho/sip-parser.git  
+clone the repo into your server
+
+enter the code dir  
+use command  
+`go build -o sip-parser`  
+the command is build project with go  
+then you will get a binary file named sip-parser  
+start run the program  
+`./sip-parser`
+
+**How to use**
+
+**Parse Call from pcap file**
+For one pcap file  
+`./sip_parser load -f data/test/202411140020.pcap`
+when it finish you will get two files
+in_data_test_202411140020.pcap.csv
+out_data_test_202411140020.pcap.csv
+
+For dir with pcap files  
+`./sip_parser load -f data/test`  
+when it finish you will get two files
+in_test.csv
+out_test.csv
+
+**call_simulation from csv file**  
+`./sip-parser get_cost -f in_test.csv -t 30`  
+in_test.csv is in csv file path  
+30 is telent threads number
 
 
-./go_sip_parser_amd64_linux telnet --cip "68.68.120.215" --cport "5060" --ani "15033478582" --dnis "+17472292998"
-
-
-call_simulation 69.85.136.200,5060,17083744774,+12243462475
-
-
-call_simulation 88.151.130.19,5060,17862944218,+17252997974
-call_simulation 88.151.132.30,5060,5482#+13236778193,9093237141
-
-./go_sip_parser_amd64_linux telnet --cip "88.151.130.19" --cport "5060" --ani "17862944218" --dnis "+17252997974"
-
-./go_sip_parser_amd64_linux telnet --cip "88.151.132.30" --cport "5060" --ani "5482#+13236778193" --dnis "9093237141"
-
-./go_sip_parser_amd64_linux telnet --cip "208.79.54.183" --cport "5060" --ani "+16787784146" --dnis "+17065423030"
-
-call_simulation 208.79.54.183,5060,+16787784146,+17065423030
-
-
-./go_sip_parser_amd64_linux get_cost -f out_202411142355.pcap.csv
-
-./go_sip_parser_amd64_linux load -f data/test
-
-./go_sip_parser load -f data/test
-
-call_simulation 87.237.87.28,5060,+12762314480,7193#12762524600
-
-/home/zeusho/go-sip-parser/sip-parser get_cost -f
-
-./sip-parser convert -f
+**convert csv file**  
+`./sip-parser convert_csv -f res_in.csv`  
+you will get res_res_in.csv  
+here is a final result file.  

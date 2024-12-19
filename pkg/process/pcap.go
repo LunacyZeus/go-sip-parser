@@ -58,6 +58,20 @@ func ProcessFileOrFolder(path string) {
 
 		// Search the SIP packets for the filters
 		sip.HandleSipPackets(manager, fp)
+
+		log.Printf("pcap file(%s) get csv to restore", path)
+		sessions := manager.GetAndDeleteAllCompleteCall(manager.LatestPktTimestamp.UnixMilli())
+
+		saveCsvFileName := fmt.Sprintf("%s.csv", path)
+
+		all_count := len(sessions)
+
+		if strings.Contains(saveCsvFileName, "/") {
+			saveCsvFileName = strings.ReplaceAll(saveCsvFileName, "/", "_")
+		}
+		// 全新写入数据
+		csv_utils.SaveDataCsv(saveCsvFileName, sessions)
+		fmt.Printf("%s %d CSV data wirte successfully\n", saveCsvFileName, all_count)
 	}
 }
 
@@ -124,5 +138,5 @@ func processFolder(folderPath string) {
 		return
 	}
 
-	fmt.Printf("%d CSV data wirte successfully\n", all_count)
+	fmt.Printf("%s %d CSV data wirte successfully\n", fileName, all_count)
 }
